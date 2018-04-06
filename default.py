@@ -517,7 +517,7 @@ def ToggleNext():
 
 def Update():
 	dialog = xbmcgui.Dialog()
-	ret = dialog.yesno('Kodi', 'Quer atualizar o addon??')
+	ret = dialog.yesno('Kodi', 'Gostaria atualizar o addon???')
 	if ret:
 		zip = os.path.join( Path, "default.py")
 		f = urllib.urlopen("https://raw.githubusercontent.com/RH1CK/CubePlay/master/default.py")
