@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
+Versao = "18.04.07"
+
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
 AddonName = Addon.getAddonInfo("name")
@@ -19,12 +21,9 @@ if not os.path.exists(cacheDir):
 	os.makedirs(cacheDir)
 
 cPage = Addon.getSetting("cPage")
-Versao = "18.04.06"
 Cat = Addon.getSetting("Cat")
 Clista=[ "todos",                     "acao", "animacao", "aventura", "comedia", "drama", "fantasia", "ficcao-cientifica", "romance", "suspense", "terror"]
 Clista2=["Sem filtro (Mostrar Todos)","Acao", "Animacao", "Aventura", "Comedia", "Drama", "Fantasia", "Ficcao-Cientifica", "Romance", "Suspense", "Terror"]
-
-Path = xbmc.translatePath( xbmcaddon.Addon().getAddonInfo('path') ).decode("utf-8")
 
 def setViewS():
 	xbmcplugin.setContent(int(sys.argv[1]), 'tvshows')
@@ -56,14 +55,17 @@ def Categories(): #70
 		AddDir("[COLOR yellow][B][Filmes NetCine.us][/B][/COLOR]" , URLNC + "listMovies.php", 71, "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", index=0, cacheMin = "0")
 	except urllib2.URLError, e:
 		AddDir("Server NETCINE offline, tente novamente em alguns minutos" , "setting", 50, "", "", 0, cacheMin = "0", isFolder=False)
-		#AddDir("Verifique se o addon esta atualizado em:" , "setting", 50, "", "", 0, cacheMin = "0, isFolder=False")
-		#AddDir("http://bit.ly/CUBEPLAY" , "setting", 50, "", "", 0, cacheMin = "0", isFolder=False)
 	AddDir("[COLOR red][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
 	AddDir("[COLOR green][B][Favoritos Cube Play][/B][/COLOR]", "favorites" ,30 , "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png", "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png")
 	uversao = urllib2.urlopen( "https://raw.githubusercontent.com/RH1CK/CubePlay/master/version.txt" ).read().replace('\n','').replace('\r','')
-	if uversao != Versao:
-		AddDir("[B][COLOR pink][CLIQUE AQUI]\n[PARA ATUALIZAR O ADDON][/COLOR][/B]", "setting" ,130 ,"http://cdn.blog.hu/an/antivirus/image/201605/hav6.jpg" , "http://cdn.blog.hu/an/antivirus/image/201605/hav6.jpg", isFolder=False, info="Ha uma nova versao do addon\nClique aqui para atualizar")
-	AddDir("[B][Sobre o Addon][/B]", "config" ,0 ,"http://www.iconsplace.com/icons/preview/orange/about-256.png", "http://www.iconsplace.com/icons/preview/orange/about-256.png", isFolder=False, info="Addon modificado do PlaylistLoader 1.2.0 por Avigdor\r https://github.com/avigdork/xbmc-avigdork.\r\nNao somos responsaveis por colocar o conteudo online, apenas indexamos.\r\nPara sugestoes e report de bugs nossa pagina no FB: [COLOR blue]http://fb.com/CubePlayKodi[/COLOR]")
+	try:
+		uversao = urllib2.urlopen( "https://raw.githubusercontent.com/RH1CK/CubePlay/master/version.txt" ).read().replace('\n','').replace('\r','')
+		if uversao != Versao:
+			#AddDir("[B][COLOR pink][CLIQUE AQUI]\n[PARA ATUALIZAR O ADDON][/COLOR][/B]", "setting" ,130 ,"http://cdn.blog.hu/an/antivirus/image/201605/hav6.jpg" , "http://cdn.blog.hu/an/antivirus/image/201605/hav6.jpg", isFolder=False, info="Ha uma nova versao do addon\nClique aqui para atualizar")
+			Update()
+	except urllib2.URLError, e:
+		uversao = ""
+	AddDir("[B][Sobre o Addon!][/B]", "config" ,0 ,"http://www.iconsplace.com/icons/preview/orange/about-256.png", "http://www.iconsplace.com/icons/preview/orange/about-256.png", isFolder=False, info="Addon modificado do PlaylistLoader 1.2.0 por Avigdor\r https://github.com/avigdork/xbmc-avigdork.\r\nNao somos responsaveis por colocar o conteudo online, apenas indexamos.\r\nPara sugestoes e report de bugs nossa pagina no FB: [COLOR blue]http://fb.com/CubePlayKodi[/COLOR]")
 	AddDir("[B][COLOR blue]http://fb.com/CubePlayKodi[/COLOR][/B]", "config" ,0 ,"https://cdn.pixabay.com/photo/2017/08/20/10/30/facebook-2661207_960_720.jpg", "https://cdn.pixabay.com/photo/2017/08/20/10/30/facebook-2661207_960_720.jpg", isFolder=False, info="Para sugestoes e report de bugs nossa pagina no FB: [COLOR blue]http://fb.com/CubePlayKodi[/COLOR]")
 # --------------  NETCINE
 def PlayS(): #62
@@ -516,15 +518,27 @@ def ToggleNext():
 	xbmc.executebuiltin("XBMC.Container.Refresh()")
 
 def Update():
+	Path = xbmc.translatePath( xbmcaddon.Addon().getAddonInfo('path') ).decode("utf-8")
 	dialog = xbmcgui.Dialog()
-	ret = dialog.yesno('Kodi', 'Gostaria atualizar o addon???')
-	if ret:
-		zip = os.path.join( Path, "default.py")
-		f = urllib.urlopen("https://raw.githubusercontent.com/RH1CK/CubePlay/master/default.py")
-		with open(zip, "wb") as subFile:
-			subFile.write(f.read())
-			subFile.close()
-		xbmc.executebuiltin("XBMC.Container.Refresh()")
+	try:
+		fonte = urllib2.urlopen( "https://raw.githubusercontent.com/RH1CK/CubePlay/master/default.py" ).read().replace('\n','')
+		prog = re.compile('#checkintegrity25852').findall(fonte)
+		if prog:
+			#dialog.ok('Kodi', str( prog ))
+			py = os.path.join( Path, "default.py")
+			file = open(py, "w")
+			file.write(fonte)
+			file.close()
+	except urllib2.URLError, e:
+		fonte = ""
+#	ret = dialog.ok('Kodi', 'Gostaria atualizar o addon???')
+#	if ret:
+#		zip = os.path.join( Path, "default.py")
+#		f = urllib.urlopen("https://raw.githubusercontent.com/RH1CK/CubePlay/master/default.py")
+#		with open(zip, "wb") as subFile:
+#			subFile.write(f.read())
+#			subFile.close()
+	xbmc.executebuiltin("XBMC.Container.Refresh()")
 
 params = dict(urlparse.parse_qsl(sys.argv[2].replace('?','')))
 url = params.get('url')
