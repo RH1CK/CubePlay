@@ -240,7 +240,7 @@ def PlayTVRC(): # 101
 		player = re.compile('<iframe name=\"Player\".+src=\"([^\"]+)\"').findall(link)
 		link2 = common.OpenURL(player[0])
 		urlp = re.compile('\"source\"\: \"([^\"]+)').findall(link2)
-		AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , urlp[0] + "?play|Referer=http://www.redecanais.com/", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info="Play")
+		AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , urlp[0] + "?play|Referer=http://www.redecanais.com/", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info="Play", cacheMin='10')
 	except urllib2.URLError, e:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
 # ----------------- FIM REDECANAIS TV
