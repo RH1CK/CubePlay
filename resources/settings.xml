@@ -5,7 +5,6 @@
 	<setting label="" type="sep" />
 	<setting label="[B][COLOR white]Pagina no Facebook:[/COLOR][/B]" type="text" /> 
 	<setting label="[COLOR blue]http://fb.com/CubePlay[/COLOR]" type="text" />
-	<setting id="versao" type="text" label="versao" default="18.03.13" visible="false" />
 	<setting id="makeGroups" type="text" label="30036" default="true" visible="false"/>
 	<setting id="Cat" label="cat" type="text" default="0" visible="false" />
 	<setting label="" type="sep" />

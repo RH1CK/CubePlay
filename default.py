@@ -19,10 +19,12 @@ if not os.path.exists(cacheDir):
 	os.makedirs(cacheDir)
 
 cPage = Addon.getSetting("cPage")
-Versao = Addon.getSetting("versao")
+Versao = "18.04.06"
 Cat = Addon.getSetting("Cat")
 Clista=[ "todos",                     "acao", "animacao", "aventura", "comedia", "drama", "fantasia", "ficcao-cientifica", "romance", "suspense", "terror"]
 Clista2=["Sem filtro (Mostrar Todos)","Acao", "Animacao", "Aventura", "Comedia", "Drama", "Fantasia", "Ficcao-Cientifica", "Romance", "Suspense", "Terror"]
+
+Path = xbmc.translatePath( xbmcaddon.Addon().getAddonInfo('path') ).decode("utf-8")
 
 def setViewS():
 	xbmcplugin.setContent(int(sys.argv[1]), 'tvshows')
@@ -38,7 +40,6 @@ makeGroups = "true"
 URLP="http://cubeplay.000webhostapp.com/"
 #URLP="http://localhost:8080/"
 URLNC=URLP+"nc/"
-URLRC=URLP+"rc/"
 	
 def getLocaleString(id):
 	return Addon.getLocalizedString(id).encode('utf-8')
@@ -50,18 +51,20 @@ def Categories(): #70
 	AddDir("[COLOR blue][B][Filmes Legendado RedeCanais.com][/B][/COLOR]" , "", 91, "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", index=0, cacheMin = "0")
 	AddDir("[COLOR blue][B][Filmes Nacional RedeCanais.com][/B][/COLOR]" , "", 92, "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", index=0, cacheMin = "0")
 	try:
-		uversao = urllib2.urlopen( URLNC + "version.txt" ).read()
+		checa = urllib2.urlopen( URLNC + "version.txt" ).read()
 		AddDir("[COLOR yellow][B][Series NetCine.us][/B][/COLOR]" , URLNC + "listTVshow.php", 60, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", index=0, cacheMin = "0")
 		AddDir("[COLOR yellow][B][Filmes NetCine.us][/B][/COLOR]" , URLNC + "listMovies.php", 71, "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", index=0, cacheMin = "0")
-		if uversao != Versao:
-			AddDir("[B][Atualizacao]:[/B] http://bit.ly/CUBEPLAY", "config" ,0 ,"http://cdn.blog.hu/an/antivirus/image/201605/hav6.jpg", "http://cdn.blog.hu/an/antivirus/image/201605/hav6.jpg", isFolder=False, info="Ha uma nova versao!\r\nBaixe o addon em http://bit.ly/CUBEPLAY")
 	except urllib2.URLError, e:
 		AddDir("Server NETCINE offline, tente novamente em alguns minutos" , "setting", 50, "", "", 0, cacheMin = "0", isFolder=False)
 		#AddDir("Verifique se o addon esta atualizado em:" , "setting", 50, "", "", 0, cacheMin = "0, isFolder=False")
 		#AddDir("http://bit.ly/CUBEPLAY" , "setting", 50, "", "", 0, cacheMin = "0", isFolder=False)
 	AddDir("[COLOR red][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
 	AddDir("[COLOR green][B][Favoritos Cube Play][/B][/COLOR]", "favorites" ,30 , "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png", "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png")
+	uversao = urllib2.urlopen( "https://raw.githubusercontent.com/RH1CK/CubePlay/master/version.txt" ).read().replace('\n','').replace('\r','')
+	if uversao != Versao:
+		AddDir("[B][COLOR pink][CLIQUE AQUI]\n[PARA ATUALIZAR O ADDON][/COLOR][/B]", "setting" ,130 ,"http://cdn.blog.hu/an/antivirus/image/201605/hav6.jpg" , "http://cdn.blog.hu/an/antivirus/image/201605/hav6.jpg", isFolder=False, info="Ha uma nova versao do addon\nClique aqui para atualizar")
 	AddDir("[B][Sobre o Addon][/B]", "config" ,0 ,"http://www.iconsplace.com/icons/preview/orange/about-256.png", "http://www.iconsplace.com/icons/preview/orange/about-256.png", isFolder=False, info="Addon modificado do PlaylistLoader 1.2.0 por Avigdor\r https://github.com/avigdork/xbmc-avigdork.\r\nNao somos responsaveis por colocar o conteudo online, apenas indexamos.\r\nPara sugestoes e report de bugs nossa pagina no FB: [COLOR blue]http://fb.com/CubePlayKodi[/COLOR]")
+	AddDir("[B][COLOR blue]http://fb.com/CubePlayKodi[/COLOR][/B]", "config" ,0 ,"https://cdn.pixabay.com/photo/2017/08/20/10/30/facebook-2661207_960_720.jpg", "https://cdn.pixabay.com/photo/2017/08/20/10/30/facebook-2661207_960_720.jpg", isFolder=False, info="Para sugestoes e report de bugs nossa pagina no FB: [COLOR blue]http://fb.com/CubePlayKodi[/COLOR]")
 # --------------  NETCINE
 def PlayS(): #62
 	try:
@@ -512,6 +515,17 @@ def ToggleNext():
 	Addon.setSetting("cPage", str(int(cPage) + 1) )
 	xbmc.executebuiltin("XBMC.Container.Refresh()")
 
+def Update():
+	dialog = xbmcgui.Dialog()
+	ret = dialog.yesno('Kodi', 'Quer atualizar o addon??')
+	if ret:
+		zip = os.path.join( Path, "default.py")
+		f = urllib.urlopen("https://raw.githubusercontent.com/RH1CK/CubePlay/master/default.py")
+		with open(zip, "wb") as subFile:
+			subFile.write(f.read())
+			subFile.close()
+		xbmc.executebuiltin("XBMC.Container.Refresh()")
+
 params = dict(urlparse.parse_qsl(sys.argv[2].replace('?','')))
 url = params.get('url')
 logos = params.get('logos', '')
@@ -617,5 +631,7 @@ elif mode == 110:
 	ToggleNext()
 elif mode == 120:
 	TogglePrevious()
+elif mode == 130:
+	Update()
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
