@@ -44,8 +44,8 @@ def getLocaleString(id):
 	return Addon.getLocalizedString(id).encode('utf-8')
 
 def Categories(): #70
-	#AddDir("[B]{0}: {1}[/B] - {2} ".format(getLocaleString(30036), getLocaleString(30037) if makeGroups else getLocaleString(30038) , getLocaleString(30039)), "setting" ,50 ,os.path.join(iconsDir, "setting.png"), isFolder=False)
-	AddDir("[COLOR Pink][B][Canais de TV RedeCanais.com][/B][/COLOR]" , "", 100, "https://walter.trakt.tv/images/movies/000/090/449/posters/thumb/eadfdc57aa.jpg", "https://walter.trakt.tv/images/movies/000/090/449/posters/thumb/eadfdc57aa.jpg", index=0, cacheMin = "0")
+	#AddDir("[B]!{0}: {1}[/B] - {2} ".format(getLocaleString(30036), getLocaleString(30037) if makeGroups else getLocaleString(30038) , getLocaleString(30039)), "setting" ,50 ,os.path.join(iconsDir, "setting.png"), isFolder=False)
+	AddDir("[COLOR Pink][B][Canais de TV RedeCanais.com][/B][/COLOR]" , "", 100, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg", index=0, cacheMin = "0")
 	AddDir("[COLOR blue][B][Filmes Dublado RedeCanais.com][/B][/COLOR]" , "", 90, "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", index=0, cacheMin = "0")
 	AddDir("[COLOR blue][B][Filmes Legendado RedeCanais.com][/B][/COLOR]" , "", 91, "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", index=0, cacheMin = "0")
 	AddDir("[COLOR blue][B][Filmes Nacional RedeCanais.com][/B][/COLOR]" , "", 92, "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", index=0, cacheMin = "0")
@@ -65,7 +65,7 @@ def Categories(): #70
 			Update()
 	except urllib2.URLError, e:
 		uversao = ""
-	AddDir("[B][Sobre o Addon!][/B]", "config" ,0 ,"http://www.iconsplace.com/icons/preview/orange/about-256.png", "http://www.iconsplace.com/icons/preview/orange/about-256.png", isFolder=False, info="Addon modificado do PlaylistLoader 1.2.0 por Avigdor\r https://github.com/avigdork/xbmc-avigdork.\r\nNao somos responsaveis por colocar o conteudo online, apenas indexamos.\r\nPara sugestoes e report de bugs nossa pagina no FB: [COLOR blue]http://fb.com/CubePlayKodi[/COLOR]")
+	AddDir("[B][Sobre o Addon][/B]", "config" ,0 ,"http://www.iconsplace.com/icons/preview/orange/about-256.png", "http://www.iconsplace.com/icons/preview/orange/about-256.png", isFolder=False, info="Addon modificado do PlaylistLoader 1.2.0 por Avigdor\r https://github.com/avigdork/xbmc-avigdork.\r\nNao somos responsaveis por colocar o conteudo online, apenas indexamos.\r\nPara sugestoes e report de bugs nossa pagina no FB: [COLOR blue]http://fb.com/CubePlayKodi[/COLOR]")
 	AddDir("[B][COLOR blue]http://fb.com/CubePlayKodi[/COLOR][/B]", "config" ,0 ,"https://cdn.pixabay.com/photo/2017/08/20/10/30/facebook-2661207_960_720.jpg", "https://cdn.pixabay.com/photo/2017/08/20/10/30/facebook-2661207_960_720.jpg", isFolder=False, info="Para sugestoes e report de bugs nossa pagina no FB: [COLOR blue]http://fb.com/CubePlayKodi[/COLOR]")
 # --------------  NETCINE
 def PlayS(): #62
@@ -531,15 +531,19 @@ def Update():
 			file.close()
 	except urllib2.URLError, e:
 		fonte = ""
+	xbmc.executebuiltin("Notification({0}, {1}, 9000, {2})".format(AddonName, "Atualizando o addon. Aguarde um momento!", icon))
+	xbmc.sleep(2000)
+#	xbmc.executebuiltin("XBMC.Container.Refresh()")
+#	xbmcgui.Dialog().ok('Kodi', 'Addon atualizado para a ultima versao')
+#	xbmc.executebuiltin("XBMC.Container.Refresh()")
 #	dialog = xbmcgui.Dialog()
-#	ret = dialog.ok('Kodi', 'Gostaria atualizar o addon???')
+#	ret = xbmcgui.Dialog().ok('Kodi', 'Addon atualizado para a ultima versao')
 #	if ret:
 #		zip = os.path.join( Path, "default.py")
 #		f = urllib.urlopen("https://raw.githubusercontent.com/RH1CK/CubePlay/master/default.py")
 #		with open(zip, "wb") as subFile:
 #			subFile.write(f.read())
 #			subFile.close()
-	xbmc.executebuiltin("XBMC.Container.Refresh()")
 
 params = dict(urlparse.parse_qsl(sys.argv[2].replace('?','')))
 url = params.get('url')
