@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.07"
+Versao = "18.04.07a"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -218,6 +218,7 @@ def PlayMRC(): #95 Play filmes
 # ----------------- FIM REDECANAIS
 # ----------------- REDECANAIS TV
 def TVRC(): # 100
+	#AddDir("[B]{0}: {1}[/B] - {2} ".format(getLocaleString(30036), getLocaleString(30037) if makeGroups else getLocaleString(30038) , getLocaleString(30039)), "setting" ,50 ,os.path.join(iconsDir, "setting.png"), isFolder=False)
 	try:
 		l= 0
 		for x in range(0, 5):
@@ -229,20 +230,20 @@ def TVRC(): # 100
 				for url2,img2,name2 in match:
 					name2 = name2.replace("Assistir ", "").replace(" - Online - 24 Horas - Ao Vivo", "")
 					#name2 = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), name2).encode('utf-8')
-					AddDir(name2 ,url2, 101, img2, img2, index=i, cacheMin = "0", info="")
+					AddDir(name2 ,url2, 101, img2, img2, index=i, cacheMin = "0", info="", isFolder=False, IsPlayable=True,)
 					i += 1
 	except urllib2.URLError, e:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
 def PlayTVRC(): # 101
 	try:
 		link = common.OpenURL(url)
-		#desc = re.compile('<p itemprop=\"description\"><p>(.+)<\/p><\/p>').findall(link)
 		player = re.compile('<iframe name=\"Player\".+src=\"([^\"]+)\"').findall(link)
 		link2 = common.OpenURL(player[0])
 		urlp = re.compile('\"source\"\: \"([^\"]+)').findall(link2)
-		AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , urlp[0] + "?play|Referer=http://www.redecanais.com/", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info="Play", cacheMin='10')
+		PlayUrl(name, urlp[0] + "?play|Referer=http://www.redecanais.com/", iconimage, name)
 	except urllib2.URLError, e:
-		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
+		dialog = xbmcgui.Dialog()
+		ret = dialog.ok('Kodi', 'Erro, tente novamente em alguns minutos')
 # ----------------- FIM REDECANAIS TV
 def AddNewList():
 	listName = GetKeyboardText(getLocaleString(30004)).strip()
@@ -340,7 +341,7 @@ def m3uCategory(url, logos, cache, gListIndex=-1):
 				AddDir(name, chUrl, 60, image, index=-1, isFolder=True, IsPlayable=False)
 			tmpList.append({"url": chUrl.decode("utf-8"), "image": image.decode("utf-8"), "name": name.decode("utf-8")})
 		
-def PlayUrl(name, url, iconimage=None, info='a'):
+def PlayUrl(name, url, iconimage=None, info=''):
 	if url.startswith('acestream://'):
 		url = 'plugin://program.plexus/?mode=1&url={0}&name={1}&iconimage={2}'.format(url, name, iconimage)
 	else:
@@ -519,7 +520,6 @@ def ToggleNext():
 
 def Update():
 	Path = xbmc.translatePath( xbmcaddon.Addon().getAddonInfo('path') ).decode("utf-8")
-	dialog = xbmcgui.Dialog()
 	try:
 		fonte = urllib2.urlopen( "https://raw.githubusercontent.com/RH1CK/CubePlay/master/default.py" ).read().replace('\n','')
 		prog = re.compile('#checkintegrity25852').findall(fonte)
@@ -531,6 +531,7 @@ def Update():
 			file.close()
 	except urllib2.URLError, e:
 		fonte = ""
+#	dialog = xbmcgui.Dialog()
 #	ret = dialog.ok('Kodi', 'Gostaria atualizar o addon???')
 #	if ret:
 #		zip = os.path.join( Path, "default.py")
@@ -602,8 +603,11 @@ elif mode == 37:
 elif mode == 38:
 	MoveInList(index, move, favoritesFile)
 elif mode == 39:
-	common.DelFile(favoritesFile)
-	sys.exit()
+	dialog = xbmcgui.Dialog()
+	ret = dialog.yesno('Kodi', 'Deseja mesmo deletar todos os favoritos?')
+	if ret:
+		common.DelFile(favoritesFile)
+		sys.exit()
 elif mode == 50:
 	ToggleGroups()
 elif mode == 60:
@@ -640,7 +644,7 @@ elif mode == 100:
 	setViewM()
 elif mode == 101:
 	PlayTVRC()
-	setViewM()
+	#setViewM()
 elif mode == 110:
 	ToggleNext()
 elif mode == 120:
