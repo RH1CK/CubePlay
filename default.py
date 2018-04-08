@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.08"
+Versao = "18.04.08a"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -20,6 +20,7 @@ cacheDir = os.path.join(addon_data_dir, "cache")
 if not os.path.exists(cacheDir):
 	os.makedirs(cacheDir)
 
+cadulto = Addon.getSetting("cadulto")
 cPage = Addon.getSetting("cPage") # dublado redecanais
 cPageleg = Addon.getSetting("cPageleg")
 cPagenac = Addon.getSetting("cPagenac")
@@ -311,7 +312,10 @@ def TVRC(): # 100
 				for url2,img2,name2 in match:
 					name2 = name2.replace("Assistir ", "").replace(" - Online - 24 Horas - Ao Vivo", "")
 					#name2 = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), name2).encode('utf-8')
-					AddDir(name2 ,url2, 101, img2, img2, index=i, cacheMin = "0", info="", isFolder=False, IsPlayable=True)
+					if cadulto=="8080":
+						AddDir(name2 ,url2, 101, img2, img2, index=i, cacheMin = "0", info="", isFolder=False, IsPlayable=True)
+					elif not "sex" in url2 and not "playboy" in url2:
+						AddDir(name2 ,url2, 101, img2, img2, index=i, cacheMin = "0", info="", isFolder=False, IsPlayable=True)
 					i += 1
 	except urllib2.URLError, e:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
