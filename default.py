@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.11a"
+Versao = "18.04.11b"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -296,7 +296,7 @@ def Busca(): # 160
 	try:
 		p= 1
 		AddDir("[COLOR blue][B][RedeCanais.com][/B][/COLOR]", "" , 0 ,"", isFolder=False)
-		l= int(cPagenac)*10
+		l= 0
 		for x in range(0, 10):
 			l +=1
 			link = common.OpenURL("http://www.redecanais.net/search.php?keywords="+d+"&page="+str(l))
