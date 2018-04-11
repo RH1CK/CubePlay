@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.09"
+Versao = "18.04.10"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -25,10 +25,14 @@ cPage = Addon.getSetting("cPage") # dublado redecanais
 cPageleg = Addon.getSetting("cPageleg")
 cPagenac = Addon.getSetting("cPagenac")
 cPageser = Addon.getSetting("cPageser")
+cPageani = Addon.getSetting("cPageani")
+cPagedes = Addon.getSetting("cPagedes")
 if not cPageleg:
 	cPageleg = cPage
 	cPagenac = cPage
 	cPageser = cPage
+	cPageani = cPage
+	cPagedes = cPage
 Cat = Addon.getSetting("Cat")
 Clista=[ "todos",                     "acao", "animacao", "aventura", "comedia", "drama", "fantasia", "ficcao-cientifica", "romance", "suspense", "terror"]
 Clista2=["Sem filtro (Mostrar Todos)","Acao", "Animacao", "Aventura", "Comedia", "Drama", "Fantasia", "Ficcao-Cientifica", "Romance", "Suspense", "Terror"]
@@ -65,7 +69,9 @@ def Categories(): #70
 		AddDir("[COLOR yellow][B][Filmes NetCine.us][/B][/COLOR]" , URLNC + "listMovies.php", 71, "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", index=0, cacheMin = "0")
 	except urllib2.URLError, e:
 		AddDir("Server NETCINE offline, tente novamente em alguns minutos" , "setting", 50, "", "", 0, cacheMin = "0", isFolder=False)
-	AddDir("[COLOR red][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
+	#AddDir("[COLOR red][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
+	AddDir("[COLOR blue][B][Animes RedeCanais.com][/B][/COLOR]" , cPageser, 140, "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", background="cPageser")
+	AddDir("[COLOR blue][B][Desenhos RedeCanais.com][/B][/COLOR]" , cPageani, 150, "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", background="cPageser")
 	AddDir("[COLOR green][B][Favoritos Cube Play][/B][/COLOR]", "favorites" ,30 , "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png", "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png")
 	try:
 		uversao = urllib2.urlopen( "https://raw.githubusercontent.com/RH1CK/CubePlay/master/version.txt" ).read().replace('\n','').replace('\r','')
@@ -112,7 +118,7 @@ def Series(): #60
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
 
 def MoviesNC(): #70
-	AddDir("[COLOR red][B]Filtro: " + Clista2[int(Cat)] + "[/B][/COLOR]", "setting" ,90 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
+	AddDir("[COLOR red][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
 	try:
 		link = urllib2.urlopen( url +"?cat=" + Clista[int(Cat)]).read().replace('\n','').replace('\r','')
 		match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)"').findall(link)
@@ -148,7 +154,7 @@ def PlayM(): #79
 # --------------  FIM NETCINE
 # --------------  REDECANAIS FILMES
 def MoviesRCD(): #90 Filme dublado
-	AddDir("[COLOR red][B]Filtro: " + Clista2[int(Cat)] + "[/B][/COLOR]", "setting" ,90 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
+	AddDir("[COLOR red][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
 	try:
 		p= 1
 		if int(cPage) > 0:
@@ -171,7 +177,7 @@ def MoviesRCD(): #90 Filme dublado
 	except e:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
 def MoviesRCL(): #91 Filme Legendado
-	AddDir("[COLOR red][B]Filtro: " + Clista2[int(Cat)] + "[/B][/COLOR]", "setting" ,90 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
+	AddDir("[COLOR red][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
 	try:
 		p= 1
 		if int(cPageleg) > 0:
@@ -229,7 +235,7 @@ def PlayMRC(): #95 Play filmes
 	except urllib2.URLError, e:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
 # ----------------- FIM REDECANAIS
-# --------------  REDECANAIS SERIES
+# --------------  REDECANAIS SERIES,ANIMES,DESENHOS
 def PlaySRC(): #131 Play series
 	try:
 		link = common.OpenURL(url)
@@ -261,7 +267,10 @@ def EpisodiosRC(): #135 Play filmes
 				name3=name2
 
 			urlm = re.compile('href\=\"(.+?)\"').findall(url2)
-			namem = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), re.compile('([^\-]+)').findall(url2)[0] ).encode('utf-8')
+			try:
+				namem = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), re.compile('([^\-]+)').findall(url2)[0] ).encode('utf-8')
+			except:
+				namem = re.compile('([^\-]+)').findall(url2)[0]
 			if "<" in namem:
 				namem = ""
 			if urlm:
@@ -277,15 +286,16 @@ def EpisodiosRC(): #135 Play filmes
 	#xbmcgui.Dialog().ok('Kodi', str(match[0][1]))
 
 
-def SeriesRC(): #130 Lista as Series RC
+def SeriesRC(urlrc,pagina2): #130 Lista as Series RC
 	try:
+		pagina=eval(pagina2)
 		p= 1
-		if int(cPageser) > 0:
-			AddDir("[COLOR blue][B]<< Pagina Anterior ["+ str( int(cPageser) ) +"[/B]][/COLOR]", cPageser , 120 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Previous-icon.png", isFolder=False, background="cPageser")
-		l= int(cPageser)*5
+		if int(pagina) > 0:
+			AddDir("[COLOR blue][B]<< Pagina Anterior ["+ str( int(pagina) ) +"[/B]][/COLOR]", pagina , 120 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Previous-icon.png", isFolder=False, background=pagina2)
+		l= int(pagina)*5
 		for x in range(0, 5):
 			l +=1
-			link = common.OpenURL("http://www.redecanais.net/browse-series-videos-"+str(l)+"-title.html")
+			link = common.OpenURL("http://www.redecanais.net/browse-"+urlrc+"-videos-"+str(l)+"-title.html")
 			match = re.compile('href\=\"(http:\/\/www.redecanais\.[^\"]+)\".+src=\"([^\"]+)\".alt=\"([^\"]+)\" width').findall(link)
 			i= 0
 			if match:
@@ -294,7 +304,7 @@ def SeriesRC(): #130 Lista as Series RC
 					i += 1
 					p += 1
 		if p >= 60:
-			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(cPageser) + 2) +"[/B]][/COLOR]", cPageser , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background="cPageser")
+			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(pagina) + 2) +"[/B]][/COLOR]", pagina , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background=pagina2)
 	except urllib2.URLError, e:
 		AddDir("Server error, tente novamente em alguns minutos" , url, 0, "", "", 0, cacheMin = "0")
 # ----------------- REDECANAIS TV
@@ -309,7 +319,10 @@ def TVRC(): # 100
 			i= 0
 			if match:
 				for url2,img2,name2 in match:
-					name2 = name2.replace("Assistir ", "").replace(" - Online - 24 Horas - Ao Vivo", "")
+					try:
+						name2 = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), name2.replace("Assistir ", "").replace(" - Online - 24 Horas - Ao Vivo", "") ).encode('utf-8')
+					except:
+						name2 = name2.replace("Assistir ", "").replace(" - Online - 24 Horas - Ao Vivo", "")
 					#name2 = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), name2).encode('utf-8')
 					if cadulto=="8080":
 						AddDir(name2 ,url2, 101, img2, img2, index=i, cacheMin = "0", info="", isFolder=False, IsPlayable=True)
@@ -765,13 +778,19 @@ elif mode == 110:
 elif mode == 120:
 	TogglePrevious(url, background)
 elif mode == 130:
-	SeriesRC()
+	SeriesRC("series","cPageser")
 	setViewS()
 elif mode == 135:
 	EpisodiosRC()
 	setViewS()
 elif mode == 133:
 	PlaySRC()
+	setViewS()
+elif mode == 140:
+	SeriesRC("animes","cPageani")
+	setViewS()
+elif mode == 150:
+	SeriesRC("desenhos","cPagedes")
 	setViewS()
 elif mode == 200:
 	CheckUpdate()
