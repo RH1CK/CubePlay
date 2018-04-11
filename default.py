@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.11"
+Versao = "18.04.11a"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -58,24 +58,25 @@ def getLocaleString(id):
 def Categories(): #70
 	#xbmcgui.Dialog().ok('Kodi', str(cPagenac))
 	#AddDir("[B]!{0}: {1}[/B] - {2} ".format(getLocaleString(30036), getLocaleString(30037) if makeGroups else getLocaleString(30038) , getLocaleString(30039)), "setting" ,50 ,os.path.join(iconsDir, "setting.png"), isFolder=False)
-	AddDir("[COLOR Pink][B][Canais de TV RedeCanais.com][/B][/COLOR]" , "", 100, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg", index=0)
+	AddDir("[COLOR white][B][Canais de TV RedeCanais.com][/B][/COLOR]" , "", 100, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
 	AddDir("[COLOR blue][B][Filmes Dublado RedeCanais.com][/B][/COLOR]" , cPage, 90, "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", background="cPage")
 	AddDir("[COLOR blue][B][Filmes Legendado RedeCanais.com][/B][/COLOR]" , cPageleg, 91, "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", background="cPageleg")
 	AddDir("[COLOR blue][B][Filmes Nacional RedeCanais.com][/B][/COLOR]" , cPagenac, 92, "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", background="cPagenac")
 	AddDir("[COLOR blue][B][Series RedeCanais.com][/B][/COLOR]" , cPageser, 130, "https://walter.trakt.tv/images/shows/000/001/393/fanarts/thumb/fc68b3b649.jpg", "https://walter.trakt.tv/images/shows/000/001/393/fanarts/thumb/fc68b3b649.jpg", background="cPageser")
 	try:
 		checa = urllib2.urlopen( URLNC + "version.txt" ).read()
-		AddDir("[COLOR yellow][B][Series NetCine.us][/B][/COLOR]" , URLNC + "listTVshow.php", 60, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", index=0, cacheMin = "0")
-		AddDir("[COLOR yellow][B][Filmes NetCine.us][/B][/COLOR]" , URLNC + "listMovies.php", 71, "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", index=0, cacheMin = "0")
+		AddDir("[COLOR yellow][B][Series NetCine.us][/B][/COLOR]" , URLNC + "listTVshow.php", 60, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
+		AddDir("[COLOR yellow][B][Filmes NetCine.us][/B][/COLOR]" , URLNC + "listMovies.php", 71, "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg")
 	except urllib2.URLError, e:
 		AddDir("Server NETCINE offline, tente novamente em alguns minutos" , "setting", 50, "", "", 0, cacheMin = "0", isFolder=False)
 	#AddDir("[COLOR red][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
 	AddDir("[COLOR blue][B][Animes RedeCanais.com][/B][/COLOR]" , cPageser, 140, "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", background="cPageser")
 	AddDir("[COLOR blue][B][Desenhos RedeCanais.com][/B][/COLOR]" , cPageani, 150, "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", background="cPageser")
 	AddDir("[COLOR green][B][Favoritos Cube Play][/B][/COLOR]", "favorites" ,30 , "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png", "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png")
+	AddDir("[COLOR pink][B][Busca][/B][/COLOR]" , "", 160, "https://azure.microsoft.com/svghandler/search/?width=400&height=315", "https://azure.microsoft.com/svghandler/search/?width=400&height=315")
 	AddDir("[B][Sobre o Addon][/B]", "config" ,0 ,"http://www.iconsplace.com/icons/preview/orange/about-256.png", "http://www.iconsplace.com/icons/preview/orange/about-256.png", isFolder=False, info="Addon modificado do PlaylistLoader 1.2.0 por Avigdor\r https://github.com/avigdork/xbmc-avigdork.\r\nNao somos responsaveis por colocar o conteudo online, apenas indexamos.\r\nPara sugestoes e report de bugs nossa pagina no FB: [COLOR blue]http://fb.com/CubePlayKodi[/COLOR]\nVersao "+Versao)
 	AddDir("[B][COLOR blue]http://fb.com/CubePlayKodi[/COLOR][/B]", "config" ,0 ,"https://cdn.pixabay.com/photo/2017/08/20/10/30/facebook-2661207_960_720.jpg", "https://cdn.pixabay.com/photo/2017/08/20/10/30/facebook-2661207_960_720.jpg", isFolder=False, info="Para sugestoes e report de bugs nossa pagina no FB: [COLOR blue]http://fb.com/CubePlayKodi[/COLOR]")
-	AddDir("[B][COLOR orange]Checar Atualizacao[/COLOR][/B]", "config" , 200,"https://accelerator-origin.kkomando.com/wp-content/uploads/2015/04/update2-970x546.jpg", "https://accelerator-origin.kkomando.com/wp-content/uploads/2015/04/update2-970x546.jpg", isFolder=False, info="Checar se ha atualizacoes\n\nAs atualizacoes normalmente sao automaticas\nUse esse recurso caso nao esteja recebendo automaticamente")
+	AddDir("[B][COLOR orange][Checar Atualizacao][/COLOR][/B]", "config" , 200,"https://accelerator-origin.kkomando.com/wp-content/uploads/2015/04/update2-970x546.jpg", "https://accelerator-origin.kkomando.com/wp-content/uploads/2015/04/update2-970x546.jpg", isFolder=False, info="Checar se ha atualizacoes\n\nAs atualizacoes normalmente sao automaticas\nUse esse recurso caso nao esteja recebendo automaticamente")
 # --------------  NETCINE
 def PlayS(): #62
 	try:
@@ -88,7 +89,7 @@ def PlayS(): #62
 			listau.append(url2)
 			listan.append(name2 + name)
 			listai.append(info2)
-		d = xbmcgui.Dialog().select("Cube Play" + str( len(match) ), listan)
+		d = xbmcgui.Dialog().select("Cube Play", listan)
 		if d!= -1:
 			PlayUrl(listan[d], listau[d], iconimage, listai[d])
 	except urllib2.URLError, e:
@@ -98,43 +99,36 @@ def EpisodioS(): #61
 	try:
 		link = urllib2.urlopen( URLNC + url ).read().replace('\n','').replace('\r','')
 		match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)".+?nfo="(.+?)"').findall(link)
-		i= 0
 		for url2,img2,name2,info2 in match:
-			AddDir(name2 ,url2, 62, iconimage, iconimage, index=i, isFolder=False, IsPlayable=True, info=info2)
-			i += 1
+			AddDir(name2 ,url2, 62, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info2)
 	except urllib2.URLError, e:
-		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
+		AddDir("Server error, tente novamente em alguns minutos" , "", 0, isFolder=False)
 	
 def Series(): #60
 	try:
 		link = urllib2.urlopen(url).read().replace('\n','').replace('\r','')
 		match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)"').findall(link)
-		i= 0
 		for url2,img2,name2 in match:
-			AddDir(name2, url2, 61, img2, img2, index=i, cacheMin = "0")
-			i += 1
+			AddDir(name2, url2, 61, img2, img2)
 	except urllib2.URLError, e:
-		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
+		AddDir("Server error, tente novamente em alguns minutos" , "", 0, isFolder=False)
 
 def MoviesNC(): #70
 	AddDir("[COLOR red][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
 	try:
-		link = urllib2.urlopen( url +"?cat=" + Clista[int(Cat)]).read().replace('\n','').replace('\r','')
+		link = urllib2.urlopen(url +"?cat=" + Clista[int(Cat)]).read().replace('\n','').replace('\r','')
 		match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)"').findall(link)
-		i= 0
 		for url2,img2,name2 in match:
-			AddDir(name2 ,url2, 79, img2, img2, index=i, cacheMin = "0", info="")
-			i += 1
+			AddDir(name2 ,url2, 79, img2, img2)
 	except urllib2.URLError, e:
-		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
+		AddDir("Server error, tente novamente em alguns minutos" , "", 0, isFolder=False)
 
-def Generos(): #80
+def Generos(): #80	xbmcgui.Dialog().notification('Movie Trailers', 'Finding Nemo download finished.', xbmcgui.NOTIFICATION_INFO, 5000)
 	d = xbmcgui.Dialog().select("Escolha o Genero", Clista2)
 	if d != -1:
 		global Cat
 		Addon.setSetting("Cat", str(d) )
 		Cat = d
-		#xbmc.executebuiltin("Notification({0}, '{1}' {2}, 5000, {3})".format(AddonName, str(Cat) , "Cat", ""))
 		Addon.setSetting("cPage", "0" )
 		Addon.setSetting("cPageleg", "0" )
 		xbmc.executebuiltin("XBMC.Container.Refresh()")
@@ -143,12 +137,10 @@ def PlayM(): #79
 	try:
 		link = urllib2.urlopen(URLNC + url ).read().replace('\n','').replace('\r','')
 		match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)".+?nfo="(.+?)"').findall(link)
-		i= 0
 		for url2,img2,name2,info2 in match:
-			AddDir(name2 + name ,url2, 3, iconimage, iconimage, index=i, isFolder=False, IsPlayable=True, info=info2)
-			i += 1
+			AddDir(name2 + name ,url2, 3, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info2)
 	except urllib2.URLError, e:
-		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
+		AddDir("Server error, tente novamente em alguns minutos" , "", 0, isFolder=False)
 # --------------  FIM NETCINE
 # --------------  REDECANAIS FILMES
 def MoviesRCD(): #90 Filme dublado
@@ -164,11 +156,9 @@ def MoviesRCD(): #90 Filme dublado
 			if Clista2[int(Cat)] != "Sem filtro (Mostrar Todos)":
 				link = common.OpenURL("http://www.redecanais.info/browse-"+Clista2[int(Cat)]+"-Filmes-videos-"+str(l)+"-date.html")
 			match = re.compile('href\=\"(http:\/\/www.redecanais\.[^\"]+)\".+src=\"([^\"]+)\".alt=\"([^\"]+)\" width').findall(link)
-			i= 0
 			if match:
 				for url2,img2,name2 in match:
-					AddDir(name2 ,url2, 95, img2, img2, index=i, cacheMin = "0", info="")
-					i += 1
+					AddDir(name2 ,url2, 95, img2, img2, info="")
 					p += 1
 		if p >= 60:
 			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(cPage) + 2) +"[/B]][/COLOR]", cPage , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background="cPage")
@@ -187,11 +177,9 @@ def MoviesRCL(): #91 Filme Legendado
 			if Clista2[int(Cat)] != "Sem filtro (Mostrar Todos)":
 				link = common.OpenURL("http://www.redecanais.net/browse-"+Clista2[int(Cat)]+"-Filmes-Legendado-videos-"+str(l)+"-date.html")
 			match = re.compile('href\=\"(http:\/\/www.redecanais\.[^\"]+)\".+src=\"([^\"]+)\".alt=\"([^\"]+)\" width').findall(link)
-			i= 0
 			if match:
 				for url2,img2,name2 in match:
-					AddDir(name2 ,url2, 95, img2, img2, index=i, cacheMin = "0", info="")
-					i += 1
+					AddDir(name2 ,url2, 95, img2, img2, info="")
 					p += 1
 		if p >= 60:
 			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(cPageleg) + 2) +"[/B]][/COLOR]", cPageleg , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background="cPageleg")
@@ -207,11 +195,9 @@ def MoviesRCN(): #92 Filmes Nacional
 			l +=1
 			link = common.OpenURL("http://www.redecanais.net/browse-filmes-nacional-videos-"+str(l)+"-date.html")
 			match = re.compile('href\=\"(http:\/\/www.redecanais\.[^\"]+)\".+src=\"([^\"]+)\".alt=\"([^\"]+)\" width').findall(link)
-			i= 0
 			if match:
 				for url2,img2,name2 in match:
-					AddDir(name2 ,url2, 95, img2, img2, index=i, cacheMin = "0", info="")
-					i += 1
+					AddDir(name2 ,url2, 95, img2, img2, info="")
 					p += 1
 		if p >= 60:
 			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(cPagenac) + 2) +"[/B]][/COLOR]", cPagenac , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background="cPagenac")
@@ -283,7 +269,6 @@ def EpisodiosRC(): #135 Play filmes
 				AddDir("[COLOR red][???][/COLOR] S"+str(S)+" E"+ name3 +" "+namem ,urlm[0], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
 	#xbmcgui.Dialog().ok('Kodi', str(match[0][1]))
 
-
 def SeriesRC(urlrc,pagina2): #130 Lista as Series RC
 	try:
 		pagina=eval(pagina2)
@@ -295,19 +280,46 @@ def SeriesRC(urlrc,pagina2): #130 Lista as Series RC
 			l +=1
 			link = common.OpenURL("http://www.redecanais.net/browse-"+urlrc+"-videos-"+str(l)+"-title.html")
 			match = re.compile('href\=\"(http:\/\/www.redecanais\.[^\"]+)\".+src=\"([^\"]+)\".alt=\"([^\"]+)\" width').findall(link)
-			i= 0
 			if match:
 				for url2,img2,name2 in match:
-					AddDir(name2 ,url2, 135, img2, img2, index=i, cacheMin = "0", info="")
-					i += 1
+					AddDir(name2 ,url2, 135, img2, img2, info="")
 					p += 1
 		if p >= 60:
 			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(pagina) + 2) +"[/B]][/COLOR]", pagina , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background=pagina2)
 	except urllib2.URLError, e:
 		AddDir("Server error, tente novamente em alguns minutos" , url, 0, "", "", 0, cacheMin = "0")
+# ----------------- FIM REDECANAIS SERIES,ANIMES,DESENHOS
+# ----------------- BUSCA
+def Busca(): # 160
+	AddDir("[COLOR pink][B][Nova Busca][/B][/COLOR]", "" , 50 ,"", isFolder=False)
+	d = xbmcgui.Dialog().input("Busca (poder demorar a carregar os resultados)").replace(" ", "+")
+	try:
+		p= 1
+		AddDir("[COLOR blue][B][RedeCanais.com][/B][/COLOR]", "" , 0 ,"", isFolder=False)
+		l= int(cPagenac)*10
+		for x in range(0, 10):
+			l +=1
+			link = common.OpenURL("http://www.redecanais.net/search.php?keywords="+d+"&page="+str(l))
+			match = re.compile('href\=\"(http:\/\/www.redecanais\.[^\"]+)\".+src=\"([^\"]+)\".alt=\"([^\"]+)\" width').findall(link)
+			if match:
+				for url2,img2,name2 in match:
+					if re.compile('\d+p').findall(name2):
+						AddDir(name2 ,url2, 95, img2, img2)
+					elif "Lista" in name2:
+						AddDir(name2 ,url2, 135, img2, img2)
+	except urllib2.URLError, e:
+		AddDir("Nada encontrado" , "", 0, "", "", 0)
+	try:
+		AddDir("[COLOR yellow][B][NetCine.us][/B][/COLOR]", "" , 0 ,"", isFolder=False)
+		link = urllib2.urlopen(URLNC+"listBusca.php?b="+d).read().replace('\n','').replace('\r','')
+		match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)".+?ode="(.+?)"').findall(link)
+		for url2,img2,name2,mode2 in match:
+			AddDir(name2 ,url2, int(mode2), img2, img2)
+	except urllib2.URLError, e:
+		AddDir("Nada encontrado" , "", 0, "", "", 0)
+# ----------------- FIM BUSCA
 # ----------------- REDECANAIS TV
 def TVRC(): # 100
-	#AddDir("[B]{0}: {1}[/B] - {2} ".format(getLocaleString(30036), getLocaleString(30037) if makeGroups else getLocaleString(30038) , getLocaleString(30039)), "setting" ,50 ,os.path.join(iconsDir, "setting.png"), isFolder=False)
 	try:
 		l= 0
 		for x in range(0, 5):
@@ -468,7 +480,7 @@ def AddDir(name, url, mode, iconimage='', logos='', index=-1, move=0, isFolder=T
 	items = []
 	if mode == 1 or mode == 2:
 		items = []
-	elif mode== 61:
+	elif mode== 61 or info=="series nc":
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=31&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
 	elif mode== 79:
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=72&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
@@ -602,8 +614,8 @@ def ChangeCache(index, listFile):
 		xbmc.executebuiltin("XBMC.Container.Refresh()")
 
 def ToggleGroups():
-	notMakeGroups = "false" if makeGroups else "true"
-	Addon.setSetting("makeGroups", notMakeGroups)
+	#notMakeGroups = "false" if makeGroups else "true"
+	#Addon.setSetting("makeGroups", notMakeGroups)
 	xbmc.executebuiltin("XBMC.Container.Refresh()")
 
 def TogglePrevious(url, background):
@@ -652,17 +664,7 @@ def Update():
 		fonte = ""
 	xbmc.executebuiltin("Notification({0}, {1}, 9000, {2})".format(AddonName, "Atualizando o addon. Aguarde um momento!", icon))
 	xbmc.sleep(2000)
-#	xbmc.executebuiltin("XBMC.Container.Refresh()")
-#	xbmcgui.Dialog().ok('Cube Play', 'Addon atualizado para a ultima versao')
-#	xbmc.executebuiltin("XBMC.Container.Refresh()")
-#	dialog = xbmcgui.Dialog()
-#	ret = xbmcgui.Dialog().ok('Cube Play', 'Addon atualizado para a ultima versao')
-#	if ret:
-#		zip = os.path.join( Path, "default.py")
-#		f = urllib.urlopen("https://raw.githubusercontent.com/RH1CK/CubePlay/master/default.py")
-#		with open(zip, "wb") as subFile:
-#			subFile.write(f.read())
-#			subFile.close()
+
 
 params = dict(urlparse.parse_qsl(sys.argv[2].replace('?','')))
 url = params.get('url')
@@ -791,6 +793,9 @@ elif mode == 140:
 elif mode == 150:
 	SeriesRC("desenhos","cPagedes")
 	setViewS()
+elif mode == 160:
+	Busca()
+	setViewM()
 elif mode == 200:
 	CheckUpdate(True)
 
