@@ -1,5 +1,5 @@
-# Cube Play link alternativo:
-http://cubeplay.000webhostapp.com/plugin.video.CubePlay.zip
+# Cube Play download:
+# https://github.com/RH1CK/CubePlay/archive/master.zip
 
 Addon modificado do PlaylistLoader 1.2.0 por Avigdor https://github.com/avigdork/xbmc-avigdork.
 
