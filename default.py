@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.11b"
+Versao = "18.04.13"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -44,8 +44,11 @@ def setViewM():
 	
 playlistsFile = "http://localhost:8080/nc/tvshows.php"
 favoritesFile = os.path.join(addon_data_dir, 'favorites.txt')
+historicFile = os.path.join(addon_data_dir, 'historic.txt')
 if not (os.path.isfile(favoritesFile)):
 	common.SaveList(favoritesFile, [])
+if not (os.path.isfile(historicFile)):
+	common.SaveList(historicFile, [])
 	
 makeGroups = "true"
 URLP="http://cubeplay.000webhostapp.com/"
@@ -73,6 +76,7 @@ def Categories(): #70
 	AddDir("[COLOR blue][B][Animes RedeCanais.com][/B][/COLOR]" , cPageser, 140, "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", background="cPageser")
 	AddDir("[COLOR blue][B][Desenhos RedeCanais.com][/B][/COLOR]" , cPageani, 150, "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", background="cPageser")
 	AddDir("[COLOR green][B][Favoritos Cube Play][/B][/COLOR]", "favorites" ,30 , "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png", "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png")
+	AddDir("[COLOR green][B][Historico Filmes][/B][/COLOR]", "historic" ,33 , "https://cdn2.iconfinder.com/data/icons/business-office-icons/256/To-do_List-512.png", "https://cdn2.iconfinder.com/data/icons/business-office-icons/256/To-do_List-512.png")
 	AddDir("[COLOR pink][B][Busca][/B][/COLOR]" , "", 160, "https://azure.microsoft.com/svghandler/search/?width=400&height=315", "https://azure.microsoft.com/svghandler/search/?width=400&height=315")
 	AddDir("[B][Sobre o Addon][/B]", "config" ,0 ,"http://www.iconsplace.com/icons/preview/orange/about-256.png", "http://www.iconsplace.com/icons/preview/orange/about-256.png", isFolder=False, info="Addon modificado do PlaylistLoader 1.2.0 por Avigdor\r https://github.com/avigdork/xbmc-avigdork.\r\nNao somos responsaveis por colocar o conteudo online, apenas indexamos.\r\nPara sugestoes e report de bugs nossa pagina no FB: [COLOR blue]http://fb.com/CubePlayKodi[/COLOR]\nVersao "+Versao)
 	AddDir("[B][COLOR blue]http://fb.com/CubePlayKodi[/COLOR][/B]", "config" ,0 ,"https://cdn.pixabay.com/photo/2017/08/20/10/30/facebook-2661207_960_720.jpg", "https://cdn.pixabay.com/photo/2017/08/20/10/30/facebook-2661207_960_720.jpg", isFolder=False, info="Para sugestoes e report de bugs nossa pagina no FB: [COLOR blue]http://fb.com/CubePlayKodi[/COLOR]")
@@ -138,7 +142,7 @@ def PlayM(): #79
 		link = urllib2.urlopen(URLNC + url ).read().replace('\n','').replace('\r','')
 		match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)".+?nfo="(.+?)"').findall(link)
 		for url2,img2,name2,info2 in match:
-			AddDir(name2 + name ,url2, 3, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info2)
+			AddDir(name2 + name ,url2, 3, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info2, background=url+";;;"+name)
 	except urllib2.URLError, e:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, isFolder=False)
 # --------------  FIM NETCINE
@@ -213,7 +217,7 @@ def PlayMRC(): #95 Play filmes
 		if player:
 			link2 = common.OpenURL(player[0])
 			urlp = re.compile('file: \"([^\"]+)\"').findall(link2)
-			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , urlp[0] + "?play|Referer=http://www.redecanais.com/", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc)
+			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , urlp[0] + "?play|Referer=http://www.redecanais.com/", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name)
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
 	except urllib2.URLError, e:
@@ -231,12 +235,11 @@ def PlaySRC(): #131 Play series
 			link2 = common.OpenURL(player[0])
 			urlp = re.compile('file: \"([^\"]+)\"').findall(link2)
 			PlayUrl(name, urlp[0] + "?play|Referer=http://www.redecanais.com/", iconimage, name)
-			#AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , urlp[0] + "?play|Referer=http://www.redecanais.com/", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc)
 		else:
 			xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 	except urllib2.URLError, e:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
-def EpisodiosRC(): #135 Play filmes
+def EpisodiosRC(): #135 Epi
 	link = common.OpenURL(url)
 	match = re.compile('<strong>(E.+?)<\/strong>(.+?)(<br|<\/p)').findall(link)
 	S= 0
@@ -448,10 +451,14 @@ def m3uCategory(url, logos, cache, gListIndex=-1):
 			tmpList.append({"url": chUrl.decode("utf-8"), "image": image.decode("utf-8"), "name": name.decode("utf-8")})
 		
 def PlayUrl(name, url, iconimage=None, info=''):
-	if url.startswith('acestream://'):
-		url = 'plugin://program.plexus/?mode=1&url={0}&name={1}&iconimage={2}'.format(url, name, iconimage)
-	else:
-		url = common.getFinalUrl(url)
+	#xbmcgui.Dialog().ok(background, url + " " +background)
+	if background != "None":
+		b = background.split(";;;")
+		if "redecanais" in background:
+			AddFavorites(b[0], iconimage, b[1], "95", "historic.txt")
+		else:
+			AddFavorites(b[0], iconimage, b[1], "79", "historic.txt")
+	url = common.getFinalUrl(url)
 	xbmc.log('--- Playing "{0}". {1}'.format(name, url), 2)
 	listitem = xbmcgui.ListItem(path=url)
 	listitem.setInfo(type="Video", infoLabels={"mediatype": "video", "Title": name, "Plot": info })
@@ -464,7 +471,7 @@ def PlayUrl(name, url, iconimage=None, info=''):
 
 def AddDir(name, url, mode, iconimage='', logos='', index=-1, move=0, isFolder=True, IsPlayable=False, background=None, cacheMin='0', info=''):
 	urlParams = {'name': name, 'url': url, 'mode': mode, 'iconimage': iconimage, 'logos': logos, 'cache': cacheMin, 'info': info, 'background': background}
-	liz = xbmcgui.ListItem(name, iconImage=iconimage, thumbnailImage=iconimage, )
+	liz = xbmcgui.ListItem(name, iconImage=iconimage, thumbnailImage=iconimage )
 	liz.setInfo(type="Video", infoLabels={ "Title": name, "Plot": info })
 	#liz.setProperty("Fanart_Image", logos)
 	liz.setArt({
@@ -475,8 +482,6 @@ def AddDir(name, url, mode, iconimage='', logos='', index=-1, move=0, isFolder=T
 	listMode = 21 # Lists
 	if IsPlayable:
 		liz.setProperty('IsPlayable', 'true')
-	#if background != None:
-	#	liz.setProperty('fanart_image', background)
 	items = []
 	if mode == 1 or mode == 2:
 		items = []
@@ -510,11 +515,13 @@ def GetSourceLocation(title, chList):
 	answer = dialog.select(title, chList)
 	return answer
 	
-def AddFavorites(url, iconimage, name, mode):
-	favList = common.ReadList(favoritesFile)
+def AddFavorites(url, iconimage, name, mode, file):
+	file = os.path.join(addon_data_dir, file)
+	favList = common.ReadList(file)
 	for item in favList:
 		if item["url"].lower() == url.decode("utf-8").lower():
-			xbmc.executebuiltin("Notification({0}, '{1}' {2}, 5000, {3})".format(AddonName, name, getLocaleString(30011), icon))
+			if "favorites" in file:
+				xbmc.executebuiltin("Notification({0}, '{1}' {2}, 5000, {3})".format(AddonName, name, getLocaleString(30011), icon))
 			return
 	chList = []	
 	for channel in chList:
@@ -526,17 +533,24 @@ def AddFavorites(url, iconimage, name, mode):
 		iconimage = ""
 	data = {"url": url.decode("utf-8"), "image": iconimage.decode("utf-8"), "name": name.decode("utf-8"), "mode": mode}
 	favList.append(data)
-	common.SaveList(favoritesFile, favList)
-	xbmc.executebuiltin("Notification({0}, '{1}' {2}, 5000, {3})".format(AddonName, name, getLocaleString(30012), icon))
+	common.SaveList(file, favList)
+	if "favorites" in file:
+		xbmc.executebuiltin("Notification({0}, '{1}' {2}, 5000, {3})".format(AddonName, name, getLocaleString(30012), icon))
 	
-def ListFavorites():
-	chList = common.ReadList(favoritesFile)
-	i = 0
+def ListFavorites(file, info):
+	file = os.path.join(addon_data_dir, file)
+	chList = common.ReadList(file)
 	for channel in chList:
-		AddDir(channel["name"].encode("utf-8"), channel["url"].encode("utf-8"), channel["mode"], channel["image"].encode("utf-8"), channel["image"].encode("utf-8"), index=i, isFolder=True, IsPlayable=False, info="Favoritos")
-		i += 1
+		AddDir(channel["name"].encode("utf-8"), channel["url"].encode("utf-8"), channel["mode"], channel["image"].encode("utf-8"), channel["image"].encode("utf-8"), isFolder=True, IsPlayable=False, info=info)
 		
-def AddNewFavorite():
+def ListHistoric(file, info):
+	file = os.path.join(addon_data_dir, file)
+	chList = common.ReadList(file)
+	for channel in reversed(chList):
+		AddDir(channel["name"].encode("utf-8"), channel["url"].encode("utf-8"), channel["mode"], channel["image"].encode("utf-8"), channel["image"].encode("utf-8"), isFolder=True, IsPlayable=False, info=info)
+		
+def AddNewFavorite(file):
+	file = os.path.join(addon_data_dir, file)
 	chName = GetKeyboardText(getLocaleString(30014))
 	if len(chName) < 1:
 		return
@@ -545,7 +559,7 @@ def AddNewFavorite():
 		return
 	image = GetChoice(30023, 30023, 30023, 30024, 30025, 30021, fileType=2)
 		
-	favList = common.ReadList(favoritesFile)
+	favList = common.ReadList(file)
 	for item in favList:
 		if item["url"].lower() == chUrl.decode("utf-8").lower():
 			xbmc.executebuiltin("Notification({0}, '{1}' {2}, 5000, {3})".format(AddonName, chName, getLocaleString(30011), icon))
@@ -554,7 +568,7 @@ def AddNewFavorite():
 	data = {"url": chUrl.decode("utf-8"), "image": image, "name": chName.decode("utf-8")}
 	
 	favList.append(data)
-	if common.SaveList(favoritesFile, favList):
+	if common.SaveList(file, favList):
 		xbmc.executebuiltin("XBMC.Container.Refresh()")
 
 def ChangeKey(index, listFile, key, title):
@@ -709,16 +723,19 @@ elif mode == 27:
 elif mode == 28:
 	ChangeCache(index, playlistsFile)
 elif mode == 30:
-	ListFavorites()
+	ListFavorites('favorites.txt', "Favoritos")
 	setViewS()
+elif mode == 33:
+	ListHistoric('historic.txt', "Historico")
+	setViewM()
 elif mode == 31: 
-	AddFavorites(url, iconimage, name, "61") 
+	AddFavorites(url, iconimage, name, "61", 'favorites.txt') 
 elif mode == 72: 
-	AddFavorites(url, iconimage, name, "79") 
+	AddFavorites(url, iconimage, name, "79", 'favorites.txt') 
 elif mode == 93: 
-	AddFavorites(url, iconimage, name, "95") 
+	AddFavorites(url, iconimage, name, "95", 'favorites.txt') 
 elif mode == 131: 
-	AddFavorites(url, iconimage, name, "135") 
+	AddFavorites(url, iconimage, name, "135", 'favorites.txt') 
 elif mode == 33:
 	RemoveFromLists(index, favoritesFile)
 elif mode == 34:
@@ -736,6 +753,12 @@ elif mode == 39:
 	ret = dialog.yesno('Cube Play', 'Deseja mesmo deletar todos os favoritos?')
 	if ret:
 		common.DelFile(favoritesFile)
+		sys.exit()
+elif mode == 40:
+	dialog = xbmcgui.Dialog()
+	ret = dialog.yesno('Cube Play', 'Deseja mesmo deletar todo o historico?')
+	if ret:
+		common.DelFile(historicFile)
 		sys.exit()
 elif mode == 50:
 	ToggleGroups()
