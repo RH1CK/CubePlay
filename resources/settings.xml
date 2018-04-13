@@ -16,5 +16,7 @@
 	<setting id="cPageani" label="cPageani" type="text" default="0" visible="false" />
 	<setting id="cPagedes" label="cPagedes" type="text" default="0" visible="false" />
 	<setting label="" type="sep" />
+	<setting id="actDelHistorico" type="action" label="Limpar o Historico" action="RunPlugin(plugin://plugin.video.CubePlay/default.py?mode=40&url=settings)" option="close"/>
+	<setting label="" type="sep" />
 	<setting id="cadulto" label="Senha para liberar conteudo adulto:" option="hidden" type="text" default="0" />
 </settings>
