@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.14"
+Versao = "18.04.14a"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -240,20 +240,32 @@ def PlaySRC(): #131 Play series
 			xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 	except urllib2.URLError, e:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
-def EpisodiosRC(): #135 Epi
-	link = common.OpenURL(url)
-	match = re.compile('<strong>(E.+?)<\/strong>(.+?)(<br|<\/p)').findall(link)
-	S= 0
-	if match:
-		for name2,url2,brp in match:
+def TemporadasRC(): #135 Temporadas
+	link = common.OpenURL(url).replace('\n','').replace('\r','').replace('</html>','<span style="font')
+	temps = re.compile('size: x-large;\">.+?<span style\=\"font').findall(link)
+	if temps:
+		i= 0
+		epi = re.compile('<strong>(E.+?)<\/strong>(.+?)(<br|<\/p)').findall(temps[0])
+		temps = re.compile('(<span style="font-size: x-large;">(.+?)<\/span>)').findall(link)
+		if temps:
+			for a,tempname in temps:
+				tempname = re.sub('<[\/]{0,1}strong>', "", tempname)
+				try:
+					tempname = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), tempname).encode('utf-8')
+				except:
+					tempname = tempname
+				if not "ilme" in tempname:
+					AddDir("[B]["+tempname+"][/B]" , url, 136, iconimage, iconimage, info="", isFolder=True, background=i)
+				i+=1
+	else:
+		epi = re.compile('<strong>(E.+?)<\/strong>(.+?)(<br|<\/p)').findall(link)
+	#if not temps:
+		for name2,url2,brp in epi:
 			name3 = re.compile('\d+').findall(name2)
 			if name3:
 				name3=name3[0]
-				if int(name3) == 1:
-					S = S + 1
 			else:
 				name3=name2
-
 			urlm = re.compile('href\=\"(.+?)\"').findall(url2)
 			try:
 				namem = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), re.compile('([^\-]+)').findall(url2)[0] ).encode('utf-8')
@@ -267,11 +279,45 @@ def EpisodiosRC(): #135 Epi
 			if len(urlm) > 1:
 				if "http" not in urlm[1]:
 					urlm[1] = "http://www.redecanais.net/" + urlm[1]
-				AddDir("[COLOR yellow][Dub][/COLOR] S"+str(S)+" E"+ name3 +" "+namem ,urlm[0], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
-				AddDir("[COLOR blue][Leg][/COLOR] S"+str(S)+" E"+ name3 +" "+namem ,urlm[1], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
+				AddDir("[COLOR yellow][Dub][/COLOR] "+ name3 +" "+namem ,urlm[0], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
+				AddDir("[COLOR blue][Leg][/COLOR] "+ name3 +" "+namem ,urlm[1], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
 			elif urlm:
-				AddDir("[COLOR red][???][/COLOR] S"+str(S)+" E"+ name3 +" "+namem ,urlm[0], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
-	#xbmcgui.Dialog().ok('Kodi', str(match[0][1]))
+				AddDir(name3 +" "+namem ,urlm[0], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
+	#xbmcgui.Dialog().ok('Kodi', "1"))
+def EpisodiosRC(x): #136 Episodios
+	link = common.OpenURL(url).replace('\n','').replace('\r','').replace('</html>','<span style="font')
+	temps = re.compile('size: x-large;\">.+?<span style\=\"font').findall(link)
+	if temps:
+		i= 0
+		epi = re.compile('<strong>(E.+?)<\/strong>(.+?)(<br|<\/p)').findall(temps[ int(x) ])
+	else:
+		epi = re.compile('<strong>(E.+?)<\/strong>(.+?)(<br|<\/p)').findall(link)
+	S= 0
+	if epi:
+		#study(str(epi))
+		for name2,url2,brp in epi:
+			name3 = re.compile('\d+').findall(name2)
+			if name3:
+				name3=name3[0]
+			else:
+				name3=name2
+			urlm = re.compile('href\=\"(.+?)\"').findall(url2)
+			try:
+				namem = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), re.compile('([^\-]+)').findall(url2)[0] ).encode('utf-8')
+			except:
+				namem = re.compile('([^\-]+)').findall(url2)[0]
+			if "<" in namem:
+				namem = ""
+			if urlm:
+				if "http" not in urlm[0]:
+					urlm[0] = "http://www.redecanais.net/" + urlm[0]
+			if len(urlm) > 1:
+				if "http" not in urlm[1]:
+					urlm[1] = "http://www.redecanais.net/" + urlm[1]
+				AddDir("[COLOR yellow][Dub][/COLOR] "+ name3 +" "+namem ,urlm[0], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
+				AddDir("[COLOR blue][Leg][/COLOR] "+ name3 +" "+namem ,urlm[1], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
+			elif urlm:
+				AddDir(name3 +" "+namem ,urlm[0], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
 
 def SeriesRC(urlrc,pagina2): #130 Lista as Series RC
 	try:
@@ -682,6 +728,12 @@ def Update():
 	xbmc.executebuiltin("Notification({0}, {1}, 9000, {2})".format(AddonName, "Atualizando o addon. Aguarde um momento!", icon))
 	xbmc.sleep(2000)
 
+def study(x):
+	Path = xbmc.translatePath( xbmcaddon.Addon().getAddonInfo('path') ).decode("utf-8")
+	py = os.path.join( Path, "study.txt")
+	file = open(py, "w")
+	file.write(x)
+	file.close()
 
 params = dict(urlparse.parse_qsl(sys.argv[2].replace('?','')))
 url = params.get('url')
@@ -808,7 +860,10 @@ elif mode == 130:
 	SeriesRC("series","cPageser")
 	setViewS()
 elif mode == 135:
-	EpisodiosRC()
+	TemporadasRC()
+	setViewS()
+elif mode == 136:
+	EpisodiosRC(background)
 	setViewS()
 elif mode == 133:
 	PlaySRC()
