@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.14a"
+Versao = "18.04.14b"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -271,14 +271,13 @@ def TemporadasRC(): #135 Temporadas
 				namem = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), re.compile('([^\-]+)').findall(url2)[0] ).encode('utf-8')
 			except:
 				namem = re.compile('([^\-]+)').findall(url2)[0]
+			namem = re.sub('<[\/]{0,1}strong>', "", namem)
 			if "<" in namem:
 				namem = ""
 			if urlm:
-				if "http" not in urlm[0]:
-					urlm[0] = "http://www.redecanais.net/" + urlm[0]
+				urlm[0] = "http://www.redecanais.net/" + urlm[0] if "http" not in urlm[0] else urlm[0]
 			if len(urlm) > 1:
-				if "http" not in urlm[1]:
-					urlm[1] = "http://www.redecanais.net/" + urlm[1]
+				urlm[1] = "http://www.redecanais.net/" + urlm[1] if "http" not in urlm[1] else urlm[1]
 				AddDir("[COLOR yellow][Dub][/COLOR] "+ name3 +" "+namem ,urlm[0], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
 				AddDir("[COLOR blue][Leg][/COLOR] "+ name3 +" "+namem ,urlm[1], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
 			elif urlm:
@@ -306,14 +305,13 @@ def EpisodiosRC(x): #136 Episodios
 				namem = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), re.compile('([^\-]+)').findall(url2)[0] ).encode('utf-8')
 			except:
 				namem = re.compile('([^\-]+)').findall(url2)[0]
+			namem = re.sub('<[\/]{0,1}strong>', "", namem)
 			if "<" in namem:
 				namem = ""
 			if urlm:
-				if "http" not in urlm[0]:
-					urlm[0] = "http://www.redecanais.net/" + urlm[0]
+				urlm[0] = "http://www.redecanais.net/" + urlm[0] if "http" not in urlm[0] else urlm[0]
 			if len(urlm) > 1:
-				if "http" not in urlm[1]:
-					urlm[1] = "http://www.redecanais.net/" + urlm[1]
+				urlm[1] = "http://www.redecanais.net/" + urlm[1] if "http" not in urlm[1] else urlm[1]
 				AddDir("[COLOR yellow][Dub][/COLOR] "+ name3 +" "+namem ,urlm[0], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
 				AddDir("[COLOR blue][Leg][/COLOR] "+ name3 +" "+namem ,urlm[1], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
 			elif urlm:
