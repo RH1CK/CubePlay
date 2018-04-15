@@ -293,7 +293,6 @@ def EpisodiosRC(x): #136 Episodios
 		epi = re.compile('<strong>(E.+?)<\/strong>(.+?)(<br|<\/p)').findall(link)
 	S= 0
 	if epi:
-		#study(str(epi))
 		for name2,url2,brp in epi:
 			name3 = re.compile('\d+').findall(name2)
 			if name3:
@@ -373,7 +372,6 @@ def TVRC(): # 100
 		for x in range(0, 5):
 			l +=1
 			link = common.OpenURL("http://www.redecanais.info/browse-canais-videos-"+str(l)+"-title.html")
-			study(link)
 			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
 			i= 0
 			if match:
