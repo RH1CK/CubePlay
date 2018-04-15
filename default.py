@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.14b"
+Versao = "18.04.15"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -160,7 +160,7 @@ def MoviesRCD(): #90 Filme dublado
 			link = common.OpenURL("http://www.redecanais.net/browse-filmes-dublado-videos-"+str(l)+"-date.html")
 			if Clista2[int(Cat)] != "Sem filtro (Mostrar Todos)":
 				link = common.OpenURL("http://www.redecanais.info/browse-"+Clista2[int(Cat)]+"-Filmes-videos-"+str(l)+"-date.html")
-			match = re.compile('href\=\"(http:\/\/www.redecanais\.[^\"]+)\".+src=\"([^\"]+)\".alt=\"([^\"]+)\" width').findall(link)
+			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
 			if match:
 				for url2,img2,name2 in match:
 					AddDir(name2 ,url2, 95, img2, img2, info="")
@@ -181,7 +181,7 @@ def MoviesRCL(): #91 Filme Legendado
 			link = common.OpenURL("http://www.redecanais.net/browse-filmes-legendado-videos-"+str(l)+"-date.html")
 			if Clista2[int(Cat)] != "Sem filtro (Mostrar Todos)":
 				link = common.OpenURL("http://www.redecanais.net/browse-"+Clista2[int(Cat)]+"-Filmes-Legendado-videos-"+str(l)+"-date.html")
-			match = re.compile('href\=\"(http:\/\/www.redecanais\.[^\"]+)\".+src=\"([^\"]+)\".alt=\"([^\"]+)\" width').findall(link)
+			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
 			if match:
 				for url2,img2,name2 in match:
 					AddDir(name2 ,url2, 95, img2, img2, info="")
@@ -199,7 +199,7 @@ def MoviesRCN(): #92 Filmes Nacional
 		for x in range(0, 5):
 			l +=1
 			link = common.OpenURL("http://www.redecanais.net/browse-filmes-nacional-videos-"+str(l)+"-date.html")
-			match = re.compile('href\=\"(http:\/\/www.redecanais\.[^\"]+)\".+src=\"([^\"]+)\".alt=\"([^\"]+)\" width').findall(link)
+			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
 			if match:
 				for url2,img2,name2 in match:
 					AddDir(name2 ,url2, 95, img2, img2, info="")
@@ -327,7 +327,7 @@ def SeriesRC(urlrc,pagina2): #130 Lista as Series RC
 		for x in range(0, 5):
 			l +=1
 			link = common.OpenURL("http://www.redecanais.net/browse-"+urlrc+"-videos-"+str(l)+"-title.html")
-			match = re.compile('href\=\"(http:\/\/www.redecanais\.[^\"]+)\".+src=\"([^\"]+)\".alt=\"([^\"]+)\" width').findall(link)
+			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
 			if match:
 				for url2,img2,name2 in match:
 					AddDir(name2 ,url2, 135, img2, img2, info="")
@@ -373,7 +373,8 @@ def TVRC(): # 100
 		for x in range(0, 5):
 			l +=1
 			link = common.OpenURL("http://www.redecanais.info/browse-canais-videos-"+str(l)+"-title.html")
-			match = re.compile('href\=\"(http:\/\/www.redecanais\.[^\"]+)\".+src=\"([^\"]+)\".alt=\"([^\"]+)\" width').findall(link)
+			study(link)
+			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
 			i= 0
 			if match:
 				for url2,img2,name2 in match:
