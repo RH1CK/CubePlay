@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.15"
+Versao = "18.04.15a"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -347,7 +347,7 @@ def Busca(): # 160
 		for x in range(0, 10):
 			l +=1
 			link = common.OpenURL("http://www.redecanais.net/search.php?keywords="+d+"&page="+str(l))
-			match = re.compile('href\=\"(http:\/\/www.redecanais\.[^\"]+)\".+src=\"([^\"]+)\".alt=\"([^\"]+)\" width').findall(link)
+			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
 			if match:
 				for url2,img2,name2 in match:
 					if re.compile('\d+p').findall(name2):
