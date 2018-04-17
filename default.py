@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.15a"
+Versao = "18.04.17"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -42,7 +42,6 @@ def setViewS():
 def setViewM():
 	xbmcplugin.setContent(int(sys.argv[1]), 'movies')
 	
-playlistsFile = "http://localhost:8080/nc/tvshows.php"
 favoritesFile = os.path.join(addon_data_dir, 'favorites.txt')
 historicFile = os.path.join(addon_data_dir, 'historic.txt')
 if not (os.path.isfile(favoritesFile)):
@@ -66,12 +65,10 @@ def Categories(): #70
 	AddDir("[COLOR blue][B][Filmes Legendado RedeCanais.com][/B][/COLOR]" , cPageleg, 91, "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", background="cPageleg")
 	AddDir("[COLOR blue][B][Filmes Nacional RedeCanais.com][/B][/COLOR]" , cPagenac, 92, "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", background="cPagenac")
 	AddDir("[COLOR blue][B][Series RedeCanais.com][/B][/COLOR]" , cPageser, 130, "https://walter.trakt.tv/images/shows/000/001/393/fanarts/thumb/fc68b3b649.jpg", "https://walter.trakt.tv/images/shows/000/001/393/fanarts/thumb/fc68b3b649.jpg", background="cPageser")
-	try:
-		checa = urllib2.urlopen( URLNC + "version.txt" ).read()
-		AddDir("[COLOR yellow][B][Series NetCine.us][/B][/COLOR]" , URLNC + "listTVshow.php", 60, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
-		AddDir("[COLOR yellow][B][Filmes NetCine.us][/B][/COLOR]" , URLNC + "listMovies.php", 71, "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg")
-	except urllib2.URLError, e:
-		AddDir("Server NETCINE offline, tente novamente em alguns minutos" , "setting", 50, "", "", 0, cacheMin = "0", isFolder=False)
+
+	AddDir("[COLOR yellow][B][Series NetCine.us][/B][/COLOR]" , URLNC + "listTVshow.php", 60, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
+	AddDir("[COLOR yellow][B][Filmes NetCine.us][/B][/COLOR]" , URLNC + "listMovies.php", 71, "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg")
+
 	#AddDir("[COLOR red][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
 	AddDir("[COLOR blue][B][Animes RedeCanais.com][/B][/COLOR]" , cPageser, 140, "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", background="cPageser")
 	AddDir("[COLOR blue][B][Desenhos RedeCanais.com][/B][/COLOR]" , cPageani, 150, "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", background="cPageser")
@@ -115,7 +112,7 @@ def Series(): #60
 		for url2,img2,name2 in match:
 			AddDir(name2, url2, 61, img2, img2)
 	except urllib2.URLError, e:
-		AddDir("Server error, tente novamente em alguns minutos" , "", 0, isFolder=False)
+		AddDir("Server NETCINE offline, tente novamente em alguns minutos" , "", 0, isFolder=False)
 
 def MoviesNC(): #70
 	AddDir("[COLOR red][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
@@ -125,7 +122,7 @@ def MoviesNC(): #70
 		for url2,img2,name2 in match:
 			AddDir(name2 ,url2, 79, img2, img2)
 	except urllib2.URLError, e:
-		AddDir("Server error, tente novamente em alguns minutos" , "", 0, isFolder=False)
+		AddDir("Server NETCINE offline, tente novamente em alguns minutos" , "", 0, isFolder=False)
 
 def Generos(): #80
 	xbmcgui.Dialog().notification('Movie Trailers', 'Finding Nemo download finished.', xbmcgui.NOTIFICATION_INFO, 5000)
@@ -398,28 +395,6 @@ def PlayTVRC(): # 101
 	except urllib2.URLError, e:
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 # ----------------- FIM REDECANAIS TV
-def AddNewList():
-	listName = GetKeyboardText(getLocaleString(30004)).strip()
-	if len(listName) < 1:
-		return
-	listUrl = GetChoice(30002, 30005, 30006, 30016, 30017, fileType=1, fileMask='.plx|.m3u|.m3u8')
-	if len(listUrl) < 1:
-		return
-	image = GetChoice(30022, 30022, 30022, 30024, 30025, 30021, fileType=2)
-	logosUrl = '' if listUrl.endswith('.plx') else GetChoice(30018, 30019, 30020, 30019, 30020, 30021, fileType=0)
-	if logosUrl.startswith('http') and not logosUrl.endswith('/'):
-		logosUrl += '/'
-	cacheInMinutes = GetNumFromUser(getLocaleString(30034), '0') if listUrl.startswith('http') else 0
-	if cacheInMinutes is None:
-		cacheInMinutes = 0
-	chList = common.ReadURL(playlistsFile)
-	for item in chList:
-		if item["url"].lower() == listUrl.lower():
-			xbmc.executebuiltin('Notification({0}, "{1}" {2}, 5000, {3})'.format(AddonName, item["name"].encode("utf-8"), getLocaleString(30007), icon))
-			return
-	chList.append({"name": listName.decode("utf-8"), "url": listUrl, "image": image, "logos": logosUrl, "cache": cacheInMinutes})
-	if common.SaveList(playlistsFile, chList):
-		xbmc.executebuiltin("XBMC.Container.Refresh()")
 
 def GetChoice(choiceTitle, fileTitle, urlTitle, choiceFile, choiceUrl, choiceNone=None, fileType=1, fileMask=None, defaultText=""):
 	choice = ''
@@ -436,64 +411,7 @@ def GetChoice(choiceTitle, fileTitle, urlTitle, choiceFile, choiceUrl, choiceNon
 			defaultText = ""
 		choice = xbmcgui.Dialog().browse(fileType, getLocaleString(urlTitle), 'files', fileMask, False, False, defaultText).decode("utf-8")
 	return choice
-	
-def RemoveFromLists(index, listFile):
-	chList = common.ReadList(listFile) 
-	if index < 0 or index >= len(chList):
-		return
-	del chList[index]
-	common.SaveList(listFile, chList)
-	xbmc.executebuiltin("XBMC.Container.Refresh()")
 			
-def PlxCategory(url, cache):
-	tmpList = []
-	chList = common.plx2list(url, cache)
-	background = chList[0]["background"]
-	for channel in chList[1:]:
-		iconimage = "" if not channel.has_key("thumb") else common.GetEncodeString(channel["thumb"])
-		name = common.GetEncodeString(channel["name"])
-		if channel["type"] == 'playlist':
-			AddDir("{0}".format(name) ,channel["url"].encode("utf-8"), 1, iconimage, background=background.encode("utf-8"))
-		else:
-			AddDir(name, channel["url"].encode("utf-8"), 3, iconimage, isFolder=False, IsPlayable=True, background=background)
-			tmpList.append({"url": channel["url"], "image": iconimage.decode("utf-8"), "name": name.decode("utf-8")})
-			
-def m3uCategory(url, logos, cache, gListIndex=-1):	
-	tmpList = []
-	chList = common.m3u2list(url, cache)
-	groupChannels = []
-	for channel in chList:
-		if makeGroups:
-			matches = [groupChannels.index(x) for x in groupChannels if len(x) > 0 and x[0].get("group_title", x[0]["display_name"]) == channel.get("group_title", channel["display_name"])]
-		if makeGroups and len(matches) == 1:
-			groupChannels[matches[0]].append(channel)
-		else:
-			groupChannels.append([channel])
-	for channels in groupChannels:
-		idx = groupChannels.index(channels)
-		if gListIndex > -1 and gListIndex != idx:
-			continue
-		isGroupChannel = gListIndex < 0 and len(channels) >= 1
-		chs = [channels[0]] if isGroupChannel else channels
-		for channel in chs:
-			chUrl = common.GetEncodeString(channel["url"])
-			name = common.GetEncodeString(channel["display_name"]) if not isGroupChannel else common.GetEncodeString(channel.get("group_title", channel["display_name"]))
-			if isGroupChannel:
-				name = '{0}'.format(name)
-				chUrl = url
-				image = channel.get("tvg_logo", channel.get("logo", ""))
-				AddDir(name ,url, 10, image, index=idx)
-			elif chUrl == "http://127.0.0.0":
-				image = channel.get("tvg_logo", channel.get("logo", ""))
-				if logos is not None and logos != ''  and image != "" and not image.startswith('http'):
-					image = logos + image
-			else:
-				image = channel.get("tvg_logo", channel.get("logo", ""))
-				if logos is not None and logos != ''  and image != "" and not image.startswith('http'):
-					image = logos + image
-				AddDir(name, chUrl, 60, image, index=-1, isFolder=True, IsPlayable=False)
-			tmpList.append({"url": chUrl.decode("utf-8"), "image": image.decode("utf-8"), "name": name.decode("utf-8")})
-		
 def PlayUrl(name, url, iconimage=None, info=''):
 	#xbmcgui.Dialog().ok(background, url + " " +background)
 	if background != "None":
@@ -594,6 +512,14 @@ def ListHistoric(file, info):
 	chList = common.ReadList(file)
 	for channel in reversed(chList):
 		AddDir(channel["name"].encode("utf-8"), channel["url"].encode("utf-8"), channel["mode"], channel["image"].encode("utf-8"), channel["image"].encode("utf-8"), isFolder=True, IsPlayable=False, info=info)
+
+def RemoveFromLists(index, listFile):
+	chList = common.ReadList(listFile) 
+	if index < 0 or index >= len(chList):
+		return
+	del chList[index]
+	common.SaveList(listFile, chList)
+	xbmc.executebuiltin("XBMC.Container.Refresh()")
 		
 def AddNewFavorite(file):
 	file = os.path.join(addon_data_dir, file)
@@ -609,33 +535,10 @@ def AddNewFavorite(file):
 	for item in favList:
 		if item["url"].lower() == chUrl.decode("utf-8").lower():
 			xbmc.executebuiltin("Notification({0}, '{1}' {2}, 5000, {3})".format(AddonName, chName, getLocaleString(30011), icon))
-			return
-			
-	data = {"url": chUrl.decode("utf-8"), "image": image, "name": chName.decode("utf-8")}
-	
+			return			
+	data = {"url": chUrl.decode("utf-8"), "image": image, "name": chName.decode("utf-8")}	
 	favList.append(data)
 	if common.SaveList(file, favList):
-		xbmc.executebuiltin("XBMC.Container.Refresh()")
-
-def ChangeKey(index, listFile, key, title):
-	chList = common.ReadList(listFile)
-	str = GetKeyboardText(getLocaleString(title), chList[index][key].encode("utf-8"))
-	if len(str) < 1:
-		return
-	chList[index][key] = str.decode("utf-8")
-	if common.SaveList(listFile, chList):
-		xbmc.executebuiltin("XBMC.Container.Refresh()")
-		
-def ChangeChoice(index, listFile, key, choiceTitle, fileTitle, urlTitle, choiceFile, choiceUrl, choiceNone=None, fileType=1, fileMask=None):
-	chList = common.ReadList(listFile)
-	defaultText = chList[index].get(key, "")
-	str = GetChoice(choiceTitle, fileTitle, urlTitle, choiceFile, choiceUrl, choiceNone, fileType, fileMask, defaultText.encode("utf-8"))
-	if key == "url" and len(str) < 1:
-		return
-	elif key == "logos" and str.startswith('http') and not str.endswith('/'):
-		str += '/'
-	chList[index][key] = str.decode("utf-8")
-	if common.SaveList(listFile, chList):
 		xbmc.executebuiltin("XBMC.Container.Refresh()")
 	
 def MoveInList(index, step, listFile):
@@ -663,19 +566,7 @@ def GetIndexFromUser(listLen, index):
 	location = GetNumFromUser('{0} (1-{1})'.format(getLocaleString(30033), listLen))
 	return 0 if location is None or location > listLen or location <= 0 else location - 1 - index
 
-def ChangeCache(index, listFile):
-	chList = common.ReadList(listFile)
-	defaultText = chList[index].get('cache', 0)
-	cacheInMinutes = GetNumFromUser(getLocaleString(30034), str(defaultText)) if chList[index].get('url', '0').startswith('http') else 0
-	if cacheInMinutes is None:
-		return
-	chList[index]['cache'] = cacheInMinutes
-	if common.SaveList(listFile, chList):
-		xbmc.executebuiltin("XBMC.Container.Refresh()")
-
-def ToggleGroups():
-	#notMakeGroups = "false" if makeGroups else "true"
-	#Addon.setSetting("makeGroups", notMakeGroups)
+def Refresh():
 	xbmc.executebuiltin("XBMC.Container.Refresh()")
 
 def TogglePrevious(url, background):
@@ -748,32 +639,8 @@ if mode == 0:
 	Categories()
 	setViewM()
 	CheckUpdate(False)
-elif mode == 1:
-	PlxCategory(url, cache)
-elif mode == 2 or mode == 10:
-	m3uCategory(url, logos, cache, index)
 elif mode == 3 or mode == 32:
 	PlayUrl(name, url, iconimage, info)
-	#xbmc.executebuiltin('Notification({0}, "{1}", {2}, {3})'.format( str( info ) , str(info), 20000, ""))
-elif mode == 20:
-	AddNewList()
-elif mode == 21:
-	MoveInList(index, move, playlistsFile)
-elif mode == 22:
-	RemoveFromLists(index, playlistsFile)
-elif mode == 23:
-	ChangeKey(index, playlistsFile, "name", 30004)
-elif mode == 24:
-	ChangeChoice(index, playlistsFile, "url", 30002, 30005, 30006, 30016, 30017, None, 1, '.plx|.m3u|.m3u8')
-elif mode == 25:
-	ChangeChoice(index, playlistsFile, "image", 30022, 30022, 30022, 30024, 30025, 30021, 2)
-elif mode == 26:
-	ChangeChoice(index, playlistsFile, "logos", 30018, 30019, 30020, 30019, 30020, 30021, 0)
-elif mode == 27:
-	common.DelFile(playlistsFile)
-	sys.exit()
-elif mode == 28:
-	ChangeCache(index, playlistsFile)
 elif mode == 30:
 	ListFavorites('favorites.txt', "Favoritos")
 	setViewS()
@@ -781,23 +648,17 @@ elif mode == 333:
 	ListHistoric('historic.txt', "Historico")
 	setViewM()
 elif mode == 31: 
-	AddFavorites(url, iconimage, name, "61", 'favorites.txt') 
+	AddFavorites(url, iconimage, name, "61", 'favorites.txt')
 elif mode == 72: 
-	AddFavorites(url, iconimage, name, "79", 'favorites.txt') 
+	AddFavorites(url, iconimage, name, "79", 'favorites.txt')
 elif mode == 93: 
-	AddFavorites(url, iconimage, name, "95", 'favorites.txt') 
+	AddFavorites(url, iconimage, name, "95", 'favorites.txt')
 elif mode == 131: 
-	AddFavorites(url, iconimage, name, "135", 'favorites.txt') 
+	AddFavorites(url, iconimage, name, "135", 'favorites.txt')
 elif mode == 33:
 	RemoveFromLists(index, favoritesFile)
 elif mode == 34:
 	AddNewFavorite()
-elif mode == 35:
-	ChangeKey(index, favoritesFile, "name", 30014)
-elif mode == 36:
-	ChangeKey(index, favoritesFile, "url", 30015)
-elif mode == 37:
-	ChangeChoice(index, favoritesFile, "image", 30023, 30023, 30023, 30024, 30025, 30021, 2)
 elif mode == 38:
 	MoveInList(index, move, favoritesFile)
 elif mode == 39:
@@ -813,7 +674,7 @@ elif mode == 40:
 		common.DelFile(historicFile)
 		sys.exit()
 elif mode == 50:
-	ToggleGroups()
+	Refresh()
 elif mode == 60:
 	Series()
 	setViewS()
