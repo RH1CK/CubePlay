@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.18"
+Versao = "18.04.18a"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -125,7 +125,6 @@ def MoviesNC(): #70
 		AddDir("Server NETCINE offline, tente novamente em alguns minutos" , "", 0, isFolder=False)
 
 def Generos(): #80
-	xbmcgui.Dialog().notification('Movie Trailers', 'Finding Nemo download finished.', xbmcgui.NOTIFICATION_INFO, 5000)
 	d = xbmcgui.Dialog().select("Escolha o Genero", Clista2)
 	if d != -1:
 		global Cat
@@ -156,7 +155,7 @@ def MoviesRCD(): #90 Filme dublado
 			l +=1
 			link = common.OpenURL("http://www.redecanais.net/browse-filmes-dublado-videos-"+str(l)+"-date.html")
 			if Clista2[int(Cat)] != "Sem filtro (Mostrar Todos)":
-				link = common.OpenURL("http://www.redecanais.info/browse-"+Clista2[int(Cat)]+"-Filmes-videos-"+str(l)+"-date.html")
+				link = common.OpenURL("http://www.redecanais.net/browse-"+Clista2[int(Cat)]+"-Filmes-videos-"+str(l)+"-date.html")
 			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
 			if match:
 				for url2,img2,name2 in match:
@@ -224,7 +223,8 @@ def PlayMRC(): #95 Play filmes
 # --------------  REDECANAIS SERIES,ANIMES,DESENHOS
 def PlaySRC(): #131 Play series
 	try:
-		link = common.OpenURL(url.replace("https","http"))
+		url2 = re.sub('(\.link|\.com|\.info)', ".net", url.replace("https","http") )
+		link = common.OpenURL(url2)
 		desc = re.compile('<p itemprop=\"description\"><p>(.+)<\/p><\/p>').findall(link)
 		if desc:
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
@@ -236,9 +236,10 @@ def PlaySRC(): #131 Play series
 		else:
 			xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 	except urllib2.URLError, e:
-		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
+		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 def TemporadasRC(): #135 Temporadas
-	link = common.OpenURL(url.replace("https","http")).replace('\n','').replace('\r','').replace('</html>','<span style="font').replace("https","http")
+	url2 = re.sub('(\.link|\.com|\.info)', ".net", url.replace("https","http") )
+	link = common.OpenURL(url2).replace('\n','').replace('\r','').replace('</html>','<span style="font').replace("https","http")
 	temps = re.compile('size: x-large;\">.+?<span style\=\"font').findall(link)
 	if temps:
 		i= 0
@@ -281,7 +282,8 @@ def TemporadasRC(): #135 Temporadas
 				AddDir(name3 +" "+namem ,urlm[0], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
 	#xbmcgui.Dialog().ok('Kodi', "1"))
 def EpisodiosRC(x): #136 Episodios
-	link = common.OpenURL(url.replace("https","http")).replace('\n','').replace('\r','').replace('</html>','<span style="font')
+	url2 = re.sub('(\.link|\.com|\.info)', ".net", url.replace("https","http") )
+	link = common.OpenURL(url2).replace('\n','').replace('\r','').replace('</html>','<span style="font')
 	temps = re.compile('size: x-large;\">.+?<span style\=\"font').findall(link)
 	if temps:
 		i= 0
@@ -368,7 +370,7 @@ def TVRC(): # 100
 		l= 0
 		for x in range(0, 5):
 			l +=1
-			link = common.OpenURL("http://www.redecanais.info/browse-canais-videos-"+str(l)+"-title.html")
+			link = common.OpenURL("http://www.redecanais.net/browse-canais-videos-"+str(l)+"-title.html")
 			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
 			i= 0
 			if match:
@@ -386,8 +388,9 @@ def TVRC(): # 100
 	except urllib2.URLError, e:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
 def PlayTVRC(): # 101
+	url2 = re.sub('(\.link|\.com|\.info)', ".net", url.replace("https","http") )
 	try:
-		link = common.OpenURL(url.replace("https","http"))
+		link = common.OpenURL(url2)
 		player = re.compile('<iframe name=\"Player\".+src=\"([^\"]+)\"').findall(link)
 		link2 = common.OpenURL(player[0])
 		urlp = re.compile('\"source\"\: \"([^\"]+)').findall(link2)
@@ -588,7 +591,8 @@ def CheckUpdate(msg): #200
 			xbmcgui.Dialog().ok('Cube Play', "O addon ja esta na ultima versao: "+Versao+"\nAs atualizacoes normalmente sao automaticas\nUse esse recurso caso nao esteja recebendo automaticamente")
 			xbmc.executebuiltin("XBMC.Container.Refresh()")
 	except urllib2.URLError, e:
-		uversao = ""
+		if msg==True:
+			xbmcgui.Dialog().ok('Cube Play', "Nao foi possivel checar")
 
 def Update():
 	Path = xbmc.translatePath( xbmcaddon.Addon().getAddonInfo('path') ).decode("utf-8")
@@ -638,7 +642,8 @@ background = params.get('background')
 if mode == 0:
 	Categories()
 	setViewM()
-	CheckUpdate(False)
+	if cadulto!="update":
+		CheckUpdate(False)	
 elif mode == 3 or mode == 32:
 	PlayUrl(name, url, iconimage, info)
 elif mode == 30:
