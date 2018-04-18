@@ -3,3 +3,4 @@
 18.04.15 - Fix Rede Canais
 18.04.15a - Fix Busca
 18.04.17 - Manutenção
+18.04.18 - Fix kodi 16/SPMC
