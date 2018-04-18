@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.17"
+Versao = "18.04.18"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -207,7 +207,7 @@ def MoviesRCN(): #92 Filmes Nacional
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
 def PlayMRC(): #95 Play filmes
 	try:
-		link = common.OpenURL(url)
+		link = common.OpenURL(url.replace("https","http"))
 		desc = re.compile('<p itemprop=\"description\"><p>(.+)<\/p><\/p>').findall(link)
 		if desc:
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
@@ -224,7 +224,7 @@ def PlayMRC(): #95 Play filmes
 # --------------  REDECANAIS SERIES,ANIMES,DESENHOS
 def PlaySRC(): #131 Play series
 	try:
-		link = common.OpenURL(url)
+		link = common.OpenURL(url.replace("https","http"))
 		desc = re.compile('<p itemprop=\"description\"><p>(.+)<\/p><\/p>').findall(link)
 		if desc:
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
@@ -238,7 +238,7 @@ def PlaySRC(): #131 Play series
 	except urllib2.URLError, e:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
 def TemporadasRC(): #135 Temporadas
-	link = common.OpenURL(url).replace('\n','').replace('\r','').replace('</html>','<span style="font')
+	link = common.OpenURL(url.replace("https","http")).replace('\n','').replace('\r','').replace('</html>','<span style="font').replace("https","http")
 	temps = re.compile('size: x-large;\">.+?<span style\=\"font').findall(link)
 	if temps:
 		i= 0
@@ -281,7 +281,7 @@ def TemporadasRC(): #135 Temporadas
 				AddDir(name3 +" "+namem ,urlm[0], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
 	#xbmcgui.Dialog().ok('Kodi', "1"))
 def EpisodiosRC(x): #136 Episodios
-	link = common.OpenURL(url).replace('\n','').replace('\r','').replace('</html>','<span style="font')
+	link = common.OpenURL(url.replace("https","http")).replace('\n','').replace('\r','').replace('</html>','<span style="font')
 	temps = re.compile('size: x-large;\">.+?<span style\=\"font').findall(link)
 	if temps:
 		i= 0
@@ -387,7 +387,7 @@ def TVRC(): # 100
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
 def PlayTVRC(): # 101
 	try:
-		link = common.OpenURL(url)
+		link = common.OpenURL(url.replace("https","http"))
 		player = re.compile('<iframe name=\"Player\".+src=\"([^\"]+)\"').findall(link)
 		link2 = common.OpenURL(player[0])
 		urlp = re.compile('\"source\"\: \"([^\"]+)').findall(link2)
