@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.19"
+Versao = "18.04.19a"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -27,6 +27,7 @@ cPagenac = Addon.getSetting("cPagenac")
 cPageser = Addon.getSetting("cPageser")
 cPageani = Addon.getSetting("cPageani")
 cPagedes = Addon.getSetting("cPagedes")
+cPagefo1 = Addon.getSetting("cPagefo1")
 if not cadulto:
 	cPageleg = cPage
 	cPagenac = cPage
@@ -34,8 +35,11 @@ if not cadulto:
 	cPageani = cPage
 	cPagedes = cPage
 Cat = Addon.getSetting("Cat")
+Catfo = Addon.getSetting("Catfo")
 Clista=[ "todos",                     "acao", "animacao", "aventura", "comedia", "drama", "fantasia", "ficcao-cientifica", "romance", "suspense", "terror"]
 Clista2=["Sem filtro (Mostrar Todos)","Acao", "Animacao", "Aventura", "Comedia", "Drama", "Fantasia", "Ficcao-Cientifica", "Romance", "Suspense", "Terror"]
+Clistafo0=[ "0",                        "48",  "47",  "23",  "3",    "7",        "8",        "5",       "4",      "14",                "16",      "15",       "11"]
+Clistafo1=["Sem filtro (Mostrar Todos)","2018","2017","2016","Ação", "Animação", "Aventura", "Comédia", "Drama",  "Ficção-Científica", "Romance", "Suspense", "Terror"]
 
 def setViewS():
 	xbmcplugin.setContent(int(sys.argv[1]), 'tvshows')
@@ -117,7 +121,7 @@ def Series(): #60
 		AddDir("Server NETCINE offline, tente novamente em alguns minutos" , "", 0, isFolder=False)
 
 def MoviesNC(): #70
-	AddDir("[COLOR red][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
+	AddDir("[COLOR yellow][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
 	try:
 		link = urllib2.urlopen(url +"?cat=" + Clista[int(Cat)]).read().replace('\n','').replace('\r','')
 		match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)"').findall(link)
@@ -147,7 +151,7 @@ def PlayM(): #79
 # --------------  FIM NETCINE
 # --------------  REDECANAIS FILMES
 def MoviesRCD(): #90 Filme dublado
-	AddDir("[COLOR red][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
+	AddDir("[COLOR yellow][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
 	try:
 		p= 1
 		if int(cPage) > 0:
@@ -168,7 +172,7 @@ def MoviesRCD(): #90 Filme dublado
 	except e:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
 def MoviesRCL(): #91 Filme Legendado
-	AddDir("[COLOR red][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
+	AddDir("[COLOR yellow][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
 	try:
 		p= 1
 		if int(cPageleg) > 0:
@@ -404,23 +408,43 @@ def PlayTVRC(): # 101
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 # ----------------- FIM REDECANAIS TV
 # ----------------- Inicio Filmes Online
-def MoviesFO(): #170
+def GenerosFO(): #85
+	d = xbmcgui.Dialog().select("Escolha o Genero", Clistafo1)
+	if d != -1:
+		global Cat
+		Addon.setSetting("Catfo", str(d) )
+		Cat = d
+		Addon.setSetting("cPagefo1", "0" )
+		xbmc.executebuiltin("XBMC.Container.Refresh()")
+		
+def MoviesFO(urlfo,pagina2): #170
+	AddDir("[COLOR yellow][B][Gênero dos Filmes]:[/B] " + Clistafo1[int(Catfo)] +"[/COLOR]", "url" ,85 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
 	try:
-		l= 0
-		for x in range(0, 8):
+		pagina=eval(pagina2)
+		l= int(pagina)*5
+		p= 1
+		if int(pagina) > 0:
+			AddDir("[COLOR blue][B]<< Pagina Anterior ["+ str( int(pagina) ) +"[/B]][/COLOR]", pagina , 120 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Previous-icon.png", isFolder=False, background=pagina2)
+
+		for x in range(0, 5):
 			l +=1
-			link = common.OpenURL("https://filmesonline.online/xfsearch/RapidVideo/page/"+str(l)+"/")
-			m = re.compile('src=\"(.upload[^\"]+).+?alt=\"([^\"]+)\h*(?s)(.+?)href=\"([^\"]+)\h*(?s)(.+?)numb.+?\s(.+?)\s(.+?)\h*(?s)(\d+)').findall(link)
+			link = common.OpenURL("https://filmesonline.online/index.php?do=search&subaction=search&search_start="+str(l)+"&story="+urlfo+"&sortby=title&resorder=asc&catlist[]="+Clistafo0[int(Catfo)]).replace("\r","").replace("\n","")
+			link = re.sub('Novos Filmes.+', '', link)
+			m = re.compile('src=\"(.upload[^\"]+).+?alt=\"([^\"]+).+?href=\"([^\"]+)').findall(link)
 			if m:
-				for img2,name2,x3,url2,x5,rls2,x7,ano2 in m:
-					AddDir(name2 +" - "+ ano2 +" ("+rls2+")",url2, 171, "https://filmesonline.online/"+img2, "https://filmesonline.online/"+img2, info="")
+				#xbmcgui.Dialog().ok('Cube Play', str(m))
+				for img2,name2,url2 in m:
+					AddDir(name2, url2, 171, "https://filmesonline.online/"+img2, "https://filmesonline.online/"+img2, info="")
+					p+=1
+		if p >= 80:
+			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(pagina) + 2) +"[/B]][/COLOR]", pagina , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background=pagina2)
 	except urllib2.URLError, e:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
 
 def PlayMFO(): #171
 	try:
 		link = common.OpenURL( url )
-		m = re.compile('href\=\"(.+?Rapidvideo)').findall(link)
+		m = re.compile('href\=\"(.+?\#Rapid)').findall(link)
 		t = re.compile('class=\"titleblock\"\>\s\<h1\>([^\<]+)').findall(link)
 		i = re.compile('class=\"p-info-text\"\>\s\<span\>([^\<]+)').findall(link)
 		if m:
@@ -429,13 +453,19 @@ def PlayMFO(): #171
 			if m2:
 				title = t[0] if t else name
 				info = i[0] if i else ""
-				link3 = common.OpenURL( "https:"+m2[0] )
-				m3 = re.compile('https[^\"]+\.mp4').findall(link3)				if m3:
-					AddDir( title , m3[0], 3, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info)
+				link3 = common.OpenURL( "https:"+m2[0] + "?q=720p" )
+				m3 = re.compile('https[^\"]+\.mp4').findall(link3)
+				if m3:
+					AddDir( title + " (HD)" , m3[0], 3, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info)
 				else:
-					AddDir( "Video offline" ,"", 0, "", "")
+					link4 = common.OpenURL( "https:"+m2[0] )
+					m4 = re.compile('https[^\"]+\.mp4').findall(link4)
+					if m4:
+						AddDir( title , m4[0], 3, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info)
+					else:
+						AddDir( "Video offline!" ,"", 0, "", "", isFolder=False)
 	except urllib2.URLError, e:
-		AddDir( "Video offline" ,"", 0, "", "")	
+		AddDir( "Video offline" ,"", 0, "", "", isFolder=False)
 # ----------------- FIM Filmes Online
 def GetChoice(choiceTitle, fileTitle, urlTitle, choiceFile, choiceUrl, choiceNone=None, fileType=1, fileMask=None, defaultText=""):
 	choice = ''
@@ -496,6 +526,8 @@ def AddDir(name, url, mode, iconimage='', logos='', index=-1, move=0, isFolder=T
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=93&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
 	elif mode== 135:
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=131&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
+	elif mode== 171:
+		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=175&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
 	if info=="Favoritos":
 		items = [("Remover dos favoritos", 'XBMC.RunPlugin({0}?index={1}&mode=33)'.format(sys.argv[0], index)),
 		(getLocaleString(30030), 'XBMC.RunPlugin({0}?index={1}&mode={2}&move=-1)'.format(sys.argv[0], index, 38)),
@@ -697,6 +729,8 @@ elif mode == 93:
 	AddFavorites(url, iconimage, name, "95", 'favorites.txt')
 elif mode == 131: 
 	AddFavorites(url, iconimage, name, "135", 'favorites.txt')
+elif mode == 175: 
+	AddFavorites(url, iconimage, name, "171", 'favorites.txt')
 elif mode == 33:
 	RemoveFromLists(index, favoritesFile)
 elif mode == 34:
@@ -778,11 +812,13 @@ elif mode == 160:
 	Busca()
 	setViewM()
 elif mode == 170:
-	MoviesFO()
+	MoviesFO("Rapidvideo","cPagefo1")
 	setViewM()
 elif mode == 171:
 	PlayMFO()
 	setViewM()
+elif mode == 85:
+	GenerosFO()
 elif mode == 200:
 	CheckUpdate(True)
 
