@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.18c"
+Versao = "18.04.19"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -53,6 +53,7 @@ makeGroups = "true"
 URLP="http://cubeplay.000webhostapp.com/"
 #URLP="http://localhost:8080/"
 URLNC=URLP+"nc/"
+URLFO=URLP+"fo/"
 	
 def getLocaleString(id):
 	return Addon.getLocalizedString(id).encode('utf-8')
@@ -69,6 +70,7 @@ def Categories(): #70
 	AddDir("[COLOR yellow][B][Séries NetCine.us][/B][/COLOR]" , URLNC + "listTVshow.php", 60, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
 	AddDir("[COLOR yellow][B][Filmes NetCine.us][/B][/COLOR]" , URLNC + "listMovies.php", 71, "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg")
 
+	AddDir("[COLOR purple][B][Filmes FilmesOnline.online][/B][/COLOR]" , "", 170, "https://walter.trakt.tv/images/movies/000/167/163/fanarts/thumb/23ecb5f950.jpg.webp", "https://walter.trakt.tv/images/movies/000/167/163/fanarts/thumb/23ecb5f950.jpg.webp")
 	#AddDir("[COLOR red][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
 	AddDir("[COLOR blue][B][Animes RedeCanais.com][/B][/COLOR]" , cPageser, 140, "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", background="cPageser")
 	AddDir("[COLOR blue][B][Desenhos RedeCanais.com][/B][/COLOR]" , cPageani, 150, "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", background="cPageser")
@@ -164,7 +166,7 @@ def MoviesRCD(): #90 Filme dublado
 		if p >= 60:
 			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(cPage) + 2) +"[/B]][/COLOR]", cPage , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background="cPage")
 	except e:
-		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
+		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
 def MoviesRCL(): #91 Filme Legendado
 	AddDir("[COLOR red][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
 	try:
@@ -185,7 +187,7 @@ def MoviesRCL(): #91 Filme Legendado
 		if p >= 60:
 			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(cPageleg) + 2) +"[/B]][/COLOR]", cPageleg , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background="cPageleg")
 	except e:
-		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
+		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
 def MoviesRCN(): #92 Filmes Nacional
 	try:
 		p= 1
@@ -203,7 +205,7 @@ def MoviesRCN(): #92 Filmes Nacional
 		if p >= 60:
 			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(cPagenac) + 2) +"[/B]][/COLOR]", cPagenac , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background="cPagenac")
 	except urllib2.URLError, e:
-		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
+		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0)
 def PlayMRC(): #95 Play filmes
 	try:
 		link = common.OpenURL(url.replace("https","http"))
@@ -218,7 +220,7 @@ def PlayMRC(): #95 Play filmes
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
 	except urllib2.URLError, e:
-		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
+		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
 # ----------------- FIM REDECANAIS
 # --------------  REDECANAIS SERIES,ANIMES,DESENHOS
 def PlaySRC(): #131 Play series
@@ -333,7 +335,7 @@ def SeriesRC(urlrc,pagina2): #130 Lista as Series RC
 		if p >= 60:
 			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(pagina) + 2) +"[/B]][/COLOR]", pagina , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background=pagina2)
 	except urllib2.URLError, e:
-		AddDir("Server error, tente novamente em alguns minutos" , url, 0, "", "", 0, cacheMin = "0")
+		AddDir("Server error, tente novamente em alguns minutos" , url, 0, "", "")
 # ----------------- FIM REDECANAIS SERIES,ANIMES,DESENHOS
 # ----------------- BUSCA
 def Busca(): # 160
@@ -374,7 +376,6 @@ def TVRC(): # 100
 			l +=1
 			link = common.OpenURL("http://www.redecanais.net/browse-canais-videos-"+str(l)+"-title.html")
 			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
-			i= 0
 			if match:
 				for url2,img2,name2 in match:
 					try:
@@ -383,25 +384,59 @@ def TVRC(): # 100
 						name2 = name2.replace("Assistir ", "").replace(" - Online - 24 Horas - Ao Vivo", "")
 					#name2 = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), name2).encode('utf-8')
 					if cadulto=="8080":
-						AddDir(name2 ,url2, 101, img2, img2, index=i, cacheMin = "0", info="", isFolder=False, IsPlayable=True)
+						AddDir(name2 ,url2, 101, img2, img2, info="", isFolder=False, IsPlayable=True)
 					elif not "sex" in url2 and not "playboy" in url2:
-						AddDir(name2 ,url2, 101, img2, img2, index=i, cacheMin = "0", info="", isFolder=False, IsPlayable=True)
-					i += 1
+						AddDir(name2 ,url2, 101, img2, img2, info="", isFolder=False, IsPlayable=True)
 	except urllib2.URLError, e:
-		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0, cacheMin = "0")
+		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
 def PlayTVRC(): # 101
 	url2 = re.sub('(\.link|\.com|\.info)', ".net", url.replace("https","http") )
 	try:
 		link = common.OpenURL(url2)
 		player = re.compile('<iframe name=\"Player\".+src=\"([^\"]+)\"').findall(link)
 		link2 = common.OpenURL(player[0])
-		urlp = re.compile('source.+?\"(.+?m3u[^\"]+)').findall(link2)
-		#xbmcgui.Dialog().ok('Cube Play', str(urlp))
-		PlayUrl(name, urlp[0] + "?play|Referer=http://www.redecanais.com/", iconimage, name)
+		urlp = re.compile('(http[^\"]+m3u[^\"]+)').findall(link2)
+		if urlp:
+			PlayUrl(name, urlp[0] + "?play|Referer=http://www.redecanais.com/", iconimage, name)
+		else:
+			xbmcgui.Dialog().ok('Cube Play', "Erro, aguarde atualização")
 	except urllib2.URLError, e:
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 # ----------------- FIM REDECANAIS TV
+# ----------------- Inicio Filmes Online
+def MoviesFO(): #170
+	try:
+		l= 0
+		for x in range(0, 8):
+			l +=1
+			link = common.OpenURL("https://filmesonline.online/xfsearch/RapidVideo/page/"+str(l)+"/")
+			m = re.compile('src=\"(.upload[^\"]+).+?alt=\"([^\"]+)\h*(?s)(.+?)href=\"([^\"]+)\h*(?s)(.+?)numb.+?\s(.+?)\s(.+?)\h*(?s)(\d+)').findall(link)
+			if m:
+				for img2,name2,x3,url2,x5,rls2,x7,ano2 in m:
+					AddDir(name2 +" - "+ ano2 +" ("+rls2+")",url2, 171, "https://filmesonline.online/"+img2, "https://filmesonline.online/"+img2, info="")
+	except urllib2.URLError, e:
+		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
 
+def PlayMFO(): #171
+	try:
+		link = common.OpenURL( url )
+		m = re.compile('href\=\"(.+?Rapidvideo)').findall(link)
+		t = re.compile('class=\"titleblock\"\>\s\<h1\>([^\<]+)').findall(link)
+		i = re.compile('class=\"p-info-text\"\>\s\<span\>([^\<]+)').findall(link)
+		if m:
+			link2 = common.OpenURL( "https://filmesonline.online"+m[0] )
+			m2 = re.compile('iframe.+?src\=\"([^\"]+)').findall(link2)
+			if m2:
+				title = t[0] if t else name
+				info = i[0] if i else ""
+				link3 = common.OpenURL( "https:"+m2[0] )
+				m3 = re.compile('https[^\"]+\.mp4').findall(link3)				if m3:
+					AddDir( title , m3[0], 3, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info)
+				else:
+					AddDir( "Video offline" ,"", 0, "", "")
+	except urllib2.URLError, e:
+		AddDir( "Video offline" ,"", 0, "", "")	
+# ----------------- FIM Filmes Online
 def GetChoice(choiceTitle, fileTitle, urlTitle, choiceFile, choiceUrl, choiceNone=None, fileType=1, fileMask=None, defaultText=""):
 	choice = ''
 	choiceList = [getLocaleString(choiceFile), getLocaleString(choiceUrl)]
@@ -741,6 +776,12 @@ elif mode == 150:
 	setViewS()
 elif mode == 160:
 	Busca()
+	setViewM()
+elif mode == 170:
+	MoviesFO()
+	setViewM()
+elif mode == 171:
+	PlayMFO()
 	setViewM()
 elif mode == 200:
 	CheckUpdate(True)
