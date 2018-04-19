@@ -5,3 +5,4 @@
 18.04.17 - Manutenção
 18.04.18 - Fix kodi 16/SPMC
 18.04.18a - Fix almoc
+18.04.18c - Fix canais
