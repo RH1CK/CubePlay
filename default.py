@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.18a" #
+Versao = "18.04.18b"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -66,18 +66,18 @@ def Categories(): #70
 	AddDir("[COLOR blue][B][Filmes Nacional RedeCanais.com][/B][/COLOR]" , cPagenac, 92, "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", background="cPagenac")
 	AddDir("[COLOR blue][B][Séries RedeCanais.com][/B][/COLOR]" , cPageser, 130, "https://walter.trakt.tv/images/shows/000/001/393/fanarts/thumb/fc68b3b649.jpg", "https://walter.trakt.tv/images/shows/000/001/393/fanarts/thumb/fc68b3b649.jpg", background="cPageser")
 
-	AddDir("[COLOR yellow][B][Series NetCine.us][/B][/COLOR]" , URLNC + "listTVshow.php", 60, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
+	AddDir("[COLOR yellow][B][Séries NetCine.us][/B][/COLOR]" , URLNC + "listTVshow.php", 60, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
 	AddDir("[COLOR yellow][B][Filmes NetCine.us][/B][/COLOR]" , URLNC + "listMovies.php", 71, "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg")
 
 	#AddDir("[COLOR red][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
 	AddDir("[COLOR blue][B][Animes RedeCanais.com][/B][/COLOR]" , cPageser, 140, "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", background="cPageser")
 	AddDir("[COLOR blue][B][Desenhos RedeCanais.com][/B][/COLOR]" , cPageani, 150, "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", background="cPageser")
 	AddDir("[COLOR green][B][Favoritos Cube Play][/B][/COLOR]", "favorites" ,30 , "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png", "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png")
-	AddDir("[COLOR green][B][Historico Filmes][/B][/COLOR]", "historic" ,333 , "https://cdn2.iconfinder.com/data/icons/business-office-icons/256/To-do_List-512.png", "https://cdn2.iconfinder.com/data/icons/business-office-icons/256/To-do_List-512.png")
+	AddDir("[COLOR green][B][Histórico Filmes][/B][/COLOR]", "historic" ,333 , "https://cdn2.iconfinder.com/data/icons/business-office-icons/256/To-do_List-512.png", "https://cdn2.iconfinder.com/data/icons/business-office-icons/256/To-do_List-512.png")
 	AddDir("[COLOR pink][B][Busca][/B][/COLOR]" , "", 160, "https://azure.microsoft.com/svghandler/search/?width=400&height=315", "https://azure.microsoft.com/svghandler/search/?width=400&height=315")
 	AddDir("[B][Sobre o Addon][/B]", "config" ,0 ,"http://www.iconsplace.com/icons/preview/orange/about-256.png", "http://www.iconsplace.com/icons/preview/orange/about-256.png", isFolder=False, info="Addon modificado do PlaylistLoader 1.2.0 por Avigdor\r https://github.com/avigdork/xbmc-avigdork.\r\nNao somos responsaveis por colocar o conteudo online, apenas indexamos.\r\nPara sugestoes e report de bugs nossa pagina no FB: [COLOR blue]http://fb.com/CubePlayKodi[/COLOR]\nVersao "+Versao)
 	AddDir("[B][COLOR blue]http://fb.com/CubePlayKodi[/COLOR][/B]", "config" ,0 ,"https://cdn.pixabay.com/photo/2017/08/20/10/30/facebook-2661207_960_720.jpg", "https://cdn.pixabay.com/photo/2017/08/20/10/30/facebook-2661207_960_720.jpg", isFolder=False, info="Para sugestoes e report de bugs nossa pagina no FB: [COLOR blue]http://fb.com/CubePlayKodi[/COLOR]")
-	AddDir("[B][COLOR orange][Checar Atualizacao][/COLOR][/B]", "config" , 200,"https://accelerator-origin.kkomando.com/wp-content/uploads/2015/04/update2-970x546.jpg", "https://accelerator-origin.kkomando.com/wp-content/uploads/2015/04/update2-970x546.jpg", isFolder=False, info="Checar se ha atualizacoes\n\nAs atualizacoes normalmente sao automaticas\nUse esse recurso caso nao esteja recebendo automaticamente")
+	AddDir("[B][COLOR orange][Checar Atualizações][/COLOR][/B]", "config" , 200,"https://accelerator-origin.kkomando.com/wp-content/uploads/2015/04/update2-970x546.jpg", "https://accelerator-origin.kkomando.com/wp-content/uploads/2015/04/update2-970x546.jpg", isFolder=False, info="Checar se ha atualizacoes\n\nAs atualizacoes normalmente sao automaticas\nUse esse recurso caso nao esteja recebendo automaticamente")
 # --------------  NETCINE
 def PlayS(): #62
 	try:
@@ -345,7 +345,7 @@ def Busca(): # 160
 		l= 0
 		for x in range(0, 10):
 			l +=1
-			link = common.OpenURL("http://www.redecanais.net/search.php?keywords="+d+"&page="+str(l))
+			link = common.OpenURL("http://www.redecanais.info/search.php?keywords="+d+"&page="+str(l))
 			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
 			if match:
 				for url2,img2,name2 in match:
@@ -353,6 +353,8 @@ def Busca(): # 160
 						AddDir(name2 ,url2, 95, img2, img2)
 					elif "Lista" in name2:
 						AddDir(name2 ,url2, 135, img2, img2)
+			else:
+				break
 	except urllib2.URLError, e:
 		AddDir("Nada encontrado" , "", 0, "", "", 0)
 	try:
@@ -393,7 +395,7 @@ def PlayTVRC(): # 101
 		link = common.OpenURL(url2)
 		player = re.compile('<iframe name=\"Player\".+src=\"([^\"]+)\"').findall(link)
 		link2 = common.OpenURL(player[0])
-		urlp = re.compile('\"source\"\: \"([^\"]+)').findall(link2)
+		urlp = re.compile('video.+?src\=\"(.+?m3u[^\"]+)').findall(link2)
 		PlayUrl(name, urlp[0] + "?play|Referer=http://www.redecanais.com/", iconimage, name)
 	except urllib2.URLError, e:
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
