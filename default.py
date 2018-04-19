@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.18b"
+Versao = "18.04.18c"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -395,7 +395,8 @@ def PlayTVRC(): # 101
 		link = common.OpenURL(url2)
 		player = re.compile('<iframe name=\"Player\".+src=\"([^\"]+)\"').findall(link)
 		link2 = common.OpenURL(player[0])
-		urlp = re.compile('video.+?src\=\"(.+?m3u[^\"]+)').findall(link2)
+		urlp = re.compile('source.+?\"(.+?m3u[^\"]+)').findall(link2)
+		#xbmcgui.Dialog().ok('Cube Play', str(urlp))
 		PlayUrl(name, urlp[0] + "?play|Referer=http://www.redecanais.com/", iconimage, name)
 	except urllib2.URLError, e:
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
