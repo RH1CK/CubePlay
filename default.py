@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.19a"
+Versao = "18.04.19b"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -374,6 +374,17 @@ def Busca(): # 160
 # ----------------- FIM BUSCA
 # ----------------- REDECANAIS TV
 def TVRC(): # 100
+	try:
+		link = urllib2.urlopen("https://gist.githubusercontent.com/RH1CK/61b3dc86d073027ab094d9ac32a09f3b/raw/4c0531bb49d5207e1c547df80e1a1f01f83fcec0/canaisredecanais.txt").read().replace('\n','').replace('\r','')
+		match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)"').findall(link)
+		for url2,img2,name2 in match:
+			if cadulto=="8080":
+				AddDir(name2, url2, 101, img2, img2, isFolder=False, IsPlayable=True)
+			elif not "sex" in url2 and not "playboy" in url2 and not "venus" in url2:
+				AddDir(name2, url2, 101, img2, img2, isFolder=False, IsPlayable=True)
+	except urllib2.URLError, e:
+		AddDir("Server offline, tente novamente em alguns minutos" , "", 0, isFolder=False)
+def TVRC2(): # 100
 	try:
 		l= 0
 		for x in range(0, 5):
