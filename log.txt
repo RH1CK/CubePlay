@@ -9,4 +9,4 @@
 18.04.19 - Adicionado filmes filmesonline.online
 18.04.19a - Generos para filmesonline
 18.04.19b - Adicinado mais canais TV
-18.04.23 - Fix canais
+18.04.23 - Fix canais e netcine
