@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.19b"
+Versao = "18.04.23"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -375,7 +375,7 @@ def Busca(): # 160
 # ----------------- REDECANAIS TV
 def TVRC(): # 100
 	try:
-		link = urllib2.urlopen("https://gist.githubusercontent.com/RH1CK/61b3dc86d073027ab094d9ac32a09f3b/raw/4c0531bb49d5207e1c547df80e1a1f01f83fcec0/canaisredecanais.txt").read().replace('\n','').replace('\r','')
+		link = urllib2.urlopen("https://gist.githubusercontent.com/RH1CK/61b3dc86d073027ab094d9ac32a09f3b/raw/").read().replace('\n','').replace('\r','')
 		match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)"').findall(link)
 		for url2,img2,name2 in match:
 			if cadulto=="8080":
