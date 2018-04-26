@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.23"
+Versao = "18.04.26"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -28,6 +28,7 @@ cPageser = Addon.getSetting("cPageser")
 cPageani = Addon.getSetting("cPageani")
 cPagedes = Addon.getSetting("cPagedes")
 cPagefo1 = Addon.getSetting("cPagefo1")
+cEPG = Addon.getSetting("cEPG")
 if not cadulto:
 	cPageleg = cPage
 	cPagenac = cPage
@@ -373,37 +374,47 @@ def Busca(): # 160
 		AddDir("Nada encontrado" , "", 0, "", "", 0)
 # ----------------- FIM BUSCA
 # ----------------- REDECANAIS TV
+def Acento(x):
+	x = x.replace("\xe7","ç").replace("\xe0","à").replace("\xe1","á").replace("\xe2","â").replace("\xe3","ã").replace("\xe8","è").replace("\xe9","é").replace("\xea","ê").replace("\xed","í").replace("\xf3","ó").replace("\xf4","ô").replace("\xf5","õ").replace("\xfa","ú")
+	return x
 def TVRC(): # 100
-	try:
-		link = urllib2.urlopen("https://gist.githubusercontent.com/RH1CK/61b3dc86d073027ab094d9ac32a09f3b/raw/").read().replace('\n','').replace('\r','')
-		match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)"').findall(link)
-		for url2,img2,name2 in match:
-			if cadulto=="8080":
-				AddDir(name2, url2, 101, img2, img2, isFolder=False, IsPlayable=True)
-			elif not "sex" in url2 and not "playboy" in url2 and not "venus" in url2:
-				AddDir(name2, url2, 101, img2, img2, isFolder=False, IsPlayable=True)
-	except urllib2.URLError, e:
-		AddDir("Server offline, tente novamente em alguns minutos" , "", 0, isFolder=False)
-def TVRC2(): # 100
-	try:
-		l= 0
-		for x in range(0, 5):
-			l +=1
-			link = common.OpenURL("http://www.redecanais.net/browse-canais-videos-"+str(l)+"-title.html")
-			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
-			if match:
-				for url2,img2,name2 in match:
-					try:
-						name2 = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), name2.replace("Assistir ", "").replace(" - Online - 24 Horas - Ao Vivo", "") ).encode('utf-8')
-					except:
-						name2 = name2.replace("Assistir ", "").replace(" - Online - 24 Horas - Ao Vivo", "")
-					#name2 = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), name2).encode('utf-8')
-					if cadulto=="8080":
-						AddDir(name2 ,url2, 101, img2, img2, info="", isFolder=False, IsPlayable=True)
-					elif not "sex" in url2 and not "playboy" in url2:
-						AddDir(name2 ,url2, 101, img2, img2, info="", isFolder=False, IsPlayable=True)
-	except urllib2.URLError, e:
-		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
+	epg = "{"
+	AddDir("[B][COLOR yellow]Carregar lista EPG[/COLOR][/B]", "", 105, "", "", isFolder=False)
+	if(cEPG=="1"):
+		try:
+			xbmc.executebuiltin("Notification({0}, {1}, 7000, {2})".format(AddonName, "Carregando lista EPG. Aguarde um momento!", icon))
+			link = common.OpenURL("http://www.epg.com.br/~mysql41/vertv.php").replace('	','')
+			m = re.compile('javascript:toggleCanal\(\d+,.([^\']+)\h*(?s)(.+?)\<\!-- orig').findall(link)
+			for c,f in m:
+				hora = ""
+				m2 = re.compile('(.+)(\(\d+.\d+\))\s').findall(f)
+				if m2:
+					for prog1,prog2 in m2:
+						hora += prog2 +" "+ prog1 + ";;;"
+						try:
+							hora= Acento(hora)
+						except:
+							hora = hora
+				hora = hora.replace("'","")
+				epg += "'"+c+"' : '"+hora+"' , "
+		except urllib2.URLError, e:
+			xbmc.executebuiltin("Notification({0}, {1}, 7000, {2})".format(AddonName, "Erro. tente novamente!", icon))
+	epg += "'none':''}"
+	epg = eval(epg)
+	link = urllib2.urlopen("https://pastebin.com/raw/QaYHY3Nf").read().replace('\n','').replace('\r','')
+	match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)".+?pg="(.+?)"').findall(link)
+	for url2,img2,name2,epg2 in match:
+		try:
+			info2=epg[epg2].replace(";;;","\n")
+			if not epg2=="none" and cEPG=="1":
+				name2 = "[COLOR yellow]"+name2+"[/COLOR]"
+		except:
+			info2=""
+		if cadulto=="8080":
+			AddDir(name2, url2, 101, img2, img2, isFolder=False, IsPlayable=True, info = info2)
+		elif not "dulto" in name2:
+			AddDir(name2, url2, 101, img2, img2, isFolder=False, IsPlayable=True, info = info2)
+	Addon.setSetting("cEPG", "0")
 def PlayTVRC(): # 101
 	url2 = re.sub('(\.link|\.com|\.info)', ".net", url.replace("https","http") )
 	try:
@@ -412,7 +423,7 @@ def PlayTVRC(): # 101
 		link2 = common.OpenURL(player[0])
 		urlp = re.compile('(http[^\"]+m3u[^\"]+)').findall(link2)
 		if urlp:
-			PlayUrl(name, urlp[0] + "?play|Referer=http://www.redecanais.com/", iconimage, name)
+			PlayUrl(name, urlp[0] + "?play|Referer=http://www.redecanais.com/", iconimage, info)
 		else:
 			xbmcgui.Dialog().ok('Cube Play', "Erro, aguarde atualização")
 	except urllib2.URLError, e:
@@ -796,7 +807,9 @@ elif mode == 100:
 	setViewM()
 elif mode == 101:
 	PlayTVRC()
-	#setViewM()
+elif mode == 105:
+	Addon.setSetting("cEPG", "1")
+	xbmc.executebuiltin("XBMC.Container.Refresh()")
 elif mode == 110:
 	ToggleNext(url, background)
 elif mode == 120:
