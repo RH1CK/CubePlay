@@ -8,6 +8,7 @@
 	<setting id="makeGroups" type="text" label="30036" default="true" visible="false"/>
 	<setting id="Cat" label="Cat" type="text" default="0" visible="false" />
 	<setting id="Catfo" label="Catfo" type="text" default="0" visible="false" />
+	<setting id="cEPG" label="cEPG" type="text" default="0" visible="false" />
 	<setting label="" type="sep" />
 	<setting id="actDelFavourites" type="action" label="Limpar todos os Favoritos" action="RunPlugin(plugin://plugin.video.CubePlay/default.py?mode=39&url=settings)" option="close"/>
 	<setting id="cPage" label="cPage" type="text" default="0" visible="false" />
