@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.26"
+Versao = "18.04.27"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -447,45 +447,63 @@ def MoviesFO(urlfo,pagina2): #170
 		p= 1
 		if int(pagina) > 0:
 			AddDir("[COLOR blue][B]<< Pagina Anterior ["+ str( int(pagina) ) +"[/B]][/COLOR]", pagina , 120 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Previous-icon.png", isFolder=False, background=pagina2)
-
 		for x in range(0, 5):
 			l +=1
 			link = common.OpenURL("https://filmesonline.online/index.php?do=search&subaction=search&search_start="+str(l)+"&story="+urlfo+"&sortby=title&resorder=asc&catlist[]="+Clistafo0[int(Catfo)]).replace("\r","").replace("\n","")
+			#link = common.OpenURL("https://filmesonline.online/index.php?do=search&subaction=search&search_start="+str(l)+"&story="+urlfo+"&sortby=date&resorder=desc&catlist[]="+Clistafo0[int(Catfo)]).replace("\r","").replace("\n","")
 			link = re.sub('Novos Filmes.+', '', link)
 			m = re.compile('src=\"(.upload[^\"]+).+?alt=\"([^\"]+).+?href=\"([^\"]+)').findall(link)
+			m2 = re.compile('numb-serial..(.+?)\<.+?afd..(\d+)').findall(link)
+			i=0
 			if m:
+				study(str(m[0]))
 				#xbmcgui.Dialog().ok('Cube Play', str(m))
 				for img2,name2,url2 in m:
-					AddDir(name2, url2, 171, "https://filmesonline.online/"+img2, "https://filmesonline.online/"+img2, info="")
+					AddDir(name2 + " ("+m2[i][0]+") - " + m2[i][1], url2, 171, "https://filmesonline.online/"+img2, "https://filmesonline.online/"+img2, info="")
 					p+=1
+					i+=1
 		if p >= 80:
 			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(pagina) + 2) +"[/B]][/COLOR]", pagina , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background=pagina2)
 	except urllib2.URLError, e:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
-
-def PlayMFO(): #171
+		
+def PlayMFO1(): #172
+	global background
+	if re.compile('\d+').findall(str ( background )) :
+		s = background.split(",")
+		sel = xbmcgui.Dialog().select("Selecione a resolução", s)
+		if sel!=-1:
+			link = common.OpenURL( url+"?q="+s[sel] )
+			m = re.compile('https[^\"]+\.mp4').findall(link)
+			background = "None"
+			PlayUrl(name, m[0],"",info)
+	else:
+		link = common.OpenURL(url)
+		m = re.compile('https[^\"]+\.mp4').findall(link)
+		background = "None"
+		PlayUrl(name, m[0],"",info)
+		
+def GetMFO1(): #171
 	try:
 		link = common.OpenURL( url )
 		m = re.compile('href\=\"(.+?\#Rapid)').findall(link)
 		t = re.compile('class=\"titleblock\"\>\s\<h1\>([^\<]+)').findall(link)
-		i = re.compile('class=\"p-info-text\"\>\s\<span\>([^\<]+)').findall(link)
+		i = re.compile('meta name\=\"description\" content\=\"([^"]+)').findall(link)
 		if m:
 			link2 = common.OpenURL( "https://filmesonline.online"+m[0] )
 			m2 = re.compile('iframe.+?src\=\"([^\"]+)').findall(link2)
 			if m2:
 				title = t[0] if t else name
 				info = i[0] if i else ""
-				link3 = common.OpenURL( "https:"+m2[0] + "?q=720p" )
+				link3 = common.OpenURL( "https:"+m2[0] )
 				m3 = re.compile('https[^\"]+\.mp4').findall(link3)
 				if m3:
-					AddDir( title + " (HD)" , m3[0], 3, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info)
+					pp = re.compile('q=(\d+p)').findall(link3)
+					pp = list(reversed(pp))
+					AddDir( title , "https:"+m2[0], 172, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info, background= ",".join(pp))
+					AddDir( "Resoluções: "+", ".join(pp), "https:"+m2[0], 0, iconimage, iconimage, isFolder=False, info="Clique no título do filme para dar play")
 				else:
-					link4 = common.OpenURL( "https:"+m2[0] )
-					m4 = re.compile('https[^\"]+\.mp4').findall(link4)
-					if m4:
-						AddDir( title , m4[0], 3, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info)
-					else:
-						AddDir( "Video offline!" ,"", 0, "", "", isFolder=False)
+					AddDir( "Video offline!!" ,"", 0, "", "", isFolder=False)
 	except urllib2.URLError, e:
 		AddDir( "Video offline" ,"", 0, "", "", isFolder=False)
 # ----------------- FIM Filmes Online
@@ -839,8 +857,10 @@ elif mode == 170:
 	MoviesFO("Rapidvideo","cPagefo1")
 	setViewM()
 elif mode == 171:
-	PlayMFO()
+	GetMFO1()
 	setViewM()
+elif mode == 172:
+	PlayMFO1()
 elif mode == 85:
 	GenerosFO()
 elif mode == 200:
