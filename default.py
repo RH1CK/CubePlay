@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.27"
+Versao = "18.04.28"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -66,6 +66,7 @@ def getLocaleString(id):
 def Categories(): #70
 	#xbmcgui.Dialog().ok('Kodi', str(cPagenac))
 	#AddDir("[B]!{0}: {1}[/B] - {2} ".format(getLocaleString(30036), getLocaleString(30037) if makeGroups else getLocaleString(30038) , getLocaleString(30039)), "setting" ,50 ,os.path.join(iconsDir, "setting.png"), isFolder=False)
+	AddDir("[COLOR white][B][Canais de TV CubePlay][/B][/COLOR]" , "", 102, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
 	AddDir("[COLOR white][B][Canais de TV RedeCanais.com][/B][/COLOR]" , "", 100, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
 	AddDir("[COLOR blue][B][Filmes Dublado RedeCanais.com][/B][/COLOR]" , cPage, 90, "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", background="cPage")
 	AddDir("[COLOR blue][B][Filmes Legendado RedeCanais.com][/B][/COLOR]" , cPageleg, 91, "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", background="cPageleg")
@@ -373,11 +374,29 @@ def Busca(): # 160
 	except urllib2.URLError, e:
 		AddDir("Nada encontrado" , "", 0, "", "", 0)
 # ----------------- FIM BUSCA
+# ----------------- TV Cubeplay
+def TVCB(): #102
+	try:
+		link = urllib2.urlopen(URLP+"epg/iptv.php").read().replace('\n','').replace('\r','')
+		m = re.compile('name="(.+?)".+?mg="(.+?)".+?pg="(.+?)"').findall(link)
+		i=0
+		for name2,img2,epg2 in m:
+			AddDir(name2, str(i), 103, img2, img2, isFolder=False, IsPlayable=True, info = name2)
+			i+=1
+	except urllib2.URLError, e:
+		AddDir("Servidor offline, tente novamente em alguns minutos" , "", 0, "", "", 0)
+def PlayTVCB(): #103
+	try:
+		link = urllib2.urlopen(URLP+"epg/iptv.php?c="+url).read().replace('\n','').replace('\r','')
+		PlayUrl(name, link, iconimage, info)
+	except urllib2.URLError, e:
+		xbmcgui.Dialog().ok('Cube Play', "Servidor offline, tente novamente em alguns minutos")
+# ----------------- Fim TV Cubeplay
 # ----------------- REDECANAIS TV
 def Acento(x):
 	x = x.replace("\xe7","ç").replace("\xe0","à").replace("\xe1","á").replace("\xe2","â").replace("\xe3","ã").replace("\xe8","è").replace("\xe9","é").replace("\xea","ê").replace("\xed","í").replace("\xf3","ó").replace("\xf4","ô").replace("\xf5","õ").replace("\xfa","ú")
 	return x
-def TVRC(): # 100
+def TVRC(): #100
 	epg = "{"
 	AddDir("[B][COLOR yellow]Carregar lista EPG[/COLOR][/B]", "", 105, "", "", isFolder=False)
 	if(cEPG=="1"):
@@ -825,6 +844,11 @@ elif mode == 100:
 	setViewM()
 elif mode == 101:
 	PlayTVRC()
+elif mode == 102:
+	TVCB()
+	setViewM()
+elif mode == 103:
+	PlayTVCB()
 elif mode == 105:
 	Addon.setSetting("cEPG", "1")
 	xbmc.executebuiltin("XBMC.Container.Refresh()")
