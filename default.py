@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.28"
+Versao = "18.04.30"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -377,14 +377,24 @@ def Busca(): # 160
 # ----------------- TV Cubeplay
 def TVCB(): #102
 	try:
+		AddDir("[B][COLOR yellow]Carregar lista EPG[/COLOR][/B]", "", 105, "", "", isFolder=False)
+		if(cEPG=="1"):
+			epg = eval(EPG())
 		link = urllib2.urlopen(URLP+"epg/iptv.php").read().replace('\n','').replace('\r','')
 		m = re.compile('name="(.+?)".+?mg="(.+?)".+?pg="(.+?)"').findall(link)
 		i=0
 		for name2,img2,epg2 in m:
-			AddDir(name2, str(i), 103, img2, img2, isFolder=False, IsPlayable=True, info = name2)
+			try:
+				info2=epg[epg2].replace(";;;","\n")
+				if not epg2=="none" and cEPG=="1":
+					name2 = "[COLOR yellow]"+name2+"[/COLOR]"
+			except:
+				info2=""
+			AddDir(name2, str(i), 103, img2, img2, isFolder=False, IsPlayable=True, info = info2)
 			i+=1
 	except urllib2.URLError, e:
 		AddDir("Servidor offline, tente novamente em alguns minutos" , "", 0, "", "", 0)
+	Addon.setSetting("cEPG", "0")
 def PlayTVCB(): #103
 	try:
 		link = urllib2.urlopen(URLP+"epg/iptv.php?c="+url).read().replace('\n','').replace('\r','')
@@ -396,30 +406,32 @@ def PlayTVCB(): #103
 def Acento(x):
 	x = x.replace("\xe7","ç").replace("\xe0","à").replace("\xe1","á").replace("\xe2","â").replace("\xe3","ã").replace("\xe8","è").replace("\xe9","é").replace("\xea","ê").replace("\xed","í").replace("\xf3","ó").replace("\xf4","ô").replace("\xf5","õ").replace("\xfa","ú")
 	return x
+def EPG():
+	epg1 = "{"
+	try:
+		xbmc.executebuiltin("Notification({0}, {1}, 7000, {2})".format(AddonName, "Carregando lista EPG. Aguarde um momento!", icon))
+		link = common.OpenURL("http://www.epg.com.br/~mysql41/vertv.php").replace('	','')
+		m = re.compile('javascript:toggleCanal\(\d+,.([^\']+)\h*(?s)(.+?)\<\!-- orig').findall(link)
+		for c,f in m:
+			hora = ""
+			m2 = re.compile('(.+)(\(\d+.\d+\))\s').findall(f)
+			if m2:
+				for prog1,prog2 in m2:
+					hora += prog2 +" "+ prog1 + ";;;"
+					try:
+						hora= Acento(hora)
+					except:
+						hora = hora
+			hora = hora.replace("'","")
+			epg1 += "'"+c+"' : '"+hora+"' , "
+		return epg1+"'none':''}"
+	except urllib2.URLError, e:
+		return ""
+		xbmc.executebuiltin("Notification({0}, {1}, 7000, {2})".format(AddonName, "Erro. tente novamente!", icon))
 def TVRC(): #100
-	epg = "{"
 	AddDir("[B][COLOR yellow]Carregar lista EPG[/COLOR][/B]", "", 105, "", "", isFolder=False)
 	if(cEPG=="1"):
-		try:
-			xbmc.executebuiltin("Notification({0}, {1}, 7000, {2})".format(AddonName, "Carregando lista EPG. Aguarde um momento!", icon))
-			link = common.OpenURL("http://www.epg.com.br/~mysql41/vertv.php").replace('	','')
-			m = re.compile('javascript:toggleCanal\(\d+,.([^\']+)\h*(?s)(.+?)\<\!-- orig').findall(link)
-			for c,f in m:
-				hora = ""
-				m2 = re.compile('(.+)(\(\d+.\d+\))\s').findall(f)
-				if m2:
-					for prog1,prog2 in m2:
-						hora += prog2 +" "+ prog1 + ";;;"
-						try:
-							hora= Acento(hora)
-						except:
-							hora = hora
-				hora = hora.replace("'","")
-				epg += "'"+c+"' : '"+hora+"' , "
-		except urllib2.URLError, e:
-			xbmc.executebuiltin("Notification({0}, {1}, 7000, {2})".format(AddonName, "Erro. tente novamente!", icon))
-	epg += "'none':''}"
-	epg = eval(epg)
+		epg = eval(EPG())
 	link = urllib2.urlopen("https://pastebin.com/raw/QaYHY3Nf").read().replace('\n','').replace('\r','')
 	match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)".+?pg="(.+?)"').findall(link)
 	for url2,img2,name2,epg2 in match:
@@ -507,7 +519,7 @@ def GetMFO1(): #171
 		link = common.OpenURL( url )
 		m = re.compile('href\=\"(.+?\#Rapid)').findall(link)
 		t = re.compile('class=\"titleblock\"\>\s\<h1\>([^\<]+)').findall(link)
-		i = re.compile('meta name\=\"description\" content\=\"([^"]+)').findall(link)
+		i = re.compile('class=\"p-info-text\"\>\s\<span\>([^\<]+)').findall(link)
 		if m:
 			link2 = common.OpenURL( "https://filmesonline.online"+m[0] )
 			m2 = re.compile('iframe.+?src\=\"([^\"]+)').findall(link2)
