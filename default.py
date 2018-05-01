@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.04.30"
+Versao = "18.05.01"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -377,10 +377,10 @@ def Busca(): # 160
 # ----------------- TV Cubeplay
 def TVCB(): #102
 	try:
-		AddDir("[B][COLOR yellow]Carregar lista EPG[/COLOR][/B]", "", 105, "", "", isFolder=False)
+		AddDir("[B][COLOR yellow]Carregar lista EPG (epg.com.br)[/COLOR][/B]", "", 105, "", "", isFolder=False)
 		if(cEPG=="1"):
 			epg = eval(EPG())
-		link = urllib2.urlopen(URLP+"epg/iptv.php").read().replace('\n','').replace('\r','')
+		link = urllib2.urlopen(URLP+"epg/iptv.php?adulto="+cadulto).read().replace('\n','').replace('\r','')
 		m = re.compile('name="(.+?)".+?mg="(.+?)".+?pg="(.+?)"').findall(link)
 		i=0
 		for name2,img2,epg2 in m:
@@ -429,7 +429,7 @@ def EPG():
 		return ""
 		xbmc.executebuiltin("Notification({0}, {1}, 7000, {2})".format(AddonName, "Erro. tente novamente!", icon))
 def TVRC(): #100
-	AddDir("[B][COLOR yellow]Carregar lista EPG[/COLOR][/B]", "", 105, "", "", isFolder=False)
+	AddDir("[B][COLOR yellow]Carregar lista EPG (epg.com.br)[/COLOR][/B]", "", 105, "", "", isFolder=False)
 	if(cEPG=="1"):
 		epg = eval(EPG())
 	link = urllib2.urlopen("https://pastebin.com/raw/QaYHY3Nf").read().replace('\n','').replace('\r','')
