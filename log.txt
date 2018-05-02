@@ -14,4 +14,5 @@
 18.04.27 - fix filmesonline
 18.04.28 - Canais CubePlay
 18.04.30 - EPG Canais CubePlay
-18.05.01 - + Canis Cubeplay, esportes e adulto
+18.05.01 - + Canais Cubeplay, esportes e adulto
+18.05.02 - Ordem dos conteúdos
