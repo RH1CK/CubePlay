@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.05.01"
+Versao = "18.05.02"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -29,18 +29,17 @@ cPageani = Addon.getSetting("cPageani")
 cPagedes = Addon.getSetting("cPagedes")
 cPagefo1 = Addon.getSetting("cPagefo1")
 cEPG = Addon.getSetting("cEPG")
-if not cadulto:
-	cPageleg = cPage
-	cPagenac = cPage
-	cPageser = cPage
-	cPageani = cPage
-	cPagedes = cPage
+
+cOrdFO = "date" if Addon.getSetting("cOrdFO")=="0" else "title"
+cOrdRCF = "date" if Addon.getSetting("cOrdRCF")=="0" else "title"
+cOrdRCS = "date" if Addon.getSetting("cOrdRCS")=="0" else "title"
+
 Cat = Addon.getSetting("Cat")
 Catfo = Addon.getSetting("Catfo")
 Clista=[ "todos",                     "acao", "animacao", "aventura", "comedia", "drama", "fantasia", "ficcao-cientifica", "romance", "suspense", "terror"]
 Clista2=["Sem filtro (Mostrar Todos)","Acao", "Animacao", "Aventura", "Comedia", "Drama", "Fantasia", "Ficcao-Cientifica", "Romance", "Suspense", "Terror"]
-Clistafo0=[ "0",                        "48",  "47",  "23",  "3",    "7",        "8",        "5",       "4",      "14",                "16",      "15",       "11"]
-Clistafo1=["Sem filtro (Mostrar Todos)","2018","2017","2016","Ação", "Animação", "Aventura", "Comédia", "Drama",  "Ficção-Científica", "Romance", "Suspense", "Terror"]
+Clistafo0=[ "0",                        "48",         "3",    "7",        "8",        "5",       "4",      "14",                "16",      "15",       "11"]
+Clistafo1=["Sem filtro (Mostrar Todos)","Lançamentos","Ação", "Animação", "Aventura", "Comédia", "Drama",  "Ficção-Científica", "Romance", "Suspense", "Terror"]
 
 def setViewS():
 	xbmcplugin.setContent(int(sys.argv[1]), 'tvshows')
@@ -161,14 +160,16 @@ def MoviesRCD(): #90 Filme dublado
 		l= int(cPage)*5
 		for x in range(0, 5):
 			l +=1
-			link = common.OpenURL("http://www.redecanais.net/browse-filmes-dublado-videos-"+str(l)+"-date.html")
+			link = common.OpenURL("http://www.redecanais.net/browse-filmes-dublado-videos-"+str(l)+"-"+cOrdRCF+".html")
 			if Clista2[int(Cat)] != "Sem filtro (Mostrar Todos)":
-				link = common.OpenURL("http://www.redecanais.net/browse-"+Clista2[int(Cat)]+"-Filmes-videos-"+str(l)+"-date.html")
+				link = common.OpenURL("http://www.redecanais.net/browse-"+Clista2[int(Cat)]+"-Filmes-videos-"+str(l)+"-"+cOrdRCF+".html")
 			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
 			if match:
 				for url2,img2,name2 in match:
 					AddDir(name2 ,url2, 95, img2, img2, info="")
 					p += 1
+			else:
+				break
 		if p >= 60:
 			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(cPage) + 2) +"[/B]][/COLOR]", cPage , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background="cPage")
 	except e:
@@ -182,14 +183,16 @@ def MoviesRCL(): #91 Filme Legendado
 		l= int(cPageleg)*5
 		for x in range(0, 5):
 			l +=1
-			link = common.OpenURL("http://www.redecanais.net/browse-filmes-legendado-videos-"+str(l)+"-date.html")
+			link = common.OpenURL("http://www.redecanais.net/browse-filmes-legendado-videos-"+str(l)+"-"+cOrdRCF+".html")
 			if Clista2[int(Cat)] != "Sem filtro (Mostrar Todos)":
-				link = common.OpenURL("http://www.redecanais.net/browse-"+Clista2[int(Cat)]+"-Filmes-Legendado-videos-"+str(l)+"-date.html")
+				link = common.OpenURL("http://www.redecanais.net/browse-"+Clista2[int(Cat)]+"-Filmes-Legendado-videos-"+str(l)+"-"+cOrdRCF+".html")
 			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
 			if match:
 				for url2,img2,name2 in match:
 					AddDir(name2 ,url2, 95, img2, img2, info="")
 					p += 1
+			else:
+				break
 		if p >= 60:
 			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(cPageleg) + 2) +"[/B]][/COLOR]", cPageleg , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background="cPageleg")
 	except e:
@@ -202,12 +205,14 @@ def MoviesRCN(): #92 Filmes Nacional
 		l= int(cPagenac)*5
 		for x in range(0, 5):
 			l +=1
-			link = common.OpenURL("http://www.redecanais.net/browse-filmes-nacional-videos-"+str(l)+"-date.html")
+			link = common.OpenURL("http://www.redecanais.net/browse-filmes-nacional-videos-"+str(l)+"-"+cOrdRCF+".html")
 			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
 			if match:
 				for url2,img2,name2 in match:
 					AddDir(name2 ,url2, 95, img2, img2, info="")
 					p += 1
+			else:
+				break
 		if p >= 60:
 			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(cPagenac) + 2) +"[/B]][/COLOR]", cPagenac , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background="cPagenac")
 	except urllib2.URLError, e:
@@ -332,12 +337,14 @@ def SeriesRC(urlrc,pagina2): #130 Lista as Series RC
 		l= int(pagina)*5
 		for x in range(0, 5):
 			l +=1
-			link = common.OpenURL("http://www.redecanais.net/browse-"+urlrc+"-videos-"+str(l)+"-title.html")
+			link = common.OpenURL("http://www.redecanais.net/browse-"+urlrc+"-videos-"+str(l)+"-"+cOrdRCS+".html")
 			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
 			if match:
 				for url2,img2,name2 in match:
 					AddDir(name2 ,url2, 135, img2, img2, info="")
 					p += 1
+			else:
+				break
 		if p >= 60:
 			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(pagina) + 2) +"[/B]][/COLOR]", pagina , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background=pagina2)
 	except urllib2.URLError, e:
@@ -480,14 +487,14 @@ def MoviesFO(urlfo,pagina2): #170
 			AddDir("[COLOR blue][B]<< Pagina Anterior ["+ str( int(pagina) ) +"[/B]][/COLOR]", pagina , 120 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Previous-icon.png", isFolder=False, background=pagina2)
 		for x in range(0, 5):
 			l +=1
-			link = common.OpenURL("https://filmesonline.online/index.php?do=search&subaction=search&search_start="+str(l)+"&story="+urlfo+"&sortby=title&resorder=asc&catlist[]="+Clistafo0[int(Catfo)]).replace("\r","").replace("\n","")
-			#link = common.OpenURL("https://filmesonline.online/index.php?do=search&subaction=search&search_start="+str(l)+"&story="+urlfo+"&sortby=date&resorder=desc&catlist[]="+Clistafo0[int(Catfo)]).replace("\r","").replace("\n","")
+			ordem = "desc" if cOrdFO=="1" else "asc"
+			link = common.OpenURL("https://filmesonline.online/index.php?do=search&subaction=search&search_start="+str(l)+"&story="+urlfo+"&sortby="+cOrdFO+"&resorder="+ordem+"&catlist[]="+Clistafo0[int(Catfo)]).replace("\r","").replace("\n","")
+			#study("https://filmesonline.online/index.php?do=search&subaction=search&search_start="+str(l)+"&story="+urlfo+"&sortby="+cOrdFO+"&resorder="+ordem+"&catlist[]=")
 			link = re.sub('Novos Filmes.+', '', link)
 			m = re.compile('src=\"(.upload[^\"]+).+?alt=\"([^\"]+).+?href=\"([^\"]+)').findall(link)
 			m2 = re.compile('numb-serial..(.+?)\<.+?afd..(\d+)').findall(link)
 			i=0
 			if m:
-				study(str(m[0]))
 				#xbmcgui.Dialog().ok('Cube Play', str(m))
 				for img2,name2,url2 in m:
 					AddDir(name2 + " ("+m2[i][0]+") - " + m2[i][1], url2, 171, "https://filmesonline.online/"+img2, "https://filmesonline.online/"+img2, info="")
@@ -901,6 +908,7 @@ elif mode == 85:
 	GenerosFO()
 elif mode == 200:
 	CheckUpdate(True)
+	#xbmcgui.Dialog().ok('Cube Play', cOrdFO)
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
 #checkintegrity25852
