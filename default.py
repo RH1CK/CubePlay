@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.05.02"
+Versao = "18.05.02a"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -33,6 +33,8 @@ cEPG = Addon.getSetting("cEPG")
 cOrdFO = "date" if Addon.getSetting("cOrdFO")=="0" else "title"
 cOrdRCF = "date" if Addon.getSetting("cOrdRCF")=="0" else "title"
 cOrdRCS = "date" if Addon.getSetting("cOrdRCS")=="0" else "title"
+cOrdNCF = Addon.getSetting("cOrdNCF")
+cOrdNCS = Addon.getSetting("cOrdNCS")
 
 Cat = Addon.getSetting("Cat")
 Catfo = Addon.getSetting("Catfo")
@@ -72,8 +74,8 @@ def Categories(): #70
 	AddDir("[COLOR blue][B][Filmes Nacional RedeCanais.com][/B][/COLOR]" , cPagenac, 92, "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", background="cPagenac")
 	AddDir("[COLOR blue][B][Séries RedeCanais.com][/B][/COLOR]" , cPageser, 130, "https://walter.trakt.tv/images/shows/000/001/393/fanarts/thumb/fc68b3b649.jpg", "https://walter.trakt.tv/images/shows/000/001/393/fanarts/thumb/fc68b3b649.jpg", background="cPageser")
 
-	AddDir("[COLOR yellow][B][Séries NetCine.us][/B][/COLOR]" , URLNC + "listTVshow.php", 60, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
-	AddDir("[COLOR yellow][B][Filmes NetCine.us][/B][/COLOR]" , URLNC + "listMovies.php", 71, "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg")
+	AddDir("[COLOR yellow][B][Séries NetCine.us][/B][/COLOR]" , "", 60, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
+	AddDir("[COLOR yellow][B][Filmes NetCine.us][/B][/COLOR]" , "", 71, "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg")
 
 	AddDir("[COLOR purple][B][Filmes FilmesOnline.online][/B][/COLOR]" , "", 170, "https://walter.trakt.tv/images/movies/000/167/163/fanarts/thumb/23ecb5f950.jpg.webp", "https://walter.trakt.tv/images/movies/000/167/163/fanarts/thumb/23ecb5f950.jpg.webp")
 	#AddDir("[COLOR red][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
@@ -114,7 +116,7 @@ def EpisodioS(): #61
 	
 def Series(): #60
 	try:
-		link = urllib2.urlopen(url).read().replace('\n','').replace('\r','')
+		link = urllib2.urlopen(URLNC + "listTVshow.php?o="+cOrdNCS).read().replace('\n','').replace('\r','')
 		match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)"').findall(link)
 		for url2,img2,name2 in match:
 			AddDir(name2, url2, 61, img2, img2)
@@ -124,7 +126,7 @@ def Series(): #60
 def MoviesNC(): #70
 	AddDir("[COLOR yellow][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
 	try:
-		link = urllib2.urlopen(url +"?cat=" + Clista[int(Cat)]).read().replace('\n','').replace('\r','')
+		link = urllib2.urlopen(URLNC + "listMovies.php?o="+cOrdNCF +"&cat=" + Clista[int(Cat)]).read().replace('\n','').replace('\r','')
 		match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)"').findall(link)
 		for url2,img2,name2 in match:
 			AddDir(name2 ,url2, 79, img2, img2)
@@ -313,9 +315,9 @@ def EpisodiosRC(x): #136 Episodios
 				name3=name2
 			urlm = re.compile('href\=\"(.+?)\"').findall(url2)
 			try:
-				namem = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), re.compile('([^\-]+)').findall(url2)[0] ).encode('utf-8')
+				namem = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), re.compile('([^\<]+) -').findall(url2)[0] ).encode('utf-8')
 			except:
-				namem = re.compile('([^\-]+)').findall(url2)[0]
+				namem = re.compile('([^\<]+) -').findall(url2)[0]
 			namem = re.sub('<[\/]{0,1}strong>', "", namem)
 			if "<" in namem:
 				namem = ""
