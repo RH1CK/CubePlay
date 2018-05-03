@@ -29,6 +29,10 @@
 	<setting id="cOrdRCF" type="enum" label="Ordem dos filmes" lvalues="Data|Título" default="0" />
 	<setting id="cOrdRCS" type="enum" label="Ordem dos séries/anime/desenhos" lvalues="Data|Título" default="1" />
 	<setting label="" type="sep" />
+	<setting label="[B][COLOR yellow]NetCine.us:[/COLOR][/B]" type="text" />
+	<setting id="cOrdNCF" type="enum" label="Ordem dos filmes" lvalues="Data|Título" default="0" />
+	<setting id="cOrdNCS" type="enum" label="Ordem dos séries/anime/desenhos" lvalues="Data|Título" default="0" />
+	<setting label="" type="sep" />
 	<setting label="[B][COLOR purple]FilmesOnline.Online:[/COLOR][/B]" type="text" />
 	<setting id="cOrdFO" type="enum" label="Ordem dos filmes" lvalues="Data|Título" default="1" />
 </category>
