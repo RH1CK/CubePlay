@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.05.02a"
+Versao = "18.05.03"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -162,9 +162,9 @@ def MoviesRCD(): #90 Filme dublado
 		l= int(cPage)*5
 		for x in range(0, 5):
 			l +=1
-			link = common.OpenURL("http://www.redecanais.net/browse-filmes-dublado-videos-"+str(l)+"-"+cOrdRCF+".html")
+			link = common.OpenURL("http://www.redecanais.info/browse-filmes-dublado-videos-"+str(l)+"-"+cOrdRCF+".html")
 			if Clista2[int(Cat)] != "Sem filtro (Mostrar Todos)":
-				link = common.OpenURL("http://www.redecanais.net/browse-"+Clista2[int(Cat)]+"-Filmes-videos-"+str(l)+"-"+cOrdRCF+".html")
+				link = common.OpenURL("http://www.redecanais.info/browse-"+Clista2[int(Cat)]+"-Filmes-videos-"+str(l)+"-"+cOrdRCF+".html")
 			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
 			if match:
 				for url2,img2,name2 in match:
@@ -185,9 +185,9 @@ def MoviesRCL(): #91 Filme Legendado
 		l= int(cPageleg)*5
 		for x in range(0, 5):
 			l +=1
-			link = common.OpenURL("http://www.redecanais.net/browse-filmes-legendado-videos-"+str(l)+"-"+cOrdRCF+".html")
+			link = common.OpenURL("http://www.redecanais.info/browse-filmes-legendado-videos-"+str(l)+"-"+cOrdRCF+".html")
 			if Clista2[int(Cat)] != "Sem filtro (Mostrar Todos)":
-				link = common.OpenURL("http://www.redecanais.net/browse-"+Clista2[int(Cat)]+"-Filmes-Legendado-videos-"+str(l)+"-"+cOrdRCF+".html")
+				link = common.OpenURL("http://www.redecanais.info/browse-"+Clista2[int(Cat)]+"-Filmes-Legendado-videos-"+str(l)+"-"+cOrdRCF+".html")
 			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
 			if match:
 				for url2,img2,name2 in match:
@@ -207,7 +207,7 @@ def MoviesRCN(): #92 Filmes Nacional
 		l= int(cPagenac)*5
 		for x in range(0, 5):
 			l +=1
-			link = common.OpenURL("http://www.redecanais.net/browse-filmes-nacional-videos-"+str(l)+"-"+cOrdRCF+".html")
+			link = common.OpenURL("http://www.redecanais.info/browse-filmes-nacional-videos-"+str(l)+"-"+cOrdRCF+".html")
 			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
 			if match:
 				for url2,img2,name2 in match:
@@ -238,7 +238,7 @@ def PlayMRC(): #95 Play filmes
 # --------------  REDECANAIS SERIES,ANIMES,DESENHOS
 def PlaySRC(): #131 Play series
 	try:
-		url2 = re.sub('(\.link|\.com|\.info)', ".net", url.replace("https","http") )
+		url2 = re.sub('(\.link|\.com|\.net)', ".info", url.replace("https","http") )
 		link = common.OpenURL(url2)
 		desc = re.compile('<p itemprop=\"description\"><p>(.+)<\/p><\/p>').findall(link)
 		if desc:
@@ -253,7 +253,7 @@ def PlaySRC(): #131 Play series
 	except urllib2.URLError, e:
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 def TemporadasRC(): #135 Temporadas
-	url2 = re.sub('(\.link|\.com|\.info)', ".net", url.replace("https","http") )
+	url2 = re.sub('(\.link|\.com|\.net)', ".info", url.replace("https","http") )
 	link = common.OpenURL(url2).replace('\n','').replace('\r','').replace('</html>','<span style="font').replace("https","http")
 	temps = re.compile('size: x-large;\">.+?<span style\=\"font').findall(link)
 	if temps:
@@ -270,34 +270,9 @@ def TemporadasRC(): #135 Temporadas
 				if not "ilme" in tempname:
 					AddDir("[B]["+tempname+"][/B]" , url, 136, iconimage, iconimage, info="", isFolder=True, background=i)
 				i+=1
-	else:
-		epi = re.compile('<strong>(E.+?)<\/strong>(.+?)(<br|<\/p)').findall(link)
-	#if not temps:
-		for name2,url2,brp in epi:
-			name3 = re.compile('\d+').findall(name2)
-			if name3:
-				name3=name3[0]
-			else:
-				name3=name2
-			urlm = re.compile('href\=\"(.+?)\"').findall(url2)
-			try:
-				namem = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), re.compile('([^\-]+)').findall(url2)[0] ).encode('utf-8')
-			except:
-				namem = re.compile('([^\-]+)').findall(url2)[0]
-			namem = re.sub('<[\/]{0,1}strong>', "", namem)
-			if "<" in namem:
-				namem = ""
-			if urlm:
-				urlm[0] = "http://www.redecanais.net/" + urlm[0] if "http" not in urlm[0] else urlm[0]
-			if len(urlm) > 1:
-				urlm[1] = "http://www.redecanais.net/" + urlm[1] if "http" not in urlm[1] else urlm[1]
-				AddDir("[COLOR yellow][Dub][/COLOR] "+ name3 +" "+namem ,urlm[0], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
-				AddDir("[COLOR blue][Leg][/COLOR] "+ name3 +" "+namem ,urlm[1], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
-			elif urlm:
-				AddDir(name3 +" "+namem ,urlm[0], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
-	#xbmcgui.Dialog().ok('Kodi', "1"))
+	AddDir("[B][Todos Episódios][/B]" ,url, 139, iconimage, iconimage, info="")
 def EpisodiosRC(x): #136 Episodios
-	url2 = re.sub('(\.link|\.com|\.info)', ".net", url.replace("https","http") )
+	url2 = re.sub('(\.link|\.com|\.net)', ".info", url.replace("https","http") )
 	link = common.OpenURL(url2).replace('\n','').replace('\r','').replace('</html>','<span style="font')
 	temps = re.compile('size: x-large;\">.+?<span style\=\"font').findall(link)
 	if temps:
@@ -322,9 +297,9 @@ def EpisodiosRC(x): #136 Episodios
 			if "<" in namem:
 				namem = ""
 			if urlm:
-				urlm[0] = "http://www.redecanais.net/" + urlm[0] if "http" not in urlm[0] else urlm[0]
+				urlm[0] = "http://www.redecanais.info/" + urlm[0] if "http" not in urlm[0] else urlm[0]
 			if len(urlm) > 1:
-				urlm[1] = "http://www.redecanais.net/" + urlm[1] if "http" not in urlm[1] else urlm[1]
+				urlm[1] = "http://www.redecanais.info/" + urlm[1] if "http" not in urlm[1] else urlm[1]
 				AddDir("[COLOR yellow][Dub][/COLOR] "+ name3 +" "+namem ,urlm[0], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
 				AddDir("[COLOR blue][Leg][/COLOR] "+ name3 +" "+namem ,urlm[1], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
 			elif urlm:
@@ -339,7 +314,7 @@ def SeriesRC(urlrc,pagina2): #130 Lista as Series RC
 		l= int(pagina)*5
 		for x in range(0, 5):
 			l +=1
-			link = common.OpenURL("http://www.redecanais.net/browse-"+urlrc+"-videos-"+str(l)+"-"+cOrdRCS+".html")
+			link = common.OpenURL("http://www.redecanais.info/browse-"+urlrc+"-videos-"+str(l)+"-"+cOrdRCS+".html")
 			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
 			if match:
 				for url2,img2,name2 in match:
@@ -351,6 +326,37 @@ def SeriesRC(urlrc,pagina2): #130 Lista as Series RC
 			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(pagina) + 2) +"[/B]][/COLOR]", pagina , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background=pagina2)
 	except urllib2.URLError, e:
 		AddDir("Server error, tente novamente em alguns minutos" , url, 0, "", "")
+def AllEpisodiosRC(): #139 Mostrar todos Epi
+	link = common.OpenURL(url)
+	match = re.compile('<strong>(E.+?)<\/strong>(.+?)(<br|<\/p)').findall(link)
+	S= 0
+	if match:
+		for name2,url2,brp in match:
+			name3 = re.compile('\d+').findall(name2)
+			if name3:
+				name3=name3[0]
+				if int(name3) == 1:
+					S = S + 1
+			else:
+				name3=name2
+
+			urlm = re.compile('href\=\"(.+?)\"').findall(url2)
+			try:
+				namem = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), re.compile('([^\<]+) -').findall(url2)[0] ).encode('utf-8')
+			except:
+				namem = re.compile('([^\-]+)').findall(url2)[0]
+			if "<" in namem:
+				namem = ""
+			if urlm:
+				if "http" not in urlm[0]:
+					urlm[0] = "http://www.redecanais.net/" + urlm[0]
+			if len(urlm) > 1:
+				if "http" not in urlm[1]:
+					urlm[1] = "http://www.redecanais.net/" + urlm[1]
+				AddDir("[COLOR yellow][Dub][/COLOR] S"+str(S)+" E"+ name3 +" "+namem ,urlm[0], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
+				AddDir("[COLOR blue][Leg][/COLOR] S"+str(S)+" E"+ name3 +" "+namem ,urlm[1], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
+			elif urlm:
+				AddDir("S"+str(S)+" E"+ name3 +" "+namem ,urlm[0], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
 # ----------------- FIM REDECANAIS SERIES,ANIMES,DESENHOS
 # ----------------- BUSCA
 def Busca(): # 160
@@ -360,7 +366,7 @@ def Busca(): # 160
 		p= 1
 		AddDir("[COLOR blue][B][RedeCanais.com][/B][/COLOR]", "" , 0 ,"", isFolder=False)
 		l= 0
-		for x in range(0, 10):
+		for x in range(0, 7):
 			l +=1
 			link = common.OpenURL("http://www.redecanais.info/search.php?keywords="+d+"&page="+str(l))
 			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
@@ -456,7 +462,7 @@ def TVRC(): #100
 			AddDir(name2, url2, 101, img2, img2, isFolder=False, IsPlayable=True, info = info2)
 	Addon.setSetting("cEPG", "0")
 def PlayTVRC(): # 101
-	url2 = re.sub('(\.link|\.com|\.info)', ".net", url.replace("https","http") )
+	url2 = re.sub('(\.link|\.com|\.net)', ".info", url.replace("https","http") )
 	try:
 		link = common.OpenURL(url2)
 		player = re.compile('<iframe name=\"Player\".+src=\"([^\"]+)\"').findall(link)
@@ -491,7 +497,6 @@ def MoviesFO(urlfo,pagina2): #170
 			l +=1
 			ordem = "desc" if cOrdFO=="1" else "asc"
 			link = common.OpenURL("https://filmesonline.online/index.php?do=search&subaction=search&search_start="+str(l)+"&story="+urlfo+"&sortby="+cOrdFO+"&resorder="+ordem+"&catlist[]="+Clistafo0[int(Catfo)]).replace("\r","").replace("\n","")
-			#study("https://filmesonline.online/index.php?do=search&subaction=search&search_start="+str(l)+"&story="+urlfo+"&sortby="+cOrdFO+"&resorder="+ordem+"&catlist[]=")
 			link = re.sub('Novos Filmes.+', '', link)
 			m = re.compile('src=\"(.upload[^\"]+).+?alt=\"([^\"]+).+?href=\"([^\"]+)').findall(link)
 			m2 = re.compile('numb-serial..(.+?)\<.+?afd..(\d+)').findall(link)
@@ -888,6 +893,9 @@ elif mode == 136:
 	setViewS()
 elif mode == 133:
 	PlaySRC()
+	setViewS()
+elif mode == 139:
+	AllEpisodiosRC()
 	setViewS()
 elif mode == 140:
 	SeriesRC("animes","cPageani")
