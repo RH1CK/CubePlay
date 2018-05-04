@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.05.03"
+Versao = "18.05.03a"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -741,7 +741,7 @@ def CheckUpdate(msg): #200
 		uversao = urllib2.urlopen( "https://raw.githubusercontent.com/RH1CK/CubePlay/master/version.txt" ).read().replace('\n','').replace('\r','')
 		if uversao != Versao or not cadulto:
 			Update()
-			xbmc.executebuiltin("XBMC.Container.Refresh()")
+			#xbmc.executebuiltin("XBMC.Container.Refresh()")
 		elif msg==True:
 			xbmcgui.Dialog().ok('Cube Play', "O addon ja esta na ultima versao: "+Versao+"\nAs atualizacoes normalmente sao automaticas\nUse esse recurso caso nao esteja recebendo automaticamente")
 			xbmc.executebuiltin("XBMC.Container.Refresh()")
@@ -918,7 +918,6 @@ elif mode == 85:
 	GenerosFO()
 elif mode == 200:
 	CheckUpdate(True)
-	#xbmcgui.Dialog().ok('Cube Play', cOrdFO)
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
 #checkintegrity25852
