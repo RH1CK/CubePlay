@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.05.03a"
+Versao = "18.05.04"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -28,8 +28,9 @@ cPageser = Addon.getSetting("cPageser")
 cPageani = Addon.getSetting("cPageani")
 cPagedes = Addon.getSetting("cPagedes")
 cPagefo1 = Addon.getSetting("cPagefo1")
-cEPG = Addon.getSetting("cEPG")
+cPageMMf = Addon.getSetting("cPageMMf")
 
+cEPG = Addon.getSetting("cEPG")
 cOrdFO = "date" if Addon.getSetting("cOrdFO")=="0" else "title"
 cOrdRCF = "date" if Addon.getSetting("cOrdRCF")=="0" else "title"
 cOrdRCS = "date" if Addon.getSetting("cOrdRCS")=="0" else "title"
@@ -38,11 +39,13 @@ cOrdNCS = Addon.getSetting("cOrdNCS")
 
 Cat = Addon.getSetting("Cat")
 Catfo = Addon.getSetting("Catfo")
+CatMM = Addon.getSetting("CatMM")
 Clista=[ "todos",                     "acao", "animacao", "aventura", "comedia", "drama", "fantasia", "ficcao-cientifica", "romance", "suspense", "terror"]
 Clista2=["Sem filtro (Mostrar Todos)","Acao", "Animacao", "Aventura", "Comedia", "Drama", "Fantasia", "Ficcao-Cientifica", "Romance", "Suspense", "Terror"]
 Clistafo0=[ "0",                        "48",         "3",    "7",        "8",        "5",       "4",      "14",                "16",      "15",       "11"]
 Clistafo1=["Sem filtro (Mostrar Todos)","Lançamentos","Ação", "Animação", "Aventura", "Comédia", "Drama",  "Ficção-Científica", "Romance", "Suspense", "Terror"]
-
+ClistaMM0=["lancamentos","acao","animacao","aventura","comedia","drama","fantasia","ficcao-cientifica","guerra","policial","romance","suspense","terror"]
+ClistaMM1=["Lançamentos","Ação","Animação","Aventura","Comédia","Drama","Fantasia","F. Científica",    "Guerra","Policial","Romance","Suspense","Terror"]
 def setViewS():
 	xbmcplugin.setContent(int(sys.argv[1]), 'tvshows')
 def setViewM():
@@ -69,14 +72,14 @@ def Categories(): #70
 	#AddDir("[B]!{0}: {1}[/B] - {2} ".format(getLocaleString(30036), getLocaleString(30037) if makeGroups else getLocaleString(30038) , getLocaleString(30039)), "setting" ,50 ,os.path.join(iconsDir, "setting.png"), isFolder=False)
 	AddDir("[COLOR white][B][Canais de TV CubePlay][/B][/COLOR]" , "", 102, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
 	AddDir("[COLOR white][B][Canais de TV RedeCanais.com][/B][/COLOR]" , "", 100, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
+	AddDir("[B][COLOR cyan][Files MMFilmes.tv][/COLOR][/B]", "config" , 180,"https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", "https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", isFolder=True)
+	AddDir("[COLOR yellow][B][Séries NetCine.us][/B][/COLOR]" , "", 60, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
+	AddDir("[COLOR yellow][B][Filmes NetCine.us][/B][/COLOR]" , "", 71, "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg")
+	
 	AddDir("[COLOR blue][B][Filmes Dublado RedeCanais.com][/B][/COLOR]" , cPage, 90, "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", background="cPage")
 	AddDir("[COLOR blue][B][Filmes Legendado RedeCanais.com][/B][/COLOR]" , cPageleg, 91, "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", background="cPageleg")
 	AddDir("[COLOR blue][B][Filmes Nacional RedeCanais.com][/B][/COLOR]" , cPagenac, 92, "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", background="cPagenac")
 	AddDir("[COLOR blue][B][Séries RedeCanais.com][/B][/COLOR]" , cPageser, 130, "https://walter.trakt.tv/images/shows/000/001/393/fanarts/thumb/fc68b3b649.jpg", "https://walter.trakt.tv/images/shows/000/001/393/fanarts/thumb/fc68b3b649.jpg", background="cPageser")
-
-	AddDir("[COLOR yellow][B][Séries NetCine.us][/B][/COLOR]" , "", 60, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
-	AddDir("[COLOR yellow][B][Filmes NetCine.us][/B][/COLOR]" , "", 71, "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg")
-
 	AddDir("[COLOR purple][B][Filmes FilmesOnline.online][/B][/COLOR]" , "", 170, "https://walter.trakt.tv/images/movies/000/167/163/fanarts/thumb/23ecb5f950.jpg.webp", "https://walter.trakt.tv/images/movies/000/167/163/fanarts/thumb/23ecb5f950.jpg.webp")
 	#AddDir("[COLOR red][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
 	AddDir("[COLOR blue][B][Animes RedeCanais.com][/B][/COLOR]" , cPageser, 140, "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", background="cPageser")
@@ -552,6 +555,78 @@ def GetMFO1(): #171
 	except urllib2.URLError, e:
 		AddDir( "Video offline" ,"", 0, "", "", isFolder=False)
 # ----------------- FIM Filmes Online
+# ----------------- Inicio MM filmes
+def GenerosMM(): #189
+	d = xbmcgui.Dialog().select("Escolha o Genero", ClistaMM1)
+	if d != -1:
+		global Cat
+		Addon.setSetting("CatMM", str(d) )
+		Cat = d
+		Addon.setSetting("cPageMMf", "0" )
+		xbmc.executebuiltin("XBMC.Container.Refresh()")
+def ListFilmeMM(pagina2): #180
+	AddDir("[COLOR yellow][B][Gênero dos Filmes]:[/B] " + ClistaMM1[int(CatMM)] +"[/COLOR]", "url" ,189 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
+	pagina=eval(pagina2)
+	l= int(pagina)*5
+	p=1
+	i=0
+	if int(pagina) > 0:
+		AddDir("[COLOR blue][B]<< Pagina Anterior ["+ str( int(pagina) ) +"[/B]][/COLOR]", pagina , 120 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Previous-icon.png", isFolder=False, background=pagina2)
+	try:
+		for x in range(0, 5):
+			l+=1
+			link = common.OpenURL("http://www.mmfilmes.tv/category/"+ ClistaMM0[int(CatMM)] +"/page/"+str(l)+"/")
+			m = re.compile('id\=\"post\-\d+\".+?\=.([^\"]+)\h*(?s)(.+?)(http[^\"]+)').findall(link)
+			res = re.compile('audioy..([^\<]+)').findall(link)
+			jpg = re.compile('src=\"(http.+?www.mmfilmes.tv\/wp-content\/uploads[^\"]+)').findall(link)
+			if m:
+				for name2,b,url2 in m:
+					try:
+						AddDir(name2+ " [COLOR yellow]"+res[i]+"[/COLOR]", url2, 181, jpg[i], jpg[i],isFolder=True,IsPlayable=False)
+					except:
+						AddDir(name2, url2, 181, "", "",isFolder=True,IsPlayable=False)
+					i+=1
+					p+=1
+			i=0
+			if p >= 50:
+				AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(pagina) + 2) +"[/B]][/COLOR]", pagina , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background=pagina2)
+	except:
+		pass
+def OpenLinkMM(): #181
+	link = common.OpenURL(url)
+	m = re.compile('boxp\(.([^\']+)').findall(link)
+	info2 = re.compile('mCSB_container..\s(\h*(?s)(.+?))\<\/div').findall(link)
+	if info2:
+		info2=info2[0][0].replace("\t","")
+	else:
+		info2=""
+	if m:
+		link2 = common.OpenURL(m[0],headers={'referer': "http://www.mmfilmes.tv/"})
+		m2 = re.compile('opb\(.([^\']+).+?.{3}.+?[^\\>]+.([^\<]+)').findall(link2)
+		if m2:
+			for link,dubleg in m2:
+				AddDir( name +" ("+dubleg+")" ,link, 182, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info2)
+def PlayLinkMM(): #182
+	#xbmcgui.Dialog().ok(background, url + " " +background)
+	link = common.OpenURL(url,headers={'referer': "http://www.mmfilmes.tv/"})
+	m = re.compile('addiframe\(\'([^\']+)').findall(link)
+	if m:
+		link2 = common.OpenURL(m[0],headers={'referer': "http://www.mmfilmes.tv/"}).replace("file","\nfile")
+		m2 = re.compile('file.+?(h[^\']+).+?(\d+p)\'').findall(link2)
+		legenda = re.compile('(http[^\']+\.(vtt|srt|sub|ssa|txt|ass))').findall(link2)
+		listar=[]
+		listal=[]
+		for link,res in m2:
+			listal.append(link)
+			listar.append(res)
+		d = xbmcgui.Dialog().select("Selecione a resolução", listar)
+		if d!= -1:
+			#PlayUrl(listal[d], listal[d], iconimage, "")
+			if legenda:
+				PlayUrl(name, listal[d], iconimage, info, sub=legenda[0][0])
+			else:
+				PlayUrl(name, listal[d], iconimage, info)
+# ----------------- Fim MM filmes
 def GetChoice(choiceTitle, fileTitle, urlTitle, choiceFile, choiceUrl, choiceNone=None, fileType=1, fileMask=None, defaultText=""):
 	choice = ''
 	choiceList = [getLocaleString(choiceFile), getLocaleString(choiceUrl)]
@@ -568,7 +643,7 @@ def GetChoice(choiceTitle, fileTitle, urlTitle, choiceFile, choiceUrl, choiceNon
 		choice = xbmcgui.Dialog().browse(fileType, getLocaleString(urlTitle), 'files', fileMask, False, False, defaultText).decode("utf-8")
 	return choice
 			
-def PlayUrl(name, url, iconimage=None, info=''):
+def PlayUrl(name, url, iconimage=None, info='', sub=''):
 	#xbmcgui.Dialog().ok(background, url + " " +background)
 	if background != "None":
 		b = background.split(";;;")
@@ -580,6 +655,8 @@ def PlayUrl(name, url, iconimage=None, info=''):
 	xbmc.log('--- Playing "{0}". {1}'.format(name, url), 2)
 	listitem = xbmcgui.ListItem(path=url)
 	listitem.setInfo(type="Video", infoLabels={"mediatype": "video", "Title": name, "Plot": info })
+	if sub!='':
+		listitem.setSubtitles(['special://temp/example.srt', sub ])
 	if iconimage is not None:
 		try:
 			listitem.setArt({'thumb' : iconimage})
@@ -613,6 +690,8 @@ def AddDir(name, url, mode, iconimage='', logos='', index=-1, move=0, isFolder=T
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=131&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
 	elif mode== 171:
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=175&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
+	elif mode== 181:
+		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=185&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
 	if info=="Favoritos":
 		items = [("Remover dos favoritos", 'XBMC.RunPlugin({0}?index={1}&mode=33)'.format(sys.argv[0], index)),
 		(getLocaleString(30030), 'XBMC.RunPlugin({0}?index={1}&mode={2}&move=-1)'.format(sys.argv[0], index, 38)),
@@ -816,6 +895,8 @@ elif mode == 131:
 	AddFavorites(url, iconimage, name, "135", 'favorites.txt')
 elif mode == 175: 
 	AddFavorites(url, iconimage, name, "171", 'favorites.txt')
+elif mode == 185: 
+	AddFavorites(url, iconimage, name, "181", 'favorites.txt')
 elif mode == 33:
 	RemoveFromLists(index, favoritesFile)
 elif mode == 34:
@@ -916,6 +997,16 @@ elif mode == 172:
 	PlayMFO1()
 elif mode == 85:
 	GenerosFO()
+elif mode == 180:
+	ListFilmeMM("cPageMMf")
+	setViewM()
+elif mode == 181:
+	OpenLinkMM()
+	setViewM()
+elif mode == 182:
+	PlayLinkMM()
+elif mode == 189:
+	GenerosMM()
 elif mode == 200:
 	CheckUpdate(True)
 
