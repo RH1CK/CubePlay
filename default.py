@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
-import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
+import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, random
 
-Versao = "18.05.04"
+Versao = "18.05.05"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -72,7 +72,7 @@ def Categories(): #70
 	#AddDir("[B]!{0}: {1}[/B] - {2} ".format(getLocaleString(30036), getLocaleString(30037) if makeGroups else getLocaleString(30038) , getLocaleString(30039)), "setting" ,50 ,os.path.join(iconsDir, "setting.png"), isFolder=False)
 	AddDir("[COLOR white][B][Canais de TV CubePlay][/B][/COLOR]" , "", 102, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
 	AddDir("[COLOR white][B][Canais de TV RedeCanais.com][/B][/COLOR]" , "", 100, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
-	AddDir("[B][COLOR cyan][Files MMFilmes.tv][/COLOR][/B]", "config" , 180,"https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", "https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", isFolder=True)
+	AddDir("[B][COLOR cyan][Filmes MMFilmes.tv][/COLOR][/B]", "config" , 180,"https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", "https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", isFolder=True)
 	AddDir("[COLOR yellow][B][Séries NetCine.us][/B][/COLOR]" , "", 60, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
 	AddDir("[COLOR yellow][B][Filmes NetCine.us][/B][/COLOR]" , "", 71, "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg")
 	
@@ -293,9 +293,9 @@ def EpisodiosRC(x): #136 Episodios
 				name3=name2
 			urlm = re.compile('href\=\"(.+?)\"').findall(url2)
 			try:
-				namem = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), re.compile('([^\<]+) -').findall(url2)[0] ).encode('utf-8')
+				namem = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), re.compile('([^\-]+)').findall(url2)[0] ).encode('utf-8')
 			except:
-				namem = re.compile('([^\<]+) -').findall(url2)[0]
+				namem = re.compile('([^\-]+)').findall(url2)[0]
 			namem = re.sub('<[\/]{0,1}strong>', "", namem)
 			if "<" in namem:
 				namem = ""
@@ -345,7 +345,7 @@ def AllEpisodiosRC(): #139 Mostrar todos Epi
 
 			urlm = re.compile('href\=\"(.+?)\"').findall(url2)
 			try:
-				namem = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), re.compile('([^\<]+) -').findall(url2)[0] ).encode('utf-8')
+				namem = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), re.compile('([^\-]+)').findall(url2)[0] ).encode('utf-8')
 			except:
 				namem = re.compile('([^\-]+)').findall(url2)[0]
 			if "<" in namem:
@@ -579,12 +579,14 @@ def ListFilmeMM(pagina2): #180
 			m = re.compile('id\=\"post\-\d+\".+?\=.([^\"]+)\h*(?s)(.+?)(http[^\"]+)').findall(link)
 			res = re.compile('audioy..([^\<]+)').findall(link)
 			jpg = re.compile('src=\"(http.+?www.mmfilmes.tv\/wp-content\/uploads[^\"]+)').findall(link)
+			dubleg = re.compile('boxxer.+\s.+boxxer..([^\<]*)').findall(link)
 			if m:
 				for name2,b,url2 in m:
+					name2 = name2.replace("&#8211;","-").replace("&#038;","&")
 					try:
-						AddDir(name2+ " [COLOR yellow]"+res[i]+"[/COLOR]", url2, 181, jpg[i], jpg[i],isFolder=True,IsPlayable=False)
+						AddDir(name2+ " [COLOR yellow]"+res[i]+"[/COLOR] [COLOR blue]"+dubleg[i]+"[/COLOR]", url2, 181, jpg[i], jpg[i],isFolder=True,IsPlayable=False,background=name2)
 					except:
-						AddDir(name2, url2, 181, "", "",isFolder=True,IsPlayable=False)
+						AddDir(name2, url2, 181, "", "",isFolder=True,IsPlayable=False,background=name2)
 					i+=1
 					p+=1
 			i=0
@@ -605,7 +607,7 @@ def OpenLinkMM(): #181
 		m2 = re.compile('opb\(.([^\']+).+?.{3}.+?[^\\>]+.([^\<]+)').findall(link2)
 		if m2:
 			for link,dubleg in m2:
-				AddDir( name +" ("+dubleg+")" ,link, 182, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info2)
+				AddDir( background +" [COLOR blue]("+dubleg+")[/COLOR]" ,link, 182, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info2)
 def PlayLinkMM(): #182
 	#xbmcgui.Dialog().ok(background, url + " " +background)
 	link = common.OpenURL(url,headers={'referer': "http://www.mmfilmes.tv/"})
@@ -619,6 +621,9 @@ def PlayLinkMM(): #182
 		for link,res in m2:
 			listal.append(link)
 			listar.append(res)
+		if len(listal) <1:
+			xbmcgui.Dialog().ok('Cube Play', 'Erro, video não encontrado')
+			sys.exit(int(sys.argv[1]))
 		d = xbmcgui.Dialog().select("Selecione a resolução", listar)
 		if d!= -1:
 			#PlayUrl(listal[d], listal[d], iconimage, "")
@@ -817,7 +822,7 @@ def ToggleNext(url, background):
 
 def CheckUpdate(msg): #200
 	try:
-		uversao = urllib2.urlopen( "https://raw.githubusercontent.com/RH1CK/CubePlay/master/version.txt" ).read().replace('\n','').replace('\r','')
+		uversao = urllib2.urlopen( "https://raw.githubusercontent.com/RH1CK/CubePlay/master/version.txt?r="+str(random.random() *100) ).read().replace('\n','').replace('\r','')
 		if uversao != Versao or not cadulto:
 			Update()
 			#xbmc.executebuiltin("XBMC.Container.Refresh()")
@@ -850,7 +855,7 @@ def Update():
 			file.close()
 	except urllib2.URLError, e:
 		fonte = ""
-	xbmc.executebuiltin("Notification({0}, {1}, 9000, {2})".format(AddonName, "Atualizando o addon. Aguarde um momento!", icon))
+	xbmc.executebuiltin("Notification({0}, {1}, 9000, {2})".format(AddonName, "Atualizando o addon. Feche e abra para ver as alterações!", icon))
 	xbmc.sleep(2000)
 
 def study(x):
