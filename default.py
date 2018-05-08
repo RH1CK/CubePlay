@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
-import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, random
+import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.05.05a"
+Versao = "18.05.08" #
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -91,51 +91,119 @@ def Categories(): #70
 	AddDir("[B][COLOR blue]http://fb.com/CubePlayKodi[/COLOR][/B]", "config" ,0 ,"https://cdn.pixabay.com/photo/2017/08/20/10/30/facebook-2661207_960_720.jpg", "https://cdn.pixabay.com/photo/2017/08/20/10/30/facebook-2661207_960_720.jpg", isFolder=False, info="Para sugestoes e report de bugs nossa pagina no FB: [COLOR blue]http://fb.com/CubePlayKodi[/COLOR]")
 	AddDir("[B][COLOR orange][Checar Atualizações][/COLOR][/B]", "config" , 200,"https://accelerator-origin.kkomando.com/wp-content/uploads/2015/04/update2-970x546.jpg", "https://accelerator-origin.kkomando.com/wp-content/uploads/2015/04/update2-970x546.jpg", isFolder=False, info="Checar se ha atualizacoes\n\nAs atualizacoes normalmente sao automaticas\nUse esse recurso caso nao esteja recebendo automaticamente")
 # --------------  NETCINE
+def Series(): #60
+	AddDir("[B]!{0}: {1}[/B] - {2} ".format(getLocaleString(30036), getLocaleString(30037) if makeGroups else getLocaleString(30038) , getLocaleString(30039)), "setting" ,50 ,os.path.join(iconsDir, "setting.png"), isFolder=False)
+	try:
+		link = common.OpenURL("http://netcine.us/tvshows/page/1/").replace('\n','').replace('\r','')
+		l2 = re.compile("box_movies(.+)").findall(link)
+		link = common.OpenURL("http://netcine.us/tvshows/page/2/").replace('\n','').replace('\r','')
+		l3 = re.compile("box_movies(.+)").findall(link)
+		lista = re.compile("img src\=\"([^\"]+).+?alt\=\"([^\"]+).+?f\=\"([^\"]+)").findall(l2[0]+l3[0])
+		if cOrdNCS=="1":
+			lista = sorted(lista, key=lambda lista: lista[1])
+		for img2,name2,url2 in lista:
+			if name2!="Close":
+				name2 = name2.replace("&#8211;","-").replace("&#038;","&").replace("&#8217;","\'")
+				img2 = re.sub('-120x170.(jpg|png)', r'.\1', img2 )
+				AddDir(name2 ,url2, 61, img2, img2, isFolder=True)
+	except urllib2.URLError, e:
+		AddDir("Server NETCINE offline, tente novamente em alguns minutos" , "", 0, isFolder=False)
+def ListSNC(x): #61
+	try:
+		link = common.OpenURL(url).replace('\n','').replace('\r','').replace('<div class="soci">',"class='has-sub'").replace('\t',"")
+		m = re.compile("(.emporada \w+)(.+?class\=\'has-sub\')").findall(link)
+		info2 = re.compile("<h2>Synopsis<\/h2>+.+?[div|p].{0,15}?.+?(.+?)<\/").findall(link)
+		info2 = re.sub('style\=.+?\>', '', info2[0] ) if info2 else " "
+		i=0
+		if "None" in background:
+			for season,epis in m:
+				AddDir(season ,url, 61, iconimage, iconimage, isFolder=True, background=i,info=info2)
+				i+=1
+		else:
+			m2 = re.compile("href\=\"([^\"]+).+?(\d+) - (\d+)").findall( m[int(x)][1] )
+			m3 = re.compile("icon-chevron-right\W+\w\W+([^\<]+)").findall( m[int(x)][1] )
+			for url2,S,E in m2:
+				AddDir("S"+S+"E"+E +" - "+m3[i],url2, 62, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info)
+				i+=1
+	except urllib2.URLError, e:
+		AddDir("Server NETCINE offline, tente novamente em alguns minutos" , "", 0, isFolder=False)
 def PlayS(): #62
 	try:
-		link = urllib2.urlopen(URLNC +  url).read().replace('\n','').replace('\r','')
-		match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)".+?nfo="(.+?)"').findall(link)
-		listau=[]
-		listan=[]
-		listai=[]
-		for url2,img2,name2,info2 in match:
-			listau.append(url2)
-			listan.append(name2 + name)
-			listai.append(info2)
-		d = xbmcgui.Dialog().select("Cube Play", listan)
+		link = common.OpenURL(url).replace('\n','').replace('\r','')
+		m = re.compile("\"play-.\".+?src=\"([^\"]+)").findall(link)
+		listan = re.compile("\#play-...(\w*)").findall(link)
+		listaf=[]
+		i=0
+		listal=[]
+		for url2 in m:
+			link3 = common.OpenURL(url2).replace('\n','').replace('\r','')
+			m3 = re.compile("src\=.([^\"]+)").findall(link3)
+			for url3 in m3:
+				link4 = common.OpenURL(url3)
+				m4= re.compile("http.+?mp4[^\"]+").findall(link4) 
+				m4 = list(reversed(m4))
+				for url4 in m4:
+					listal.append(url4)
+					dubleg="[COLOR green]HD[/COLOR][/B]" if "ALTO" in url4 else "[COLOR red]SD[/COLOR][/B]"
+					listaf.append("[B][COLOR blue]"+listan[i] +"[/COLOR] "+dubleg)
+			i+=1
+		d = xbmcgui.Dialog().select("Escolha a resolução:", listaf)
 		if d!= -1:
-			PlayUrl(listan[d], listau[d], iconimage, listai[d])
+			PlayUrl(name, listal[d], iconimage, info)
 	except urllib2.URLError, e:
-		xbmcgui.Dialog().ok("Cube Play" , "Server error, tente novamente em alguns minutos")
-
-def EpisodioS(): #61
-	try:
-		link = urllib2.urlopen( URLNC + url ).read().replace('\n','').replace('\r','')
-		match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)".+?nfo="(.+?)"').findall(link)
-		for url2,img2,name2,info2 in match:
-			AddDir(name2 ,url2, 62, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info2)
-	except urllib2.URLError, e:
-		AddDir("Server error, tente novamente em alguns minutos" , "", 0, isFolder=False)
-	
-def Series(): #60
-	try:
-		link = urllib2.urlopen(URLNC + "listTVshow.php?o="+cOrdNCS).read().replace('\n','').replace('\r','')
-		match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)"').findall(link)
-		for url2,img2,name2 in match:
-			AddDir(name2, url2, 61, img2, img2)
-	except urllib2.URLError, e:
-		AddDir("Server NETCINE offline, tente novamente em alguns minutos" , "", 0, isFolder=False)
-
-def MoviesNC(): #70
+		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
+# --------------------------------------
+def MoviesNC(): #71
 	AddDir("[COLOR yellow][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
 	try:
-		link = urllib2.urlopen(URLNC + "listMovies.php?o="+cOrdNCF +"&cat=" + Clista[int(Cat)]).read().replace('\n','').replace('\r','')
-		match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)"').findall(link)
-		for url2,img2,name2 in match:
-			AddDir(name2 ,url2, 79, img2, img2)
+		if Cat=="0":
+			link = common.OpenURL("http://netcine.us/page/1/?mt").replace('\n','').replace('\r','')
+			l2 = re.compile("box_movies(.+)").findall(link)
+			link = common.OpenURL("http://netcine.us/page/2/?mt").replace('\n','').replace('\r','')
+			l3 = re.compile("box_movies(.+)").findall(link)
+			lista = re.compile("img src\=\"([^\"]+).+?alt\=\"([^\"]+).+?f\=\"([^\"]+)").findall(l2[0]+l3[0])
+		else:
+			link = common.OpenURL("http://netcine.us/category/"+Clista[int(Cat)]).replace('\n','').replace('\r','')
+			l2 = re.compile("box_movies(.+)").findall(link)
+			lista = re.compile("img src\=\"([^\"]+).+?alt\=\"([^\"]+).+?f\=\"([^\"]+)").findall(l2[0])
+		if cOrdNCF=="1":
+			lista = sorted(lista, key=lambda lista: lista[1])
+		for img2,name2,url2 in lista:
+			if name2!="Close":
+				name2 = name2.replace("&#8211;","-").replace("&#038;","&").replace("&#8217;","\'")
+				img2 = re.sub('-120x170.(jpg|png)', r'.\1', img2 )
+				AddDir(name2 ,url2, 78, img2, img2, isFolder=True)
 	except urllib2.URLError, e:
 		AddDir("Server NETCINE offline, tente novamente em alguns minutos" , "", 0, isFolder=False)
-
+def ListMoviesNC(): #78
+	try:
+		link = common.OpenURL(url).replace('\n','').replace('\r','')
+		m = re.compile("\"play-.\".+?src=\"([^\"]+)").findall(link)
+		m2 = re.compile("\#play-...(\w*)").findall(link)
+		info2 = re.compile("<h2>Synopsis<\/h2>+.+?[div|p].{0,15}?.+?(.+?)<\/").findall(link)
+		info2 = re.sub('style\=.+?\>', '', info2[0] ) if info2 else ""
+		i=0
+		for name2 in m2:
+			AddDir(name +" [COLOR blue]("+ name2 +")[/COLOR]", m[i], 79, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info2)
+			i+=1
+	except urllib2.URLError, e:
+		AddDir("Server error, tente novamente em alguns minutos" , "", 0, isFolder=False)
+def PlayMNC(): #79
+	try:
+		link = common.OpenURL(url)
+		m = re.compile("src\=.([^\"]+)").findall(link)
+		link2 = common.OpenURL(m[0])
+		m2 = re.compile("http.+?mp4[^\"]+").findall(link2)
+		if m2:
+			m2 = list(reversed(m2))
+			lista =[]
+			for url2 in m2:
+				lista.append( "[B][COLOR green]HD[/COLOR][/B]" if "ALTO" in url2 else "[B][COLOR red]SD[/COLOR][/B]")
+			d = xbmcgui.Dialog().select("Escolha a resolução:", lista)
+			if d!= -1:
+				PlayUrl(name, m2[d], iconimage, info)
+	except urllib2.URLError, e:
+		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 def Generos(): #80
 	d = xbmcgui.Dialog().select("Escolha o Genero", Clista2)
 	if d != -1:
@@ -145,15 +213,6 @@ def Generos(): #80
 		Addon.setSetting("cPage", "0" )
 		Addon.setSetting("cPageleg", "0" )
 		xbmc.executebuiltin("XBMC.Container.Refresh()")
-
-def PlayM(): #79
-	try:
-		link = urllib2.urlopen(URLNC + url ).read().replace('\n','').replace('\r','')
-		match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)".+?nfo="(.+?)"').findall(link)
-		for url2,img2,name2,info2 in match:
-			AddDir(name2 + name ,url2, 3, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info2, background=url+";;;"+name)
-	except urllib2.URLError, e:
-		AddDir("Server error, tente novamente em alguns minutos" , "", 0, isFolder=False)
 # --------------  FIM NETCINE
 # --------------  REDECANAIS FILMES
 def MoviesRCD(): #90 Filme dublado
@@ -685,9 +744,9 @@ def AddDir(name, url, mode, iconimage='', logos='', index=-1, move=0, isFolder=T
 	items = []
 	if mode == 1 or mode == 2:
 		items = []
-	elif mode== 61 or info=="series nc":
+	elif mode== 61 and info=="":
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=31&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
-	elif mode== 79:
+	elif mode== 78:
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=72&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
 	elif mode== 95:
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=93&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
@@ -822,12 +881,14 @@ def ToggleNext(url, background):
 
 def CheckUpdate(msg): #200
 	try:
-		uversao = urllib2.urlopen( "https://raw.githubusercontent.com/RH1CK/CubePlay/master/version.txt?r="+str(random.random() *100) ).read().replace('\n','').replace('\r','')
+		uversao = urllib2.urlopen( "https://raw.githubusercontent.com/RH1CK/CubePlay/master/version.txt" ).read().replace('\n','').replace('\r','')
+		uversao = re.compile('[a-zA-Z\.\d]+').findall(uversao)[0]
+		#xbmcgui.Dialog().ok(Versao, uversao)
 		if uversao != Versao or not cadulto:
 			Update()
 			#xbmc.executebuiltin("XBMC.Container.Refresh()")
 		elif msg==True:
-			xbmcgui.Dialog().ok('Cube Play', "O addon ja esta na ultima versao: "+Versao+"\nAs atualizacoes normalmente sao automaticas\nUse esse recurso caso nao esteja recebendo automaticamente")
+			xbmcgui.Dialog().ok('Cube Play', "O addon já esta na última versao: "+Versao+"\nAs atualizações normalmente são automáticas\nUse esse recurso caso nao esteja recebendo automaticamente")
 			xbmc.executebuiltin("XBMC.Container.Refresh()")
 	except urllib2.URLError, e:
 		if msg==True:
@@ -858,7 +919,8 @@ def Update():
 	xbmc.executebuiltin("Notification({0}, {1}, 9000, {2})".format(AddonName, "Atualizando o addon. Feche e abra para ver as alterações!", icon))
 	xbmc.sleep(2000)
 
-def study(x):
+def ST(x):
+	x = str(x)
 	Path = xbmc.translatePath( xbmcaddon.Addon().getAddonInfo('path') ).decode("utf-8")
 	py = os.path.join( Path, "study.txt")
 	file = open(py, "w")
@@ -893,7 +955,7 @@ elif mode == 333:
 elif mode == 31: 
 	AddFavorites(url, iconimage, name, "61", 'favorites.txt')
 elif mode == 72: 
-	AddFavorites(url, iconimage, name, "79", 'favorites.txt')
+	AddFavorites(url, iconimage, name, "78", 'favorites.txt')
 elif mode == 93: 
 	AddFavorites(url, iconimage, name, "95", 'favorites.txt')
 elif mode == 131: 
@@ -926,7 +988,7 @@ elif mode == 60:
 	Series()
 	setViewS()
 elif mode == 61:
-	EpisodioS()
+	ListSNC(background)
 	setViewS()
 elif mode == 62:
 	PlayS()
@@ -934,8 +996,11 @@ elif mode == 62:
 elif mode == 71:
 	MoviesNC()
 	setViewM()
+elif mode == 78:
+	ListMoviesNC()
+	setViewS()
 elif mode == 79:
-	PlayM()
+	PlayMNC()
 	setViewS()
 elif mode == 80:
 	Generos()
