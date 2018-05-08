@@ -20,3 +20,4 @@
 18.05.03 - Pasta de todos episodios RC
 18.05.04 - Filmes do site MMfilmes.tv
 18.05.05a - Fix MMfilmes.tv
+18.05.08 - NetCine reescrito
