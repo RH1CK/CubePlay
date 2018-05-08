@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.05.08" #
+Versao = "18.05.08a" #
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -291,7 +291,7 @@ def PlayMRC(): #95 Play filmes
 		if player:
 			link2 = common.OpenURL(player[0])
 			urlp = re.compile('file: \"([^\"]+)\"').findall(link2)
-			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , urlp[0] + "?play|Referer=http://www.redecanais.com/", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name)
+			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , urlp[0] + "?play|Referer="+player[0], 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name)
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
 	except urllib2.URLError, e:
@@ -309,7 +309,7 @@ def PlaySRC(): #131 Play series
 		if player:
 			link2 = common.OpenURL(player[0])
 			urlp = re.compile('file: \"([^\"]+)\"').findall(link2)
-			PlayUrl(name, urlp[0] + "?play|Referer=http://www.redecanais.com/", iconimage, name)
+			PlayUrl(name, urlp[0] + "?play|Referer="+player[0], iconimage, name)
 		else:
 			xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 	except urllib2.URLError, e:
@@ -531,7 +531,7 @@ def PlayTVRC(): # 101
 		link2 = common.OpenURL(player[0])
 		urlp = re.compile('(http[^\"]+m3u[^\"]+)').findall(link2)
 		if urlp:
-			PlayUrl(name, urlp[0] + "?play|Referer=http://www.redecanais.com/", iconimage, info)
+			PlayUrl(name, urlp[0] + "?play|Referer="+player[0], iconimage, info)
 		else:
 			xbmcgui.Dialog().ok('Cube Play', "Erro, aguarde atualização")
 	except urllib2.URLError, e:
