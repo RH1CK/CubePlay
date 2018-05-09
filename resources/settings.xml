@@ -12,7 +12,8 @@
 	<setting id="CatMM" label="CatMM" type="text" default="0" visible="false" />
 	<setting id="cEPG" label="cEPG" type="text" default="0" visible="false" />
 	<setting label="" type="sep" />
-	<setting id="actDelFavourites" type="action" label="Limpar todos os Favoritos" action="RunPlugin(plugin://plugin.video.CubePlay/default.py?mode=39&url=settings)" option="close"/>
+	<setting id="actDelFavourites" type="action" label="Limpar todos os Filmes Favoritos" action="RunPlugin(plugin://plugin.video.CubePlay/default.py?mode=38&url=settings)" option="close"/>
+	<setting id="actDelFavourites" type="action" label="Limpar todas as Séries Favoritas" action="RunPlugin(plugin://plugin.video.CubePlay/default.py?mode=39&url=settings)" option="close"/>
 	<setting id="cPage" label="cPage" type="text" default="0" visible="false" />
 	<setting id="cPageleg" label="cPageleg" type="text" default="0" visible="false" />
 	<setting id="cPagenac" label="cPagenac" type="text" default="0" visible="false" />
