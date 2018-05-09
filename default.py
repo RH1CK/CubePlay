@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.05.08a" #
+Versao = "18.05.09" #
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -51,12 +51,11 @@ def setViewS():
 def setViewM():
 	xbmcplugin.setContent(int(sys.argv[1]), 'movies')
 	
-favoritesFile = os.path.join(addon_data_dir, 'favorites.txt')
+#favoritesFile = os.path.join(addon_data_dir, 'favorites.txt')
+favfilmesFile = os.path.join(addon_data_dir, 'favoritesf.txt')
+favseriesFile = os.path.join(addon_data_dir, 'favoritess.txt')
 historicFile = os.path.join(addon_data_dir, 'historic.txt')
-if not (os.path.isfile(favoritesFile)):
-	common.SaveList(favoritesFile, [])
-if not (os.path.isfile(historicFile)):
-	common.SaveList(historicFile, [])
+
 	
 makeGroups = "true"
 URLP="http://cubeplay.000webhostapp.com/"
@@ -68,31 +67,42 @@ def getLocaleString(id):
 	return Addon.getLocalizedString(id).encode('utf-8')
 
 def Categories(): #70
-	#xbmcgui.Dialog().ok('Kodi', str(cPagenac))
 	#AddDir("[B]!{0}: {1}[/B] - {2} ".format(getLocaleString(30036), getLocaleString(30037) if makeGroups else getLocaleString(30038) , getLocaleString(30039)), "setting" ,50 ,os.path.join(iconsDir, "setting.png"), isFolder=False)
+	AddDir("[COLOR white][B][Canais de TV][/B][/COLOR]" , "", -1, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
+	AddDir("[B][COLOR white][Filmes][/COLOR][/B]", "" , -2,"https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", "https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", isFolder=True)
+	AddDir("[COLOR white][B][Séries][/B][/COLOR]" , "", -3, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
+	AddDir("[COLOR white][B][Animes/Desenhos][/B][/COLOR]" , "", -4, "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", background="cPageser")
+	AddDir("[COLOR gold][B][Filmes Favoritos Cube Play][/B][/COLOR]", "" ,301 , "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png", "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png")
+	AddDir("[COLOR gold][B][Séries Favoritas Cube Play][/B][/COLOR]", "" ,302 , "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png", "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png")
+	AddDir("[COLOR green][B][Histórico Filmes][/B][/COLOR]", "" ,305 , "https://cdn2.iconfinder.com/data/icons/business-office-icons/256/To-do_List-512.png", "https://cdn2.iconfinder.com/data/icons/business-office-icons/256/To-do_List-512.png")
+	AddDir("[COLOR pink][B][Busca][/B][/COLOR]" , "", 160, "https://azure.microsoft.com/svghandler/search/?width=400&height=315", "https://azure.microsoft.com/svghandler/search/?width=400&height=315")
+	AddDir("[B][Sobre o Addon][/B]", "" ,0 ,"http://www.iconsplace.com/icons/preview/orange/about-256.png", "http://www.iconsplace.com/icons/preview/orange/about-256.png", isFolder=False, info="Addon modificado do PlaylistLoader 1.2.0 por Avigdor\r https://github.com/avigdork/xbmc-avigdork.\r\nNao somos responsaveis por colocar o conteudo online, apenas indexamos.\r\nPara sugestoes e report de bugs nossa pagina no FB: [COLOR blue]http://fb.com/CubePlayKodi[/COLOR]\nVersão: "+Versao)
+	AddDir("[B][COLOR blue]http://fb.com/CubePlayKodi[/COLOR][/B]", "" ,0 ,"https://cdn.pixabay.com/photo/2017/08/20/10/30/facebook-2661207_960_720.jpg", "https://cdn.pixabay.com/photo/2017/08/20/10/30/facebook-2661207_960_720.jpg", isFolder=False, info="Para sugestoes e report de bugs nossa pagina no FB: [COLOR blue]http://fb.com/CubePlayKodi[/COLOR]")
+	AddDir("[B][COLOR orange][Checar Atualizações][/COLOR][/B]", "" , 200,"https://accelerator-origin.kkomando.com/wp-content/uploads/2015/04/update2-970x546.jpg", "https://accelerator-origin.kkomando.com/wp-content/uploads/2015/04/update2-970x546.jpg", isFolder=False, info="Checar se ha atualizacoes\n\nAs atualizacoes normalmente sao automaticas\nUse esse recurso caso nao esteja recebendo automaticamente")
+# --------------  Menu
+def MCanais(): #-1
 	AddDir("[COLOR white][B][Canais de TV CubePlay][/B][/COLOR]" , "", 102, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
 	AddDir("[COLOR white][B][Canais de TV RedeCanais.com][/B][/COLOR]" , "", 100, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
+	setViewM()
+def MFilmes(): #-2
 	AddDir("[B][COLOR cyan][Filmes MMFilmes.tv][/COLOR][/B]", "config" , 180,"https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", "https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", isFolder=True)
-	AddDir("[COLOR yellow][B][Séries NetCine.us][/B][/COLOR]" , "", 60, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
 	AddDir("[COLOR yellow][B][Filmes NetCine.us][/B][/COLOR]" , "", 71, "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg")
-	
 	AddDir("[COLOR blue][B][Filmes Dublado RedeCanais.com][/B][/COLOR]" , cPage, 90, "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", background="cPage")
 	AddDir("[COLOR blue][B][Filmes Legendado RedeCanais.com][/B][/COLOR]" , cPageleg, 91, "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", background="cPageleg")
 	AddDir("[COLOR blue][B][Filmes Nacional RedeCanais.com][/B][/COLOR]" , cPagenac, 92, "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", background="cPagenac")
-	AddDir("[COLOR blue][B][Séries RedeCanais.com][/B][/COLOR]" , cPageser, 130, "https://walter.trakt.tv/images/shows/000/001/393/fanarts/thumb/fc68b3b649.jpg", "https://walter.trakt.tv/images/shows/000/001/393/fanarts/thumb/fc68b3b649.jpg", background="cPageser")
 	AddDir("[COLOR purple][B][Filmes FilmesOnline.online][/B][/COLOR]" , "", 170, "https://walter.trakt.tv/images/movies/000/167/163/fanarts/thumb/23ecb5f950.jpg.webp", "https://walter.trakt.tv/images/movies/000/167/163/fanarts/thumb/23ecb5f950.jpg.webp")
-	#AddDir("[COLOR red][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
+	setViewM()
+def MSeries(): #-3
+	AddDir("[COLOR yellow][B][Séries NetCine.us][/B][/COLOR]" , "", 60, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
+	AddDir("[COLOR blue][B][Séries RedeCanais.com][/B][/COLOR]" , cPageser, 130, "https://walter.trakt.tv/images/shows/000/001/393/fanarts/thumb/fc68b3b649.jpg", "https://walter.trakt.tv/images/shows/000/001/393/fanarts/thumb/fc68b3b649.jpg", background="cPageser")
+	setViewM()
+def MDesenhos(): #-4
 	AddDir("[COLOR blue][B][Animes RedeCanais.com][/B][/COLOR]" , cPageser, 140, "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", background="cPageser")
 	AddDir("[COLOR blue][B][Desenhos RedeCanais.com][/B][/COLOR]" , cPageani, 150, "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", background="cPageser")
-	AddDir("[COLOR green][B][Favoritos Cube Play][/B][/COLOR]", "favorites" ,30 , "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png", "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png")
-	AddDir("[COLOR green][B][Histórico Filmes][/B][/COLOR]", "historic" ,333 , "https://cdn2.iconfinder.com/data/icons/business-office-icons/256/To-do_List-512.png", "https://cdn2.iconfinder.com/data/icons/business-office-icons/256/To-do_List-512.png")
-	AddDir("[COLOR pink][B][Busca][/B][/COLOR]" , "", 160, "https://azure.microsoft.com/svghandler/search/?width=400&height=315", "https://azure.microsoft.com/svghandler/search/?width=400&height=315")
-	AddDir("[B][Sobre o Addon][/B]", "config" ,0 ,"http://www.iconsplace.com/icons/preview/orange/about-256.png", "http://www.iconsplace.com/icons/preview/orange/about-256.png", isFolder=False, info="Addon modificado do PlaylistLoader 1.2.0 por Avigdor\r https://github.com/avigdork/xbmc-avigdork.\r\nNao somos responsaveis por colocar o conteudo online, apenas indexamos.\r\nPara sugestoes e report de bugs nossa pagina no FB: [COLOR blue]http://fb.com/CubePlayKodi[/COLOR]\nVersão: "+Versao)
-	AddDir("[B][COLOR blue]http://fb.com/CubePlayKodi[/COLOR][/B]", "config" ,0 ,"https://cdn.pixabay.com/photo/2017/08/20/10/30/facebook-2661207_960_720.jpg", "https://cdn.pixabay.com/photo/2017/08/20/10/30/facebook-2661207_960_720.jpg", isFolder=False, info="Para sugestoes e report de bugs nossa pagina no FB: [COLOR blue]http://fb.com/CubePlayKodi[/COLOR]")
-	AddDir("[B][COLOR orange][Checar Atualizações][/COLOR][/B]", "config" , 200,"https://accelerator-origin.kkomando.com/wp-content/uploads/2015/04/update2-970x546.jpg", "https://accelerator-origin.kkomando.com/wp-content/uploads/2015/04/update2-970x546.jpg", isFolder=False, info="Checar se ha atualizacoes\n\nAs atualizacoes normalmente sao automaticas\nUse esse recurso caso nao esteja recebendo automaticamente")
+	setViewM()
+# --------------  Fim menu
 # --------------  NETCINE
 def Series(): #60
-	AddDir("[B]!{0}: {1}[/B] - {2} ".format(getLocaleString(30036), getLocaleString(30037) if makeGroups else getLocaleString(30038) , getLocaleString(30039)), "setting" ,50 ,os.path.join(iconsDir, "setting.png"), isFolder=False)
 	try:
 		link = common.OpenURL("http://netcine.us/tvshows/page/1/").replace('\n','').replace('\r','')
 		l2 = re.compile("box_movies(.+)").findall(link)
@@ -117,7 +127,7 @@ def ListSNC(x): #61
 		i=0
 		if "None" in background:
 			for season,epis in m:
-				AddDir(season ,url, 61, iconimage, iconimage, isFolder=True, background=i,info=info2)
+				AddDir("[B]["+season+"][/B]" ,url, 61, iconimage, iconimage, isFolder=True, background=i,info=info2)
 				i+=1
 		else:
 			m2 = re.compile("href\=\"([^\"]+).+?(\d+) - (\d+)").findall( m[int(x)][1] )
@@ -184,7 +194,7 @@ def ListMoviesNC(): #78
 		info2 = re.sub('style\=.+?\>', '', info2[0] ) if info2 else ""
 		i=0
 		for name2 in m2:
-			AddDir(name +" [COLOR blue]("+ name2 +")[/COLOR]", m[i], 79, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info2)
+			AddDir(name +" [COLOR blue]("+ name2 +")[/COLOR]", m[i], 79, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info2, background=url)
 			i+=1
 	except urllib2.URLError, e:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, isFolder=False)
@@ -201,6 +211,8 @@ def PlayMNC(): #79
 				lista.append( "[B][COLOR green]HD[/COLOR][/B]" if "ALTO" in url2 else "[B][COLOR red]SD[/COLOR][/B]")
 			d = xbmcgui.Dialog().select("Escolha a resolução:", lista)
 			if d!= -1:
+				global background
+				background=background+";;;"+name+";;;NC"
 				PlayUrl(name, m2[d], iconimage, info)
 	except urllib2.URLError, e:
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
@@ -291,7 +303,7 @@ def PlayMRC(): #95 Play filmes
 		if player:
 			link2 = common.OpenURL(player[0])
 			urlp = re.compile('file: \"([^\"]+)\"').findall(link2)
-			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , urlp[0] + "?play|Referer="+player[0], 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name)
+			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , urlp[0] + "?play|Referer="+player[0], 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name+";;;RC")
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
 	except urllib2.URLError, e:
@@ -566,7 +578,7 @@ def MoviesFO(urlfo,pagina2): #170
 			if m:
 				#xbmcgui.Dialog().ok('Cube Play', str(m))
 				for img2,name2,url2 in m:
-					AddDir(name2 + " ("+m2[i][0]+") - " + m2[i][1], url2, 171, "https://filmesonline.online/"+img2, "https://filmesonline.online/"+img2, info="")
+					AddDir(name2 + " ("+m2[i][0]+") - " + m2[i][1], url2, 171, "https://filmesonline.online/"+img2, "https://filmesonline.online/"+img2, info="", background=url)
 					p+=1
 					i+=1
 		if p >= 80:
@@ -575,14 +587,14 @@ def MoviesFO(urlfo,pagina2): #170
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
 		
 def PlayMFO1(): #172
-	global background
 	if re.compile('\d+').findall(str ( background )) :
 		s = background.split(",")
 		sel = xbmcgui.Dialog().select("Selecione a resolução", s)
 		if sel!=-1:
 			link = common.OpenURL( url+"?q="+s[sel] )
 			m = re.compile('https[^\"]+\.mp4').findall(link)
-			background = "None"
+			global background
+			background="None"
 			PlayUrl(name, m[0],"",info)
 	else:
 		link = common.OpenURL(url)
@@ -645,7 +657,7 @@ def ListFilmeMM(pagina2): #180
 				for name2,b,url2 in m:
 					name2 = name2.replace("&#8211;","-").replace("&#038;","&").replace("&#8217;","\'")
 					if not url2 in ms:
-						AddDir(name2+ " [COLOR yellow]"+res[i]+"[/COLOR] [COLOR blue]"+dubleg[i]+"[/COLOR]", url2, 181, jpg[i], jpg[i],isFolder=True,IsPlayable=False,background=name2)
+						AddDir(name2+ " [COLOR yellow]"+res[i]+"[/COLOR] [COLOR blue]"+dubleg[i]+"[/COLOR]", url2, 181, jpg[i], jpg[i],isFolder=True,IsPlayable=False)
 					i+=1
 					p+=1
 			i=0
@@ -665,10 +677,10 @@ def OpenLinkMM(): #181
 		link2 = common.OpenURL(m[0],headers={'referer': "http://www.mmfilmes.tv/"})
 		m2 = re.compile('opb\(.([^\']+).+?.{3}.+?[^\\>]+.([^\<]+)').findall(link2)
 		if m2:
+			name2 = re.sub(' \[.+', '', name )
 			for link,dubleg in m2:
-				AddDir( background +" [COLOR blue]("+dubleg+")[/COLOR]" ,link, 182, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info2)
+				AddDir( name2 +" [COLOR blue]("+dubleg+")[/COLOR]" ,link, 182, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info2, background=url)
 def PlayLinkMM(): #182
-	#xbmcgui.Dialog().ok(background, url + " " +background)
 	link = common.OpenURL(url,headers={'referer': "http://www.mmfilmes.tv/"})
 	m = re.compile('addiframe\(\'([^\']+)').findall(link)
 	if m:
@@ -685,7 +697,8 @@ def PlayLinkMM(): #182
 			sys.exit(int(sys.argv[1]))
 		d = xbmcgui.Dialog().select("Selecione a resolução", listar)
 		if d!= -1:
-			#PlayUrl(listal[d], listal[d], iconimage, "")
+			global background
+			background=background+";;;"+name+";;;MM"
 			if legenda:
 				PlayUrl(name, listal[d], iconimage, info, sub=legenda[0][0])
 			else:
@@ -711,10 +724,12 @@ def PlayUrl(name, url, iconimage=None, info='', sub=''):
 	#xbmcgui.Dialog().ok(background, url + " " +background)
 	if background != "None":
 		b = background.split(";;;")
-		if "redecanais" in background:
+		if "RC" in b[2]:
 			AddFavorites(b[0], iconimage, b[1], "95", "historic.txt")
-		else:
-			AddFavorites(b[0], iconimage, b[1], "79", "historic.txt")
+		elif "NC" in b[2]:
+			AddFavorites(b[0], iconimage, b[1], "78", "historic.txt")
+		elif "MM" in b[2]:
+			AddFavorites(b[0], iconimage, b[1], "181", "historic.txt")
 	url = common.getFinalUrl(url)
 	xbmc.log('--- Playing "{0}". {1}'.format(name, url), 2)
 	listitem = xbmcgui.ListItem(path=url)
@@ -756,11 +771,17 @@ def AddDir(name, url, mode, iconimage='', logos='', index=-1, move=0, isFolder=T
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=175&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
 	elif mode== 181:
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=185&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
-	if info=="Favoritos":
-		items = [("Remover dos favoritos", 'XBMC.RunPlugin({0}?index={1}&mode=33)'.format(sys.argv[0], index)),
-		(getLocaleString(30030), 'XBMC.RunPlugin({0}?index={1}&mode={2}&move=-1)'.format(sys.argv[0], index, 38)),
-		(getLocaleString(30031), 'XBMC.RunPlugin({0}?index={1}&mode={2}&move=1)'.format(sys.argv[0], index, 38)),
-		(getLocaleString(30032), 'XBMC.RunPlugin({0}?index={1}&mode={2}&move=0)'.format(sys.argv[0], index, 38))]
+	if info=="Filmes Favoritos":
+		items = [("Remover dos favoritos", 'XBMC.RunPlugin({0}?index={1}&mode=333)'.format(sys.argv[0], index)),
+		(getLocaleString(30030), 'XBMC.RunPlugin({0}?index={1}&mode={2}&move=-1)'.format(sys.argv[0], index, 338)),
+		(getLocaleString(30031), 'XBMC.RunPlugin({0}?index={1}&mode={2}&move=1)'.format(sys.argv[0], index, 338)),
+		(getLocaleString(30032), 'XBMC.RunPlugin({0}?index={1}&mode={2}&move=0)'.format(sys.argv[0], index, 338))]
+		liz.addContextMenuItems(items)
+	if info=="Séries Favoritas":
+		items = [("Remover dos favoritos", 'XBMC.RunPlugin({0}?index={1}&mode=334)'.format(sys.argv[0], index)),
+		(getLocaleString(30030), 'XBMC.RunPlugin({0}?index={1}&mode={2}&move=-1)'.format(sys.argv[0], index, 339)),
+		(getLocaleString(30031), 'XBMC.RunPlugin({0}?index={1}&mode={2}&move=1)'.format(sys.argv[0], index, 339)),
+		(getLocaleString(30032), 'XBMC.RunPlugin({0}?index={1}&mode={2}&move=0)'.format(sys.argv[0], index, 339))]
 		liz.addContextMenuItems(items)
 	if mode == 10:
 		urlParams['index'] = index
@@ -944,37 +965,52 @@ if mode == 0:
 	setViewM()
 	if cadulto!="update":
 		CheckUpdate(False)	
+elif mode == -1: MCanais()
+elif mode == -2: MFilmes()
+elif mode == -3: MSeries()
+elif mode == -4: MDesenhos()
 elif mode == 3 or mode == 32:
 	PlayUrl(name, url, iconimage, info)
-elif mode == 30:
-	ListFavorites('favorites.txt', "Favoritos")
+elif mode == 301:
+	ListFavorites('favoritesf.txt', "Filmes Favoritos")
 	setViewS()
-elif mode == 333:
+elif mode == 302:
+	ListFavorites('favoritess.txt', "Séries Favoritas")
+	setViewM()
+elif mode == 305:
 	ListHistoric('historic.txt', "Historico")
 	setViewM()
 elif mode == 31: 
-	AddFavorites(url, iconimage, name, "61", 'favorites.txt')
+	AddFavorites(url, iconimage, name, "61", 'favoritess.txt')
 elif mode == 72: 
-	AddFavorites(url, iconimage, name, "78", 'favorites.txt')
+	AddFavorites(url, iconimage, name, "78", 'favoritesf.txt')
 elif mode == 93: 
-	AddFavorites(url, iconimage, name, "95", 'favorites.txt')
+	AddFavorites(url, iconimage, name, "95", 'favoritesf.txt')
 elif mode == 131: 
-	AddFavorites(url, iconimage, name, "135", 'favorites.txt')
+	AddFavorites(url, iconimage, name, "135", 'favoritess.txt')
 elif mode == 175: 
-	AddFavorites(url, iconimage, name, "171", 'favorites.txt')
+	AddFavorites(url, iconimage, name, "171", 'favoritesf.txt')
 elif mode == 185: 
-	AddFavorites(url, iconimage, name, "181", 'favorites.txt')
-elif mode == 33:
-	RemoveFromLists(index, favoritesFile)
-elif mode == 34:
-	AddNewFavorite()
+	AddFavorites(url, iconimage, name, "181", 'favoritesf.txt')
+elif mode == 333:
+	RemoveFromLists(index, favfilmesFile)
+elif mode == 338:
+	MoveInList(index, move, favfilmesFile)
+elif mode == 334:
+	RemoveFromLists(index, favseriesFile)
+elif mode == 339:
+	MoveInList(index, move, favseriesFile)
 elif mode == 38:
-	MoveInList(index, move, favoritesFile)
+	dialog = xbmcgui.Dialog()
+	ret = dialog.yesno('Cube Play', 'Deseja mesmo deletar todos os filmes favoritos?')
+	if ret:
+		common.DelFile(favfilmesFile)
+		sys.exit()
 elif mode == 39:
 	dialog = xbmcgui.Dialog()
-	ret = dialog.yesno('Cube Play', 'Deseja mesmo deletar todos os favoritos?')
+	ret = dialog.yesno('Cube Play', 'Deseja mesmo deletar todos os seriados favoritos?')
 	if ret:
-		common.DelFile(favoritesFile)
+		common.DelFile(favseriesFile)
 		sys.exit()
 elif mode == 40:
 	dialog = xbmcgui.Dialog()
