@@ -22,3 +22,4 @@
 18.05.05a - Fix MMfilmes.tv
 18.05.08 - NetCine reescrito
 18.05.08a - Fix RedeCanais
+18.05.09 - Layount principal, fix historic, split favorites
