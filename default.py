@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.05.09" #
+Versao = "18.05.09a"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -51,7 +51,6 @@ def setViewS():
 def setViewM():
 	xbmcplugin.setContent(int(sys.argv[1]), 'movies')
 	
-#favoritesFile = os.path.join(addon_data_dir, 'favorites.txt')
 favfilmesFile = os.path.join(addon_data_dir, 'favoritesf.txt')
 favseriesFile = os.path.join(addon_data_dir, 'favoritess.txt')
 historicFile = os.path.join(addon_data_dir, 'historic.txt')
@@ -466,10 +465,10 @@ def Busca(): # 160
 # ----------------- TV Cubeplay
 def TVCB(): #102
 	try:
-		AddDir("[B][COLOR yellow]Carregar lista EPG (epg.com.br)[/COLOR][/B]", "", 105, "", "", isFolder=False)
+		#AddDir("[B][COLOR yellow]Carregar lista EPG (epg.com.br)[/COLOR][/B]", "", 105, "", "", isFolder=False)
 		if(cEPG=="1"):
 			epg = eval(EPG())
-		link = urllib2.urlopen(URLP+"epg/iptv.php?adulto="+cadulto).read().replace('\n','').replace('\r','')
+		link = urllib2.urlopen(URLP+"iptv/ds2.php?adulto="+cadulto).read().replace('\n','').replace('\r','')
 		m = re.compile('name="(.+?)".+?mg="(.+?)".+?pg="(.+?)"').findall(link)
 		i=0
 		for name2,img2,epg2 in m:
@@ -486,7 +485,7 @@ def TVCB(): #102
 	Addon.setSetting("cEPG", "0")
 def PlayTVCB(): #103
 	try:
-		link = urllib2.urlopen(URLP+"epg/iptv.php?c="+url).read().replace('\n','').replace('\r','')
+		link = urllib2.urlopen(URLP+"iptv/ds2.php?c="+url).read().replace('\n','').replace('\r','')
 		PlayUrl(name, link, iconimage, info)
 	except urllib2.URLError, e:
 		xbmcgui.Dialog().ok('Cube Play', "Servidor offline, tente novamente em alguns minutos")
