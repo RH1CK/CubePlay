@@ -25,3 +25,4 @@
 18.05.09 - Layount principal, fix historic, split favorites
 18.05.09a - Fix CB canais
 18.05.10 - Fix Busca e ordem filmes/series
+18.05.10a- Fix canais, join series RC
