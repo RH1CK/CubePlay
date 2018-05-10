@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.05.10"
+Versao = "18.05.10a"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -324,7 +324,7 @@ def PlayMRC(): #95 Play filmes
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
 # ----------------- FIM REDECANAIS
 # --------------  REDECANAIS SERIES,ANIMES,DESENHOS
-def PlaySRC(): #131 Play series
+def PlaySRC(): #133 Play series
 	try:
 		url2 = re.sub('(\.link|\.com|\.net)', ".info", url.replace("https","http") )
 		link = common.OpenURL(url2)
@@ -340,36 +340,13 @@ def PlaySRC(): #131 Play series
 			xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 	except urllib2.URLError, e:
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
-def TemporadasRC(): #135 Temporadas
+def TemporadasRC(x): #135 Episodios
 	url2 = re.sub('(\.link|\.com|\.net)', ".info", url.replace("https","http") )
 	link = common.OpenURL(url2).replace('\n','').replace('\r','').replace('</html>','<span style="font').replace("https","http")
-	temps = re.compile('size: x-large;\">.+?<span style\=\"font').findall(link)
-	if temps:
-		i= 0
-		epi = re.compile('<strong>(E.+?)<\/strong>(.+?)(<br|<\/p)').findall(temps[0])
-		temps = re.compile('(<span style="font-size: x-large;">(.+?)<\/span>)').findall(link)
-		if temps:
-			for a,tempname in temps:
-				tempname = re.sub('<[\/]{0,1}strong>', "", tempname)
-				try:
-					tempname = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), tempname).encode('utf-8')
-				except:
-					tempname = tempname
-				if not "ilme" in tempname:
-					AddDir("[B]["+tempname+"][/B]" , url, 136, iconimage, iconimage, info="", isFolder=True, background=i)
-				i+=1
-	AddDir("[B][Todos Episódios][/B]" ,url, 139, iconimage, iconimage, info="")
-def EpisodiosRC(x): #136 Episodios
-	url2 = re.sub('(\.link|\.com|\.net)', ".info", url.replace("https","http") )
-	link = common.OpenURL(url2).replace('\n','').replace('\r','').replace('</html>','<span style="font')
-	temps = re.compile('size: x-large;\">.+?<span style\=\"font').findall(link)
-	if temps:
-		i= 0
-		epi = re.compile('<strong>(E.+?)<\/strong>(.+?)(<br|<\/p)').findall(temps[ int(x) ])
-	else:
-		epi = re.compile('<strong>(E.+?)<\/strong>(.+?)(<br|<\/p)').findall(link)
-	S= 0
-	if epi:
+	temps = re.compile('(<span style="font-size: x-large;">(.+?)<\/span>)').findall(link)	i= 0	if background=="None":		for b,tempname in temps:			tempname = re.sub('<[\/]{0,1}strong>', "", tempname)			try:				tempname = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), tempname).encode('utf-8')			except:				tempname = tempname			if not "ilme" in tempname:				AddDir("[B]["+tempname+"][/B]" , url, 135, iconimage, iconimage, info="", isFolder=True, background=i)			i+=1
+		AddDir("[B][Todos Episódios][/B]" ,url, 139, iconimage, iconimage, info="")
+	else:		temps2 = re.compile('size: x-large;\">.+?<span style\=\"font').findall(link)
+		epi = re.compile('<strong>(E.+?)<\/strong>(.+?)(<br|<\/p)').findall(temps2[int(x)])
 		for name2,url2,brp in epi:
 			name3 = re.compile('\d+').findall(name2)
 			if name3:
@@ -377,6 +354,7 @@ def EpisodiosRC(x): #136 Episodios
 			else:
 				name3=name2
 			urlm = re.compile('href\=\"(.+?)\"').findall(url2)
+			url2 = re.sub('(\w)-(\w)', r'\1 \2', url2)
 			try:
 				namem = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), re.compile('([^\-]+)').findall(url2)[0] ).encode('utf-8')
 			except:
@@ -392,7 +370,6 @@ def EpisodiosRC(x): #136 Episodios
 				AddDir("[COLOR blue][Leg][/COLOR] "+ name3 +" "+namem ,urlm[1], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
 			elif urlm:
 				AddDir(name3 +" "+namem ,urlm[0], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
-
 def SeriesRC(urlrc,pagina2): #130 Lista as Series RC
 	try:
 		CategoryOrdem("cOrdRCS")
@@ -507,7 +484,7 @@ def TVCB(): #102
 	Addon.setSetting("cEPG", "0")
 def PlayTVCB(): #103
 	try:
-		link = urllib2.urlopen(URLP+"iptv/ds2.php?c="+url).read().replace('\n','').replace('\r','')
+		link = urllib2.urlopen(URLP+"iptv/ds2.php?adulto="+cadulto+"&c="+url).read().replace('\n','').replace('\r','')
 		PlayUrl(name, link, iconimage, info)
 	except urllib2.URLError, e:
 		xbmcgui.Dialog().ok('Cube Play', "Servidor offline, tente novamente em alguns minutos")
@@ -1097,10 +1074,7 @@ elif mode == 130:
 	SeriesRC("series","cPageser")
 	setViewS()
 elif mode == 135:
-	TemporadasRC()
-	setViewS()
-elif mode == 136:
-	EpisodiosRC(background)
+	TemporadasRC(background)
 	setViewS()
 elif mode == 133:
 	PlaySRC()
