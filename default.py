@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.05.09a"
+Versao = "18.05.10"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -101,8 +101,19 @@ def MDesenhos(): #-4
 	setViewM()
 # --------------  Fim menu
 # --------------  NETCINE
+def CategoryOrdem(x):
+	x2 = Addon.getSetting(eval("x"))
+	name2 = "Data" if x2=="0" else "Título"
+	AddDir("[COLOR blue][B][Organizado por:][/B] "+name2 +" (Clique para alterar)[/COLOR]" , x, 81, "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
+def CategoryOrdem2(url):
+	x2 = Addon.getSetting(url)
+	x = "0" if x2=="1" else "1"
+	#xbmcgui.Dialog().ok("Escolha a resolução:", x + x2 + url)
+	Addon.setSetting(url, x )
+	xbmc.executebuiltin("XBMC.Container.Refresh()")
 def Series(): #60
 	try:
+		CategoryOrdem("cOrdNCS")
 		link = common.OpenURL("http://netcine.us/tvshows/page/1/").replace('\n','').replace('\r','')
 		l2 = re.compile("box_movies(.+)").findall(link)
 		link = common.OpenURL("http://netcine.us/tvshows/page/2/").replace('\n','').replace('\r','')
@@ -164,6 +175,7 @@ def PlayS(): #62
 # --------------------------------------
 def MoviesNC(): #71
 	AddDir("[COLOR yellow][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
+	CategoryOrdem("cOrdNCF")
 	try:
 		if Cat=="0":
 			link = common.OpenURL("http://netcine.us/page/1/?mt").replace('\n','').replace('\r','')
@@ -228,6 +240,7 @@ def Generos(): #80
 # --------------  REDECANAIS FILMES
 def MoviesRCD(): #90 Filme dublado
 	AddDir("[COLOR yellow][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
+	CategoryOrdem("cOrdRCF")
 	try:
 		p= 1
 		if int(cPage) > 0:
@@ -251,6 +264,7 @@ def MoviesRCD(): #90 Filme dublado
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
 def MoviesRCL(): #91 Filme Legendado
 	AddDir("[COLOR yellow][B][Genero dos Filmes]:[/B] " + Clista2[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
+	CategoryOrdem("cOrdRCF")
 	try:
 		p= 1
 		if int(cPageleg) > 0:
@@ -273,6 +287,7 @@ def MoviesRCL(): #91 Filme Legendado
 	except e:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
 def MoviesRCN(): #92 Filmes Nacional
+	CategoryOrdem("cOrdRCF")
 	try:
 		p= 1
 		if int(cPagenac) > 0:
@@ -380,6 +395,7 @@ def EpisodiosRC(x): #136 Episodios
 
 def SeriesRC(urlrc,pagina2): #130 Lista as Series RC
 	try:
+		CategoryOrdem("cOrdRCS")
 		pagina=eval(pagina2)
 		p= 1
 		if int(pagina) > 0:
@@ -439,7 +455,7 @@ def Busca(): # 160
 		p= 1
 		AddDir("[COLOR blue][B][RedeCanais.com][/B][/COLOR]", "" , 0 ,"", isFolder=False)
 		l= 0
-		for x in range(0, 7):
+		for x in range(0, 6):
 			l +=1
 			link = common.OpenURL("http://www.redecanais.info/search.php?keywords="+d+"&page="+str(l))
 			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).+?src=\"([^\"]+)\".alt=\"([^\"]+)\" wi').findall(link)
@@ -455,10 +471,16 @@ def Busca(): # 160
 		AddDir("Nada encontrado" , "", 0, "", "", 0)
 	try:
 		AddDir("[COLOR yellow][B][NetCine.us][/B][/COLOR]", "" , 0 ,"", isFolder=False)
-		link = urllib2.urlopen(URLNC+"listBusca.php?b="+d).read().replace('\n','').replace('\r','')
-		match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)".+?ode="(.+?)"').findall(link)
-		for url2,img2,name2,mode2 in match:
-			AddDir(name2 ,url2, int(mode2), img2, img2)
+		link2 = common.OpenURL("http://netcine.us/?s="+d).replace('\n','').replace('\r','')
+		lista = re.compile("img src\=\"([^\"]+).+?alt\=\"([^\"]+).+?f\=\"([^\"]+)").findall(link2)
+		for img2,name2,url2 in lista:
+			if name2!="Close" and name2!="NetCine":
+				name2 = name2.replace("&#8211;","-").replace("&#038;","&").replace("&#8217;","\'")
+				img2 = re.sub('-120x170.(jpg|png)', r'.\1', img2 )
+				if "tvshows" in url2:
+					AddDir(name2 ,url2, 61, img2, img2, isFolder=True)
+				else:
+					AddDir(name2 ,url2, 78, img2, img2, isFolder=True)
 	except urllib2.URLError, e:
 		AddDir("Nada encontrado" , "", 0, "", "", 0)
 # ----------------- FIM BUSCA
@@ -560,6 +582,7 @@ def GenerosFO(): #85
 		
 def MoviesFO(urlfo,pagina2): #170
 	AddDir("[COLOR yellow][B][Gênero dos Filmes]:[/B] " + Clistafo1[int(Catfo)] +"[/COLOR]", "url" ,85 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
+	CategoryOrdem("cOrdFO")
 	try:
 		pagina=eval(pagina2)
 		l= int(pagina)*5
@@ -1039,6 +1062,8 @@ elif mode == 79:
 	setViewS()
 elif mode == 80:
 	Generos()
+elif mode == 81:
+	CategoryOrdem2(url)
 elif mode == 90:
 	MoviesRCD()
 	setViewM()
