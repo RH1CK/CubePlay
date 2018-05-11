@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.05.10a"
+Versao = "18.05.11" #
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -94,6 +94,7 @@ def MFilmes(): #-2
 def MSeries(): #-3
 	AddDir("[COLOR yellow][B][Séries NetCine.us][/B][/COLOR]" , "", 60, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
 	AddDir("[COLOR blue][B][Séries RedeCanais.com][/B][/COLOR]" , cPageser, 130, "https://walter.trakt.tv/images/shows/000/001/393/fanarts/thumb/fc68b3b649.jpg", "https://walter.trakt.tv/images/shows/000/001/393/fanarts/thumb/fc68b3b649.jpg", background="cPageser")
+	AddDir("[B][COLOR cyan][Séries MMFilmes.tv][/COLOR][/B]", "config" , 190,"", "", isFolder=True)
 	setViewM()
 def MDesenhos(): #-4
 	AddDir("[COLOR blue][B][Animes RedeCanais.com][/B][/COLOR]" , cPageser, 140, "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", background="cPageser")
@@ -343,9 +344,21 @@ def PlaySRC(): #133 Play series
 def TemporadasRC(x): #135 Episodios
 	url2 = re.sub('(\.link|\.com|\.net)', ".info", url.replace("https","http") )
 	link = common.OpenURL(url2).replace('\n','').replace('\r','').replace('</html>','<span style="font').replace("https","http")
-	temps = re.compile('(<span style="font-size: x-large;">(.+?)<\/span>)').findall(link)	i= 0	if background=="None":		for b,tempname in temps:			tempname = re.sub('<[\/]{0,1}strong>', "", tempname)			try:				tempname = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), tempname).encode('utf-8')			except:				tempname = tempname			if not "ilme" in tempname:				AddDir("[B]["+tempname+"][/B]" , url, 135, iconimage, iconimage, info="", isFolder=True, background=i)			i+=1
+	temps = re.compile('(<span style="font-size: x-large;">(.+?)<\/span>)').findall(link)
+	i= 0
+	if background=="None":
+		for b,tempname in temps:
+			tempname = re.sub('<[\/]{0,1}strong>', "", tempname)
+			try:
+				tempname = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), tempname).encode('utf-8')
+			except:
+				tempname = tempname
+			if not "ilme" in tempname:
+				AddDir("[B]["+tempname+"][/B]" , url, 135, iconimage, iconimage, info="", isFolder=True, background=i)
+			i+=1
 		AddDir("[B][Todos Episódios][/B]" ,url, 139, iconimage, iconimage, info="")
-	else:		temps2 = re.compile('size: x-large;\">.+?<span style\=\"font').findall(link)
+	else:
+		temps2 = re.compile('size: x-large;\">.+?<span style\=\"font').findall(link)
 		epi = re.compile('<strong>(E.+?)<\/strong>(.+?)(<br|<\/p)').findall(temps2[int(x)])
 		for name2,url2,brp in epi:
 			name3 = re.compile('\d+').findall(name2)
@@ -668,10 +681,7 @@ def OpenLinkMM(): #181
 	link = common.OpenURL(url)
 	m = re.compile('boxp\(.([^\']+)').findall(link)
 	info2 = re.compile('mCSB_container..\s(\h*(?s)(.+?))\<\/div').findall(link)
-	if info2:
-		info2=info2[0][0].replace("\t","")
-	else:
-		info2=""
+	info2= info2[0][0].replace("\t","") if info2 else ""
 	if m:
 		link2 = common.OpenURL(m[0],headers={'referer': "http://www.mmfilmes.tv/"})
 		m2 = re.compile('opb\(.([^\']+).+?.{3}.+?[^\\>]+.([^\<]+)').findall(link2)
@@ -702,6 +712,85 @@ def PlayLinkMM(): #182
 				PlayUrl(name, listal[d], iconimage, info, sub=legenda[0][0])
 			else:
 				PlayUrl(name, listal[d], iconimage, info)
+# -----------------
+def ListSerieMM(): #190
+	try:
+		link = common.OpenURL("http://www.mmfilmes.tv/series/")
+		m = re.compile('id\=\"post\-\d+\".+?\=.([^\"]+)\h*(?s)(.+?)(http[^\"]+)').findall(link)
+		jpg = re.compile('src=\"(http.+?www.mmfilmes.tv\/wp-content\/uploads[^\"]+)').findall(link)
+		i=0
+		if m:
+			for name2,b,url2 in m:
+				name2 = name2.replace("&#8211;","-").replace("&#038;","&").replace("&#8217;","\'")
+				AddDir(name2, url2, 191, jpg[i], jpg[i],isFolder=True,IsPlayable=False)
+				i+=1
+	except:
+		AddDir( "Server offline" ,"", 0, "", "", isFolder=False)
+def ListSMM(x): #191
+	link = common.OpenURL(url)
+	m = re.compile('boxp\(.([^\']+)').findall(link)
+	info2= re.compile('mCSB_container..\s(\h*(?s)(.+?))\<\/div').findall(link)
+	info2= info2[0][0].replace("\t","") if info2 else ""
+	i=0
+	if m:
+		if x=="None":
+			link2 = common.OpenURL(m[0],headers={'referer': "http://www.mmfilmes.tv/"})
+			m2 = re.compile('opb\(.([^\']+).+?.{3}.+?[^\\>]+.([^\<]+)').findall(link2)
+			listar=[]
+			listal=[]
+			for link,res in m2:
+				listal.append(link)
+				listar.append(res)
+			if len(listar)==1:
+				d=0
+			else:
+				d = xbmcgui.Dialog().select("Selecione o server:", listar)
+			if d== -1:
+				d= 0
+			if m2:
+				link3 = common.OpenURL(m2[0][0],headers={'referer': "http://www.mmfilmes.tv/"}).replace("\n","").replace("\r","").replace('".Svplayer"',"<end>").replace('\t'," ")
+				link3 = re.sub('(\(s \=\= \d+\))', r'<end>\1', link3 )
+				m3 = re.compile('s \=\= (\d+)(.+?\<end\>)').findall(link3)
+				for temp in m3:
+					AddDir("[B][Temporada "+ temp[0] +"][/B]" ,listal[d], 192, iconimage, iconimage, isFolder=True, info=info2, background=i)
+					i+=1
+def ListEpiMM(x): #192
+	link3 = common.OpenURL(url,headers={'referer': "http://www.mmfilmes.tv/"}).replace("\n","").replace("\r","").replace('".Svplayer"',"<end>").replace('\t'," ")
+	link3 = re.sub('(\(s \=\= \d+\))', r'<end>\1', link3 )
+	m3 = re.compile('s \=\= (\d+)(.+?\<end\>)').findall(link3)
+	r=-1
+	p=1
+	dubleg = re.compile("t \=\= \'([^\']+)(.+?\})").findall( m3[int(x)][1] )
+	epi = re.compile("e \=\= (\d+).+?(http[^\']+)").findall( m3[int(x)][1] )
+	for e,url2 in epi:
+		if p == int(e) :
+			r+=1
+		if len(dubleg[r][1]) < 30:
+			r+=1
+		name2 = "[COLOR yellow](Dub)[/COLOR]" if "dub" in dubleg[r][0] else "[COLOR blue](Leg)[/COLOR]"
+		AddDir("Episódio "+ e + " [COLOR blue]" + name2 ,url2, 194, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info)
+def PlaySMM(): #194
+	if "drive.google" in url:
+		xbmcgui.Dialog().ok('Cube Play', 'Erro, video não encontrado')
+		sys.exit()
+	link2 = common.OpenURL(url,headers={'referer': "http://www.mmfilmes.tv/"}).replace('"',"'")
+	m2 = re.compile('(h[^\']+).+?label...(\w+)').findall(link2)
+	legenda = re.compile('(http[^\']+\.(vtt|srt|sub|ssa|txt|ass))').findall(link2)
+	listar=[]
+	listal=[]
+	for link,res in m2:
+		listal.append(link)
+		listar.append(res)
+	if len(listal) < 1:
+		xbmcgui.Dialog().ok('Cube Play', 'Erro, video não encontrado')
+		sys.exit(int(sys.argv[1]))
+	d = xbmcgui.Dialog().select("Selecione a resolução", listar)
+	if d!= -1:
+		url2 = re.sub('\.mp4$', '.mp4?play', listal[d] )
+		if legenda:
+			PlayUrl(name, url2, iconimage, info, sub=legenda[0][0])
+		else:
+			PlayUrl(name, url2, iconimage, info)
 # ----------------- Fim MM filmes
 def GetChoice(choiceTitle, fileTitle, urlTitle, choiceFile, choiceUrl, choiceNone=None, fileType=1, fileMask=None, defaultText=""):
 	choice = ''
@@ -717,8 +806,7 @@ def GetChoice(choiceTitle, fileTitle, urlTitle, choiceFile, choiceUrl, choiceNon
 		if defaultText.startswith('http'):
 			defaultText = ""
 		choice = xbmcgui.Dialog().browse(fileType, getLocaleString(urlTitle), 'files', fileMask, False, False, defaultText).decode("utf-8")
-	return choice
-			
+	return choice			
 def PlayUrl(name, url, iconimage=None, info='', sub=''):
 	#xbmcgui.Dialog().ok(background, url + " " +background)
 	if background != "None":
@@ -770,6 +858,8 @@ def AddDir(name, url, mode, iconimage='', logos='', index=-1, move=0, isFolder=T
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=175&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
 	elif mode== 181:
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=185&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
+	elif mode== 191:
+		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=195&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
 	if info=="Filmes Favoritos":
 		items = [("Remover dos favoritos", 'XBMC.RunPlugin({0}?index={1}&mode=333)'.format(sys.argv[0], index)),
 		(getLocaleString(30030), 'XBMC.RunPlugin({0}?index={1}&mode={2}&move=-1)'.format(sys.argv[0], index, 338)),
@@ -991,6 +1081,8 @@ elif mode == 175:
 	AddFavorites(url, iconimage, name, "171", 'favoritesf.txt')
 elif mode == 185: 
 	AddFavorites(url, iconimage, name, "181", 'favoritesf.txt')
+elif mode == 195: 
+	AddFavorites(url, iconimage, name, "191", 'favoritess.txt')
 elif mode == 333:
 	RemoveFromLists(index, favfilmesFile)
 elif mode == 338:
@@ -1111,6 +1203,17 @@ elif mode == 182:
 	PlayLinkMM()
 elif mode == 189:
 	GenerosMM()
+elif mode == 190:
+	ListSerieMM()
+	setViewS()
+elif mode == 191:
+	ListSMM(background)
+	setViewS()
+elif mode == 192:
+	ListEpiMM(background)
+	setViewS()
+elif mode == 194:
+	PlaySMM()
 elif mode == 200:
 	CheckUpdate(True)
 
