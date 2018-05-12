@@ -994,7 +994,7 @@ def CheckUpdate(msg): #200
 		uversao = urllib2.urlopen( "https://raw.githubusercontent.com/RH1CK/CubePlay/master/version.txt" ).read().replace('\n','').replace('\r','')
 		uversao = re.compile('[a-zA-Z\.\d]+').findall(uversao)[0]
 		#xbmcgui.Dialog().ok(Versao, uversao)
-		if uversao != Versao or not cadulto:
+		if uversao != Versao:
 			Update()
 			#xbmc.executebuiltin("XBMC.Container.Refresh()")
 		elif msg==True:
