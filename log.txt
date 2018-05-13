@@ -27,3 +27,4 @@
 18.05.10 - Fix Busca e ordem filmes/series
 18.05.10a- Fix canais, join series RC
 18.05.11 - Series MMFilmes
+18.05.13 - Fix Series MMFilmes e Update
