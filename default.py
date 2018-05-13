@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.05.11" #
+Versao = "18.05.13" 
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -94,7 +94,7 @@ def MFilmes(): #-2
 def MSeries(): #-3
 	AddDir("[COLOR yellow][B][Séries NetCine.us][/B][/COLOR]" , "", 60, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
 	AddDir("[COLOR blue][B][Séries RedeCanais.com][/B][/COLOR]" , cPageser, 130, "https://walter.trakt.tv/images/shows/000/001/393/fanarts/thumb/fc68b3b649.jpg", "https://walter.trakt.tv/images/shows/000/001/393/fanarts/thumb/fc68b3b649.jpg", background="cPageser")
-	AddDir("[B][COLOR cyan][Séries MMFilmes.tv][/COLOR][/B]", "config" , 190,"", "", isFolder=True)
+	AddDir("[B][COLOR cyan][Séries MMFilmes.tv][/COLOR][/B]", "config" , 190,"https://walter.trakt.tv/images/shows/000/037/522/fanarts/thumb/6ecdb75c1c.jpg", "https://walter.trakt.tv/images/shows/000/037/522/fanarts/thumb/6ecdb75c1c.jpg", isFolder=True)
 	setViewM()
 def MDesenhos(): #-4
 	AddDir("[COLOR blue][B][Animes RedeCanais.com][/B][/COLOR]" , cPageser, 140, "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", background="cPageser")
@@ -719,11 +719,15 @@ def ListSerieMM(): #190
 		m = re.compile('id\=\"post\-\d+\".+?\=.([^\"]+)\h*(?s)(.+?)(http[^\"]+)').findall(link)
 		jpg = re.compile('src=\"(http.+?www.mmfilmes.tv\/wp-content\/uploads[^\"]+)').findall(link)
 		i=0
+		m2=[]
 		if m:
 			for name2,b,url2 in m:
-				name2 = name2.replace("&#8211;","-").replace("&#038;","&").replace("&#8217;","\'")
-				AddDir(name2, url2, 191, jpg[i], jpg[i],isFolder=True,IsPlayable=False)
+				m2.append([name2,url2,jpg[i]])
 				i+=1
+			m2 = sorted(m2, key=lambda m2: m2[0])
+			for name2,url2,jpg2 in m2:
+				name2 = name2.replace("&#8211;","-").replace("&#038;","&").replace("&#8217;","\'")
+				AddDir(name2, url2, 191, jpg2, jpg2, isFolder=True,IsPlayable=False)
 	except:
 		AddDir( "Server offline" ,"", 0, "", "", isFolder=False)
 def ListSMM(x): #191
@@ -996,7 +1000,7 @@ def CheckUpdate(msg): #200
 		#xbmcgui.Dialog().ok(Versao, uversao)
 		if uversao != Versao:
 			Update()
-			#xbmc.executebuiltin("XBMC.Container.Refresh()")
+			xbmc.executebuiltin("XBMC.Container.Refresh()")
 		elif msg==True:
 			xbmcgui.Dialog().ok('Cube Play', "O addon já esta na última versao: "+Versao+"\nAs atualizações normalmente são automáticas\nUse esse recurso caso nao esteja recebendo automaticamente")
 			xbmc.executebuiltin("XBMC.Container.Refresh()")
