@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.05.16" 
+Versao = "18.05.18" #
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -127,7 +127,7 @@ def Series(): #60
 				name2 = name2.replace("&#8211;","-").replace("&#038;","&").replace("&#8217;","\'")
 				img2 = re.sub('-120x170.(jpg|png)', r'.\1', img2 )
 				AddDir(name2 ,url2, 61, img2, img2, isFolder=True)
-	except urllib2.URLError, e:
+	except:
 		AddDir("Server NETCINE offline, tente novamente em alguns minutos" , "", 0, isFolder=False)
 def ListSNC(x): #61
 	try:
@@ -146,7 +146,7 @@ def ListSNC(x): #61
 			for url2,S,E in m2:
 				AddDir("S"+S+"E"+E +" - "+m3[i],url2, 62, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info)
 				i+=1
-	except urllib2.URLError, e:
+	except:
 		AddDir("Server NETCINE offline, tente novamente em alguns minutos" , "", 0, isFolder=False)
 def PlayS(): #62
 	try:
@@ -171,7 +171,7 @@ def PlayS(): #62
 		d = xbmcgui.Dialog().select("Escolha a resolução:", listaf)
 		if d!= -1:
 			PlayUrl(name, listal[d], iconimage, info)
-	except urllib2.URLError, e:
+	except:
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 # --------------------------------------
 def MoviesNC(): #71
@@ -555,7 +555,6 @@ def PlayTVRC(): # 101
 		m2 = re.compile('action="([^\"]+)').findall(link2)
 		link3 = common.OpenURL(m2[0])
 		urlp = re.compile('(http[^\"]+m3u[^\"]+)').findall(link3)
-		#ST(link3)
 		if urlp:
 			PlayUrl(name, urlp[0] + "?play|Referer="+player[0], iconimage, info)
 		else:
@@ -696,7 +695,8 @@ def PlayLinkMM(): #182
 	link = common.OpenURL(url,headers={'referer': "http://www.mmfilmes.tv/"})
 	m = re.compile('addiframe\(\'([^\']+)').findall(link)
 	if m:
-		link2 = common.OpenURL(m[0],headers={'referer': "http://www.mmfilmes.tv/"}).replace("file","\nfile")
+		m[0] = "http://player.mmfilmes.tv" + m[0] if not "http" in m[0] else m[0]
+		link2 = common.OpenURL(m[0],headers={'referer': "http://player.mmfilmes.tv"}).replace("file","\nfile")
 		m2 = re.compile('file.+?(h[^\']+).+?(\d+p)\'').findall(link2)
 		legenda = re.compile('(http[^\']+\.(vtt|srt|sub|ssa|txt|ass))').findall(link2)
 		listar=[]
