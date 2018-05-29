@@ -1,5 +1,5 @@
 ﻿# -*- coding: utf-8 -*-
-import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, cookielib
+import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
 Versao = "18.05.29"
 
