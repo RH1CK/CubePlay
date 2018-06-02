@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.05.29" ##
+Versao = "18.06.02" #
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -29,6 +29,7 @@ cPageani = Addon.getSetting("cPageani")
 cPagedes = Addon.getSetting("cPagedes")
 cPagefo1 = Addon.getSetting("cPagefo1")
 cPageMMf = Addon.getSetting("cPageMMf")
+cPageGOf = Addon.getSetting("cPageGOf")
 
 cEPG = Addon.getSetting("cEPG")
 cOrdFO = "date" if Addon.getSetting("cOrdFO")=="0" else "title"
@@ -40,12 +41,17 @@ cOrdNCS = Addon.getSetting("cOrdNCS")
 Cat = Addon.getSetting("Cat")
 Catfo = Addon.getSetting("Catfo")
 CatMM = Addon.getSetting("CatMM")
+CatGO = Addon.getSetting("CatGO")
+
 Clista=[ "todos",                     "acao", "animacao", "aventura", "comedia", "drama", "fantasia", "ficcao-cientifica", "romance", "suspense", "terror"]
 Clista2=["Sem filtro (Mostrar Todos)","Acao", "Animacao", "Aventura", "Comedia", "Drama", "Fantasia", "Ficcao-Cientifica", "Romance", "Suspense", "Terror"]
 Clistafo0=[ "0",                        "48",         "3",    "7",        "8",        "5",       "4",      "14",                "16",      "15",       "11"]
 Clistafo1=["Sem filtro (Mostrar Todos)","Lançamentos","Ação", "Animação", "Aventura", "Comédia", "Drama",  "Ficção-Científica", "Romance", "Suspense", "Terror"]
 ClistaMM0=["lancamentos","acao","animacao","aventura","comedia","drama","fantasia","ficcao-cientifica","guerra","policial","romance","suspense","terror"]
 ClistaMM1=["Lançamentos","Ação","Animação","Aventura","Comédia","Drama","Fantasia","F. Científica",    "Guerra","Policial","Romance","Suspense","Terror"]
+ClistaGO0=["all",                       "lancamentos","acao","animacao","aventura","comedia","drama","ficcao-cientifica","guerra","policial","romance","suspense","terror"]
+ClistaGO1=["Sem filtro (Mostrar Todos)","Lançamentos","Ação","Animação","Aventura","Comédia","Drama","Ficção-Científica","Guerra","Policial","Romance","Suspense","Terror"]
+
 def setViewS():
 	xbmcplugin.setContent(int(sys.argv[1]), 'tvshows')
 def setViewM():
@@ -88,7 +94,7 @@ def MCanais(): #-1
 def MFilmes(): #-2
 	AddDir("[B][COLOR cyan][Filmes Lançamentos MMFilmes.tv][/COLOR][/B]", "config" , 184,"https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", "https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", isFolder=True)
 	AddDir("[B][COLOR cyan][Filmes MMFilmes.tv][/COLOR][/B]", "config" , 180,"https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", "https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", isFolder=True)
-	AddDir("[COLOR yellow][B][Filmes NetCine.us][/B][/COLOR]" , "", 71, "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg")
+	AddDir("[COLOR maroon][B][Filmes GoFilmes.me][/B][/COLOR]" , "", 210, "https://walter.trakt.tv/images/movies/000/219/436/fanarts/thumb/0ff039faa5.jpg", "https://walter.trakt.tv/images/movies/000/219/436/fanarts/thumb/0ff039faa5.jpg")	AddDir("[COLOR yellow][B][Filmes NetCine.us][/B][/COLOR]" , "", 71, "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg")
 	AddDir("[COLOR blue][B][Filmes Dublado RedeCanais.com][/B][/COLOR]" , cPage, 90, "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", background="cPage")
 	AddDir("[COLOR blue][B][Filmes Legendado RedeCanais.com][/B][/COLOR]" , cPageleg, 91, "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", background="cPageleg")
 	AddDir("[COLOR blue][B][Filmes Nacional RedeCanais.com][/B][/COLOR]" , cPagenac, 92, "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", background="cPagenac")
@@ -825,7 +831,61 @@ def PlaySMM(): #194
 			PlayUrl(name, url2, iconimage, info, sub=legenda)
 		else:
 			PlayUrl(name, url2, iconimage, info)
-# ----------------- Fim MM filmes
+# ----------------- Fim MM filmes# ----------------- Inicio Go Filmes
+def GenerosGO(): #219
+	d = xbmcgui.Dialog().select("Escolha o Genero", ClistaGO1)
+	if d != -1:
+		global Cat
+		Addon.setSetting("CatGO", str(d) )
+		Cat = d
+		Addon.setSetting("cPageGOf", "0" )
+		xbmc.executebuiltin("XBMC.Container.Refresh()")def ListGO(pagina2): #210
+	AddDir("[COLOR yellow][B][Gênero dos Filmes]:[/B] " + ClistaGO1[int(CatGO)] +"[/COLOR]", "url" ,219 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
+	pagina=eval(pagina2)
+	l= int(pagina)*5
+	p=1
+	i=0
+	if int(pagina) > 0:
+		AddDir("[COLOR blue][B]<< Pagina Anterior ["+ str( int(pagina) ) +"[/B]][/COLOR]", pagina , 120 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Previous-icon.png", isFolder=False, background=pagina2)	try:
+		for x in range(0, 5):
+			l+=1
+			if ClistaGO0[int(CatGO)] == "all":
+				link = common.OpenURL("http://gofilmes.me/?p="+str(l)).replace("</div></div>","\r\n")
+			else:				link = common.OpenURL("http://gofilmes.me/genero/"+ClistaGO0[int(CatGO)]+"?p="+str(l)).replace("</div></div>","\r\n")			m = re.compile('href=\"([^\"]+)\" title\=\"([^\"]+).+b\" src\=\"([^\"]+).+n\">([^\<]+)').findall(link)
+			for url2,name2,img2,info2 in m:
+				try:
+					info2= re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), info2).encode('utf-8')
+				except:
+					pass
+				name2 = name2.replace("Assistir ","").replace(" Online"," -")
+				AddDir(name2, url2, 211, img2, img2, isFolder=False, IsPlayable=True, info=info2)
+				p+=1
+		if p >= 120:
+			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(pagina) + 2) +"[/B]][/COLOR]", pagina , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background=pagina2)	except:		AddDir( "Server offline" ,"", 0, "", "", isFolder=False)def PlayGO(): #211
+	try:
+		link = common.OpenURL(url)
+		m = re.compile('iframe src\="([^\"]+)').findall(link)
+		link2 = common.OpenURL(m[0])
+		m2 = re.compile('href=\"([^\"]+)\".+?\"\>([^\<]+)').findall(link2)
+		listu=[]
+		listn=[]
+		i=0
+		for url3,dl3 in m2:
+			link3 = common.OpenURL("http://cubeplay.000webhostapp.com/moon.php?url="+url3)
+			m3 = re.compile('\=(.+?x[^,]+).+\s(.+)').findall(link3)
+			m3 = sorted(m3, key=lambda m3: m3[0])
+			for res4,url4 in m3:
+				listn.append("[COLOR blue]"+ m2[i][1] +"[/COLOR] " + "[COLOR yellow]"+ res4 +"[/COLOR]")
+				listu.append(url4)
+			i+=1
+		if len(listn) >=1:
+			d = xbmcgui.Dialog().select("Selecione a resolução", listn)
+			if d!= -1:
+				PlayUrl(name, listu[d], iconimage, info)
+		else:
+			xbmcgui.Dialog().ok("Cube Play", "Não foi possível carregar o vídeo")
+	except:
+		xbmcgui.Dialog().ok("Cube Play", "Não foi possível carregar o vídeo")# ----------------- Fim Go Filmes
 def GetChoice(choiceTitle, fileTitle, urlTitle, choiceFile, choiceUrl, choiceNone=None, fileType=1, fileMask=None, defaultText=""):
 	choice = ''
 	choiceList = [getLocaleString(choiceFile), getLocaleString(choiceUrl)]
@@ -842,8 +902,7 @@ def GetChoice(choiceTitle, fileTitle, urlTitle, choiceFile, choiceUrl, choiceNon
 		choice = xbmcgui.Dialog().browse(fileType, getLocaleString(urlTitle), 'files', fileMask, False, False, defaultText).decode("utf-8")
 	return choice			
 def PlayUrl(name, url, iconimage=None, info='', sub=''):
-	#xbmcgui.Dialog().ok(background, url + " " +background)
-	if background != "None":
+	if ";;;" in background:
 		b = background.split(";;;")
 		if "RC" in b[2]:
 			AddFavorites(b[0], iconimage, b[1], "95", "historic.txt")
@@ -1257,7 +1316,12 @@ elif mode == 192:
 elif mode == 194:
 	PlaySMM()
 elif mode == 200:
-	CheckUpdate(True)
-
+	CheckUpdate(True)elif mode == 210:	ListGO("cPageGOf")
+	setViewM()
+elif mode == 211:
+	PlayGO()
+elif mode == 219:
+	GenerosGO()
+	
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
 #checkintegrity25852
