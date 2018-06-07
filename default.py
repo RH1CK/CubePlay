@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.06.07" #
+Versao = "18.06.07a" #
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -121,8 +121,8 @@ def Filmes96(): #220
 		AddDir(meta['title'] , meta['mp4']+"?play", 229, isFolder=False, IsPlayable=True, metah=meta)
 	setViewM()
 def FilmesRC(): #222
-	#link = common.OpenURL("https://pastebin.com/raw/taJHVbXj")
-	link = common.OpenURL("http://localhost:8080/globosat/rcm.php")
+	link = common.OpenURL("https://pastebin.com/raw/taJHVbXj")
+	#link = common.OpenURL("http://localhost:8080/globosat/rcm.php")
 	m = link.split("\n")
 	link2 = common.OpenURL("https://pastebin.com/raw/FwSnnr65")
 	i=1
