@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.06.07b" #
+Versao = "18.06.07c" #
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -94,7 +94,8 @@ def MCanais(): #-1
 def MFilmes(): #-2
 	AddDir("[B][COLOR cyan][Filmes Lançamentos MMFilmes.tv][/COLOR][/B]", "config" , 184,"https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", "https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", isFolder=True)
 	AddDir("[B][COLOR cyan][Filmes MMFilmes.tv][/COLOR][/B]", "config" , 180,"https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", "https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", isFolder=True)
-	AddDir("[COLOR maroon][B][Filmes GoFilmes.me][/B][/COLOR]" , "", 210, "https://walter.trakt.tv/images/movies/000/219/436/fanarts/thumb/0ff039faa5.jpg", "https://walter.trakt.tv/images/movies/000/219/436/fanarts/thumb/0ff039faa5.jpg")	AddDir("[COLOR yellow][B][Filmes NetCine.us][/B][/COLOR]" , "", 71, "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg")
+	AddDir("[COLOR maroon][B][Filmes GoFilmes.me][/B][/COLOR]" , "", 210, "https://walter.trakt.tv/images/movies/000/219/436/fanarts/thumb/0ff039faa5.jpg", "https://walter.trakt.tv/images/movies/000/219/436/fanarts/thumb/0ff039faa5.jpg")
+	AddDir("[COLOR yellow][B][Filmes NetCine.us][/B][/COLOR]" , "", 71, "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg")
 	AddDir("[COLOR blue][B][Filmes RedeCanais.com][/B][/COLOR]" , cPage, 221, "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", background="cPage")
 	AddDir("[COLOR blue][B][Filmes Dublado RedeCanais.com][/B][/COLOR]" , cPage, 90, "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", background="cPage")
 	AddDir("[COLOR blue][B][Filmes Legendado RedeCanais.com][/B][/COLOR]" , cPageleg, 91, "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", background="cPageleg")
@@ -357,10 +358,14 @@ def PlayMRC(): #95 Play filmes
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
 		player = re.compile('<iframe name=\"Player\".+src=\"([^\"]+)\"').findall(link)
 		if player:
-			player[0] = re.sub('redecanais\.([^\/]+)', "www.redecanais.link", player[0] ).replace("https","http")
-			link2 = common.OpenURL(player[0])
-			urlp = re.compile('file: \"([^\"]+)\"').findall(link2)
-			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , urlp[0] + "?play|Referer="+player[0], 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name+";;;RC")
+			mp4 = re.compile('server(f?\d+).+vid\=(\w+)').findall(player[0])
+			reg = "(.+)\\$rc"+mp4[0][0]
+			link2 = common.OpenURL("https://pastebin.com/raw/FwSnnr65")
+			m = re.compile(reg, re.IGNORECASE).findall(link2)
+			url2 = m[0]
+			file = mp4[0][1]+".mp4"
+			#ST(player[0])
+			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , url2 + file + "?play|Referer=https://redecanais.link/", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name+";;;RC")
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
 	except:
@@ -376,10 +381,13 @@ def PlaySRC(): #133 Play series
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
 		player = re.compile('<iframe name=\"Player\".+src=\"([^\"]+)\"').findall(link)
 		if player:
-			player[0] = re.sub('redecanais\.([^\/]+)', "www.redecanais.link", player[0] ).replace("https","http")
-			link2 = common.OpenURL(player[0])
-			urlp = re.compile('file: \"([^\"]+)\"').findall(link2)
-			PlayUrl(name, urlp[0] + "?play|Referer="+player[0], iconimage, name)
+			mp4 = re.compile('server(\d+).+vid\=(\w+)').findall(player[0])
+			reg = "(.+)\\$rc"+mp4[0][0]
+			link2 = common.OpenURL("https://pastebin.com/raw/FwSnnr65")
+			m = re.compile(reg, re.IGNORECASE).findall(link2)
+			url2 = m[0]
+			file = mp4[0][1]+".mp4"
+			PlayUrl(name, url2 + file + "?play|Referer=https://redecanais.link/", iconimage, name)
 		else:
 			xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 	except:
@@ -488,24 +496,24 @@ def Busca(): # 160
 	if not d:
 		return Categories()
 		sys.exit(int(sys.argv[1]))
-	#try:
-	#	p= 1
-	#	AddDir("[COLOR blue][B][RedeCanais.com][/B][/COLOR]", "" , 0 ,"", isFolder=False)
-	#	l= 0
-	#	for x in range(0, 8):
-	#		l +=1
-	#		link = common.OpenURL("http://www.redecanais.top/search.php?keywords="+d+"&page="+str(l))
-	#		match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
-	#		if match:
-	#			for url2,img2,name2 in match:
-	#				if re.compile('\d+p').findall(name2):
-	#					AddDir(name2 ,url2, 95, img2, img2)
-	#				elif "Lista" in name2:
-	#					AddDir(name2 ,url2, 135, img2, img2)
-	#		else:
-	#			break
-	#except urllib2.URLError, e:
-	#	AddDir("Nada encontrado" , "", 0, "", "", 0)
+	try:
+		p= 1
+		AddDir("[COLOR blue][B][RedeCanais.com][/B][/COLOR]", "" , 0 ,"", isFolder=False)
+		l= 0
+		for x in range(0, 8):
+			l +=1
+			link = common.OpenURL("http://www.redecanais.top/search.php?keywords="+d+"&page="+str(l))
+			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
+			if match:
+				for url2,img2,name2 in match:
+					if re.compile('\d+p').findall(name2):
+						AddDir(name2 ,url2, 95, img2, img2)
+					elif "Lista" in name2:
+						AddDir(name2 ,url2, 135, img2, img2)
+			else:
+				break
+	except urllib2.URLError, e:
+		AddDir("Nada encontrado" , "", 0, "", "", 0)
 	try:
 		AddDir("[COLOR yellow][B][NetCine.us][/B][/COLOR]", "" , 0 ,"", isFolder=False)
 		link2 = common.OpenURL("http://netcine.us/?s="+d).replace('\n','').replace('\r','')
@@ -869,7 +877,8 @@ def PlaySMM(): #194
 			PlayUrl(name, url2, iconimage, info, sub=legenda)
 		else:
 			PlayUrl(name, url2, iconimage, info)
-# ----------------- Fim MM filmes# ----------------- Inicio Go Filmes
+# ----------------- Fim MM filmes
+# ----------------- Inicio Go Filmes
 def GenerosGO(): #219
 	d = xbmcgui.Dialog().select("Escolha o Genero", ClistaGO1)
 	if d != -1:
@@ -877,19 +886,23 @@ def GenerosGO(): #219
 		Addon.setSetting("CatGO", str(d) )
 		Cat = d
 		Addon.setSetting("cPageGOf", "0" )
-		xbmc.executebuiltin("XBMC.Container.Refresh()")def ListGO(pagina2): #210
+		xbmc.executebuiltin("XBMC.Container.Refresh()")
+def ListGO(pagina2): #210
 	AddDir("[COLOR yellow][B][Gênero dos Filmes]:[/B] " + ClistaGO1[int(CatGO)] +"[/COLOR]", "url" ,219 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
 	pagina=eval(pagina2)
 	l= int(pagina)*5
 	p=1
 	i=0
 	if int(pagina) > 0:
-		AddDir("[COLOR blue][B]<< Pagina Anterior ["+ str( int(pagina) ) +"[/B]][/COLOR]", pagina , 120 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Previous-icon.png", isFolder=False, background=pagina2)	try:
+		AddDir("[COLOR blue][B]<< Pagina Anterior ["+ str( int(pagina) ) +"[/B]][/COLOR]", pagina , 120 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Previous-icon.png", isFolder=False, background=pagina2)
+	try:
 		for x in range(0, 5):
 			l+=1
 			if ClistaGO0[int(CatGO)] == "all":
 				link = common.OpenURL("http://gofilmes.me/?p="+str(l)).replace("</div></div>","\r\n")
-			else:				link = common.OpenURL("http://gofilmes.me/genero/"+ClistaGO0[int(CatGO)]+"?p="+str(l)).replace("</div></div>","\r\n")			m = re.compile('href=\"([^\"]+)\" title\=\"([^\"]+).+b\" src\=\"([^\"]+).+n\">([^\<]+)').findall(link)
+			else:
+				link = common.OpenURL("http://gofilmes.me/genero/"+ClistaGO0[int(CatGO)]+"?p="+str(l)).replace("</div></div>","\r\n")
+			m = re.compile('href=\"([^\"]+)\" title\=\"([^\"]+).+b\" src\=\"([^\"]+).+n\">([^\<]+)').findall(link)
 			for url2,name2,img2,info2 in m:
 				try:
 					info2= re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), info2).encode('utf-8')
@@ -899,7 +912,10 @@ def GenerosGO(): #219
 				AddDir(name2, url2, 211, img2, img2, isFolder=False, IsPlayable=True, info=info2)
 				p+=1
 		if p >= 120:
-			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(pagina) + 2) +"[/B]][/COLOR]", pagina , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background=pagina2)	except:		AddDir( "Server offline" ,"", 0, "", "", isFolder=False)def PlayGO(): #211
+			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(pagina) + 2) +"[/B]][/COLOR]", pagina , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background=pagina2)
+	except:
+		AddDir( "Server offline" ,"", 0, "", "", isFolder=False)
+def PlayGO(): #211
 	try:
 		link = common.OpenURL(url)
 		m = re.compile('iframe src\="([^\"]+)').findall(link)
@@ -923,7 +939,8 @@ def GenerosGO(): #219
 		else:
 			xbmcgui.Dialog().ok("Cube Play", "Não foi possível carregar o vídeo")
 	except:
-		xbmcgui.Dialog().ok("Cube Play", "Não foi possível carregar o vídeo")# ----------------- Fim Go Filmes
+		xbmcgui.Dialog().ok("Cube Play", "Não foi possível carregar o vídeo")
+# ----------------- Fim Go Filmes
 def GetChoice(choiceTitle, fileTitle, urlTitle, choiceFile, choiceUrl, choiceNone=None, fileType=1, fileMask=None, defaultText=""):
 	choice = ''
 	choiceList = [getLocaleString(choiceFile), getLocaleString(choiceUrl)]
@@ -950,7 +967,7 @@ def PlayUrl(name, url, iconimage=None, info='', sub='', metah=''):
 			AddFavorites(b[0], iconimage, b[1], "181", "historic.txt")
 	url = re.sub('\.mp4$', '.mp4?play', url)
 	url = common.getFinalUrl(url)
-	xbmc.log('--- Playing "{0}". {1}'.format(name, url), 2)
+	#xbmc.log('--- Playing "{0}". {1}'.format(name, url), 2)
 	listitem = xbmcgui.ListItem(path=url)
 	if metah:
 		listitem.setInfo(type="Video", infoLabels=metah)
@@ -1358,7 +1375,9 @@ elif mode == 192:
 elif mode == 194:
 	PlaySMM()
 elif mode == 200:
-	CheckUpdate(True)elif mode == 210:	ListGO("cPageGOf")
+	CheckUpdate(True)
+elif mode == 210:
+	ListGO("cPageGOf")
 	setViewM()
 elif mode == 211:
 	PlayGO()
