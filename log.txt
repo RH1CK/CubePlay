@@ -35,3 +35,5 @@
 18.05.24 - Fix RC.net
 18.05.26 - Melhora velocida de carregamento RC
 18.05.29 - Adicionado mais canais, desenhho 24h
+18.06.04 - Removido redecanais, fix legendas mmfilmes
+18.06.07 - Adicionado filmes redecanais
