@@ -358,7 +358,7 @@ def PlayMRC(): #95 Play filmes
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
 		player = re.compile('<iframe name=\"Player\".+src=\"([^\"]+)\"').findall(link)
 		if player:
-			mp4 = re.compile('server(f?\d+).+vid\=(\w+)').findall(player[0])
+			mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
 			reg = "(.+)\\$rc"+mp4[0][0]
 			link2 = common.OpenURL("https://pastebin.com/raw/FwSnnr65")
 			m = re.compile(reg, re.IGNORECASE).findall(link2)
@@ -381,7 +381,7 @@ def PlaySRC(): #133 Play series
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
 		player = re.compile('<iframe name=\"Player\".+src=\"([^\"]+)\"').findall(link)
 		if player:
-			mp4 = re.compile('server(\d+).+vid\=(\w+)').findall(player[0])
+			mp4 = re.compile('server(\d*).+vid\=(\w+)').findall(player[0])
 			reg = "(.+)\\$rc"+mp4[0][0]
 			link2 = common.OpenURL("https://pastebin.com/raw/FwSnnr65")
 			m = re.compile(reg, re.IGNORECASE).findall(link2)
