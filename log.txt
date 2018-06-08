@@ -37,3 +37,4 @@
 18.05.29 - Adicionado mais canais, desenhho 24h
 18.06.04 - Removido redecanais, fix legendas mmfilmes
 18.06.07 - Adicionado filmes redecanais
+18.06.08 - Adicionado filmes dublado/legendado
