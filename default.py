@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.06.08" #
+Versao = "18.06.08a" #
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -92,6 +92,7 @@ def MCanais(): #-1
 		AddDir("[COLOR while][B]["+name2+"][/COLOR][/B]" , url2, 102, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
 	setViewM()
 def MFilmes(): #-2
+	AddDir("[COLOR white][B][Filmes Dublado/Legendado][/B][/COLOR]" , cPage, 220, "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", background="cPage")
 	AddDir("[B][COLOR cyan][Filmes Lançamentos MMFilmes.tv][/COLOR][/B]", "config" , 184,"https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", "https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", isFolder=True)
 	AddDir("[B][COLOR cyan][Filmes MMFilmes.tv][/COLOR][/B]", "config" , 180,"https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", "https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", isFolder=True)
 	AddDir("[COLOR maroon][B][Filmes GoFilmes.me][/B][/COLOR]" , "", 210, "https://walter.trakt.tv/images/movies/000/219/436/fanarts/thumb/0ff039faa5.jpg", "https://walter.trakt.tv/images/movies/000/219/436/fanarts/thumb/0ff039faa5.jpg")
@@ -117,15 +118,16 @@ def MSeries(): #-3
 # --------------  Inicio Filme CB
 def Filmes96(): #220
 	link = common.OpenURL("https://pastebin.com/raw/ZkfFMB20")
-	#m = re.compile("(.+)\s").findall(link)
 	m = link.split("\n")
 	for x in m:
-		meta = eval(x)
-		AddDir(meta['title'] , meta['mp4']+"?play", 229, isFolder=False, IsPlayable=True, metah=meta)
+		try:
+			meta = eval(x)
+			AddDir(meta['title'] +" [COLOR yellow]("+str(meta['year'])+")[/COLOR] "+" [COLOR blue]["+str(meta['rating'])+"][/COLOR]" , meta['mp4'] +"?play", 229, isFolder=False, IsPlayable=True, metah=meta)
+		except:
+			pass
 	setViewM()
-def FilmesRC(): #222
+def FilmesRC(): #221
 	link = common.OpenURL("https://pastebin.com/raw/taJHVbXj")
-	#link = common.OpenURL("http://localhost:8080/globosat/rcm.php")
 	m = link.split("\n")
 	link2 = common.OpenURL("https://pastebin.com/raw/FwSnnr65")
 	i=1
@@ -632,7 +634,7 @@ def MoviesFO(urlfo,pagina2): #170
 			AddDir("[COLOR blue][B]<< Pagina Anterior ["+ str( int(pagina) ) +"[/B]][/COLOR]", pagina , 120 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Previous-icon.png", isFolder=False, background=pagina2)
 		for x in range(0, 5):
 			l +=1
-			ordem = "desc" if cOrdFO=="1" else "asc"
+			ordem = "asc" if cOrdFO=="title" else "desc"
 			link = common.OpenURL("https://filmesonline.online/index.php?do=search&subaction=search&search_start="+str(l)+"&story="+urlfo+"&sortby="+cOrdFO+"&resorder="+ordem+"&catlist[]="+Clistafo0[int(Catfo)]).replace("\r","").replace("\n","")
 			link = re.sub('Novos Filmes.+', '', link)
 			m = re.compile('src=\"(.upload[^\"]+).+?alt=\"([^\"]+).+?href=\"([^\"]+)').findall(link)
