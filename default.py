@@ -86,7 +86,7 @@ def Categories(): #70
 	AddDir("[B][COLOR orange][Checar Atualizações][/COLOR][/B]", "" , 200,"https://accelerator-origin.kkomando.com/wp-content/uploads/2015/04/update2-970x546.jpg", "https://accelerator-origin.kkomando.com/wp-content/uploads/2015/04/update2-970x546.jpg", isFolder=False, info="Checar se ha atualizacoes\n\nAs atualizacoes normalmente sao automaticas\nUse esse recurso caso nao esteja recebendo automaticamente")
 # --------------  Menu
 def MCanais(): #-1
-	link = common.OpenURL("http://localhost:8080/iptv/31SLZ8D8.php")
+	link = common.OpenURL("https://pastebin.com/raw/31SLZ8D8")
 	match = re.compile('(.+);(.+)').findall(link)
 	for name2,url2 in match:
 		AddDir("[COLOR while][B]["+name2+"][/COLOR][/B]" , url2, 102, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
