@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.06.08a" #
+Versao = "18.06.12" #
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -86,7 +86,7 @@ def Categories(): #70
 	AddDir("[B][COLOR orange][Checar Atualizações][/COLOR][/B]", "" , 200,"https://accelerator-origin.kkomando.com/wp-content/uploads/2015/04/update2-970x546.jpg", "https://accelerator-origin.kkomando.com/wp-content/uploads/2015/04/update2-970x546.jpg", isFolder=False, info="Checar se ha atualizacoes\n\nAs atualizacoes normalmente sao automaticas\nUse esse recurso caso nao esteja recebendo automaticamente")
 # --------------  Menu
 def MCanais(): #-1
-	link = common.OpenURL("https://pastebin.com/raw/31SLZ8D8")
+	link = common.OpenURL("http://localhost:8080/iptv/31SLZ8D8.php")
 	match = re.compile('(.+);(.+)').findall(link)
 	for name2,url2 in match:
 		AddDir("[COLOR while][B]["+name2+"][/COLOR][/B]" , url2, 102, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
@@ -535,15 +535,16 @@ def Busca(): # 160
 def TVCB(x): #102
 	try:
 		#AddDir("a", "", 50, "", "", isFolder=False, IsPlayable=False, info="")
-		link = common.OpenURL("https://pastebin.com/raw/"+x)
+		link = common.OpenURL(x)
+		link = re.sub('^.{3}', "", link )
 		m = re.compile('(.+)\?(.+)').findall(link)
 		i=0
 		for name2,url2 in m:
 			if cadulto=="8080":
-				AddDir(getmd5(name2), url2, 103, "a", "a", isFolder=False, IsPlayable=True, info="")
+				AddDir(getmd5(name2), url2, 103, " ", " ", isFolder=False, IsPlayable=True, info="")
 				i+=1
 			elif not "dulto" in getmd5(name2):
-				AddDir(getmd5(name2), url2, 103, "a", "a", isFolder=False, IsPlayable=True, info="")
+				AddDir(getmd5(name2), url2, 103, " ", " ", isFolder=False, IsPlayable=True, info="")
 				i+=1
 	except:
 		AddDir("Servidor offline, tente novamente em alguns minutos" , "", 0, "", "", 0)
@@ -927,7 +928,7 @@ def PlayGO(): #211
 		listn=[]
 		i=0
 		for url3,dl3 in m2:
-			link3 = common.OpenURL("http://cubeplay.000webhostapp.com/moon.php?url="+url3)
+			link3 = common.OpenURL("http://sokodi.net/play/moon.php?url="+url3)
 			m3 = re.compile('\=(.+?x[^,]+).+\s(.+)').findall(link3)
 			m3 = sorted(m3, key=lambda m3: m3[0])
 			for res4,url4 in m3:
