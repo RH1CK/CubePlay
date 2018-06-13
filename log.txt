@@ -39,3 +39,4 @@
 18.06.07 - Adicionado filmes redecanais
 18.06.08 - Adicionado filmes dublado/legendado
 18.06.12 - Fix Canais
+18.06.13 - Acentos, removido FB
