@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.06.14"
+Versao = "18.06.26"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -371,6 +371,7 @@ def PlayMRC(): #95 Play filmes
 # --------------  REDECANAIS SERIES,ANIMES,DESENHOS
 def PlaySRC(): #133 Play series
 	try:
+		ST(url)
 		url2 = re.sub('redecanais\.[^\/]+', "redecanais.top", url.replace("https","http") )
 		link = common.OpenURL(url2)
 		desc = re.compile('<p itemprop=\"description\"><p>(.+)<\/p><\/p>').findall(link)
@@ -497,7 +498,7 @@ def Busca(): # 160
 		p= 1
 		AddDir("[COLOR blue][B][RedeCanais.com][/B][/COLOR]", "" , 0 ,"", isFolder=False)
 		l= 0
-		for x in range(0, 8):
+		for x in range(0, 6):
 			l +=1
 			link = common.OpenURL("http://www.redecanais.top/search.php?keywords="+d+"&page="+str(l))
 			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
@@ -509,8 +510,8 @@ def Busca(): # 160
 						AddDir(name2 ,url2, 135, img2, img2)
 			else:
 				break
-	except urllib2.URLError, e:
-		AddDir("Nada encontrado" , "", 0, "", "", 0)
+	except:
+		pass
 	try:
 		AddDir("[COLOR yellow][B][NetCine.us][/B][/COLOR]", "" , 0 ,"", isFolder=False)
 		link2 = common.OpenURL("http://netcine.us/?s="+d).replace('\n','').replace('\r','')
@@ -523,8 +524,44 @@ def Busca(): # 160
 					AddDir(name2 ,url2, 61, img2, img2, isFolder=True)
 				else:
 					AddDir(name2 ,url2, 78, img2, img2, isFolder=True)
-	except urllib2.URLError, e:
-		AddDir("Nada encontrado" , "", 0, "", "", 0)
+	except:
+		pass
+	l=0
+	i=0
+	try:
+		AddDir("[COLOR cyan][B][MMfilmes.tv][/B][/COLOR]", "" , 0 ,"", isFolder=False)
+		links = common.OpenURL("http://www.mmfilmes.tv/series/")
+		ms = re.compile('href\=\"(.+www.mmfilmes.tv.+)\" rel\=\"bookmark\"').findall(links)
+		for x in range(0, 3):
+			l+=1
+			link = common.OpenURL("http://www.mmfilmes.tv/page/"+str(l)+"/?s="+d)
+			m = re.compile('id\=\"post\-\d+\".+?\=.([^\"]+)\h*(?s)(.+?)(http[^\"]+)').findall(link)
+			res = re.compile('audioy..([^\<]*)').findall(link)
+			jpg = re.compile('src=\"(http.+?www.mmfilmes.tv\/wp-content\/uploads[^\"]+)').findall(link)
+			dubleg = re.compile('boxxer.+\s.+boxxer..([^\<]*)').findall(link)
+			if m:
+				for name2,b,url2 in m:
+					name2 = name2.replace("&#8211;","-").replace("&#038;","&").replace("&#8217;","\'")
+					if not url2 in ms:
+						AddDir(name2+ " [COLOR yellow]"+res[i]+"[/COLOR] [COLOR blue]"+dubleg[i]+"[/COLOR]", url2, 181, jpg[i], jpg[i],isFolder=True,IsPlayable=False)
+					else:
+						AddDir(name2, url2, 191, jpg[i], jpg[i], isFolder=True,IsPlayable=False)
+					i+=1
+			i=0
+	except:
+		pass
+	l=0
+	i=0
+	try:
+		AddDir("[COLOR maroon][B][Gofilmes.me][/B][/COLOR]", "" , 0 ,"", isFolder=False)
+		for x in range(0, 3):
+			l+=1
+			link = common.OpenURL("http://gofilmes.me/search?s="+d+"&p="+str(l)).replace("</div><div","\r\n")
+			m = re.compile('href=\"([^\"]+)\" title\=\"([^\"]+).+b\" src\=\"([^\"]+).+').findall(link)
+			for url2,name2,img2 in m:
+				AddDir(name2, url2, 211, img2, img2, isFolder=False, IsPlayable=True)
+	except:
+		pass
 # ----------------- FIM BUSCA
 # ----------------- TV Cubeplay
 def TVCB(x): #102
