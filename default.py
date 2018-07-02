@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.06.26"
+Versao = "18.07.02"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -291,9 +291,10 @@ def MoviesRCD(): #90 Filme dublado
 			link = common.OpenURL("http://www.redecanais.top/browse-filmes-dublado-videos-"+str(l)+"-"+cOrdRCF+".html")
 			if Clista2[int(Cat)] != "Sem filtro (Mostrar Todos)":
 				link = common.OpenURL("http://www.redecanais.top/browse-"+Clista2[int(Cat)]+"-Filmes-videos-"+str(l)+"-"+cOrdRCF+".html")
-			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
+			match = re.compile('href=\"([^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
 			if match:
 				for url2,img2,name2 in match:
+					url2 = re.sub('^\.', "http://www.redecanais.top/", url2 )
 					AddDir(name2 ,url2, 95, img2, img2, info="")
 					p += 1
 			else:
@@ -315,9 +316,10 @@ def MoviesRCL(): #91 Filme Legendado
 			link = common.OpenURL("http://www.redecanais.top/browse-filmes-legendado-videos-"+str(l)+"-"+cOrdRCF+".html")
 			if Clista2[int(Cat)] != "Sem filtro (Mostrar Todos)":
 				link = common.OpenURL("http://www.redecanais.top/browse-"+Clista2[int(Cat)]+"-Filmes-Legendado-videos-"+str(l)+"-"+cOrdRCF+".html")
-			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
+			match = re.compile('href=\"([^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
 			if match:
 				for url2,img2,name2 in match:
+					url2 = re.sub('^\.', "http://www.redecanais.top/", url2 )
 					AddDir(name2 ,url2, 95, img2, img2, info="")
 					p += 1
 			else:
@@ -336,9 +338,10 @@ def MoviesRCN(): #92 Filmes Nacional
 		for x in range(0, 5):
 			l +=1
 			link = common.OpenURL("http://www.redecanais.top/browse-filmes-nacional-videos-"+str(l)+"-"+cOrdRCF+".html")
-			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
+			match = re.compile('href=\"([^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
 			if match:
 				for url2,img2,name2 in match:
+					url2 = re.sub('^\.', "http://www.redecanais.top/", url2 )
 					AddDir(name2 ,url2, 95, img2, img2, info="")
 					p += 1
 			else:
@@ -361,7 +364,6 @@ def PlayMRC(): #95 Play filmes
 			m = re.compile(reg, re.IGNORECASE).findall(link2)
 			url2 = m[0]
 			file = mp4[0][1]+".mp4"
-			#ST(player[0])
 			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , url2 + file + "?play|Referer=https://redecanais.link/", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name+";;;RC")
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
@@ -371,7 +373,6 @@ def PlayMRC(): #95 Play filmes
 # --------------  REDECANAIS SERIES,ANIMES,DESENHOS
 def PlaySRC(): #133 Play series
 	try:
-		ST(url)
 		url2 = re.sub('redecanais\.[^\/]+', "redecanais.top", url.replace("https","http") )
 		link = common.OpenURL(url2)
 		desc = re.compile('<p itemprop=\"description\"><p>(.+)<\/p><\/p>').findall(link)
@@ -443,9 +444,10 @@ def SeriesRC(urlrc,pagina2): #130 Lista as Series RC
 		for x in range(0, 5):
 			l +=1
 			link = common.OpenURL("http://www.redecanais.top/browse-"+urlrc+"-videos-"+str(l)+"-"+cOrdRCS+".html")
-			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
+			match = re.compile('href=\"([^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
 			if match:
 				for url2,img2,name2 in match:
+					url2 = re.sub('^\.', "http://www.redecanais.top/", url2 )
 					if not "index.html" in url2:
 						AddDir(name2 ,url2, 135, img2, img2, info="")
 						p += 1
@@ -501,9 +503,10 @@ def Busca(): # 160
 		for x in range(0, 6):
 			l +=1
 			link = common.OpenURL("http://www.redecanais.top/search.php?keywords="+d+"&page="+str(l))
-			match = re.compile('href=\"(https:\/\/www.redecanais[^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
+			match = re.compile('href=\"([^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
 			if match:
 				for url2,img2,name2 in match:
+					url2 = re.sub('^\.', "http://www.redecanais.top/", url2 )
 					if re.compile('\d+p').findall(name2):
 						AddDir(name2 ,url2, 95, img2, img2)
 					elif "Lista" in name2:
