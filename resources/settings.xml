@@ -18,6 +18,7 @@
 	<setting id="cPage" label="cPage" type="text" default="0" visible="false" />
 	<setting id="cPageleg" label="cPageleg" type="text" default="0" visible="false" />
 	<setting id="cPagenac" label="cPagenac" type="text" default="0" visible="false" />
+	<setting id="cPagelan" label="cPagelan" type="text" default="0" visible="false" />
 	<setting id="cPageser" label="cPageser" type="text" default="0" visible="false" />
 	<setting id="cPageani" label="cPageani" type="text" default="0" visible="false" />
 	<setting id="cPagedes" label="cPagedes" type="text" default="0" visible="false" />
