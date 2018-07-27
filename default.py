@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.07.26"
+Versao = "18.07.27"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -193,14 +193,20 @@ def PlayS(): #62
 		link = common.OpenURL(url).replace('\n','').replace('\r','')
 		m = re.compile("\"play-.\".+?src=\"([^\"]+)").findall(link)
 		listan = re.compile("\#play-...(\w*)").findall(link)
-		listaf=[]
 		i=0
+		listaf=[]
 		listal=[]
 		for url2 in m:
 			link3 = common.OpenURL(url2).replace('\n','').replace('\r','')
-			m3 = re.compile("src\=.([^\"]+)").findall(link3)
+			m3 = re.compile("(campanha\d?).php?([^\"]+)").findall(link3)
 			for url3 in m3:
-				link4 = common.OpenURL(url3)
+				if url3[0] == "campanha":
+					cp = "desktop22"
+				elif url3[0] == "campanha2":
+					cp = "desktop20"
+				else:
+					cp = "desktopnovo"
+				link4 = common.OpenURL("http://www.micetop.us/"+cp+".php"+url3[1])
 				m4= re.compile("http.+?mp4[^\"]+").findall(link4) 
 				m4 = list(reversed(m4))
 				for url4 in m4:
@@ -253,8 +259,14 @@ def ListMoviesNC(): #78
 def PlayMNC(): #79
 	try:
 		link = common.OpenURL(url)
-		m = re.compile("src\=.([^\"]+)").findall(link)
-		link2 = common.OpenURL(m[0])
+		m = re.compile("(campanha\d?).php?([^\"]+)").findall(link)
+		if m[0][0] == "campanha":
+			cp = "desktop22"
+		elif m[0][0] == "campanha2":
+			cp = "desktop20"
+		else:
+			cp = "desktopnovo"
+		link2 = common.OpenURL("http://www.micetop.us/"+cp+".php"+m[0][1])
 		m2 = re.compile("http.+?mp4[^\"]+").findall(link2)
 		if m2:
 			m2 = list(reversed(m2))
