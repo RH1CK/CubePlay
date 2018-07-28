@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.07.27"
+Versao = "18.07.28"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -75,7 +75,7 @@ def getLocaleString(id):
 
 def Categories(): #70
 	#AddDir("[B]!{0}: {1}[/B] - {2} ".format(getLocaleString(30036), getLocaleString(30037) if makeGroups else getLocaleString(30038) , getLocaleString(30039)), "setting" ,50 ,os.path.join(iconsDir, "setting.png"), isFolder=False)
-	AddDir("[COLOR white][B][Canais de TV][/B][/COLOR]" , "", -1, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
+	AddDir("[COLOR white][B][Canais de TV][/B][/COLOR]" , "", 100, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
 	AddDir("[B][COLOR white][Filmes][/COLOR][/B]", "" , -2,"https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", "https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", isFolder=True)
 	AddDir("[COLOR white][B][Séries/Animes/Desenhos][/B][/COLOR]" , "", -3, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
 	AddDir("[COLOR gold][B][Filmes Favoritos Cube Play][/B][/COLOR]", "" ,301 , "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png", "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png")
@@ -86,6 +86,7 @@ def Categories(): #70
 	AddDir("[B][COLOR orange][Checar Atualizações][/COLOR][/B]", "" , 200,"https://accelerator-origin.kkomando.com/wp-content/uploads/2015/04/update2-970x546.jpg", "https://accelerator-origin.kkomando.com/wp-content/uploads/2015/04/update2-970x546.jpg", isFolder=False, info="Checar se há atualizações\n\nAs atualizações normalmente são automáticas\nUse esse recurso caso não esteja recebendo automaticamente\r\nVersão atual: "+Versao)
 # --------------  Menu
 def MCanais(): #-1
+	AddDir("[B][COLOR cyan][Filmes Lançamentos MMFilmes.tv][/COLOR][/B]", "config" , 100,"https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", "https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", isFolder=True)
 	link = common.OpenURL("https://pastebin.com/raw/31SLZ8D8")
 	match = re.compile('(.+);(.+)').findall(link)
 	for name2,url2 in match:
@@ -643,27 +644,17 @@ def EPG():
 		return ""
 		xbmc.executebuiltin("Notification({0}, {1}, 7000, {2})".format(AddonName, "Erro. tente novamente!", icon))
 def TVRC(): #100
-	AddDir("[B][COLOR yellow]Carregar lista EPG (epg.com.br)[/COLOR][/B]", "", 105, "", "", isFolder=False)
-	if(cEPG=="1"):
-		epg = eval(EPG())
 	link = urllib2.urlopen("https://pastebin.com/raw/QaYHY3Nf").read().replace('\n','').replace('\r','')
-	match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)".+?pg="(.+?)"').findall(link)
-	for url2,img2,name2,epg2 in match:
-		try:
-			info2=epg[epg2].replace(";;;","\n")
-			if not epg2=="none" and cEPG=="1":
-				name2 = "[COLOR yellow]"+name2+"[/COLOR]"
-		except:
-			info2=""
+	match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)"').findall(link)
+	for url2,img2,name2 in match:
 		if cadulto=="8080":
-			AddDir(name2, url2, 101, img2, img2, isFolder=False, IsPlayable=True, info = info2)
+			AddDir(name2, url2, 101, img2, img2, isFolder=False, IsPlayable=True, info = "")
 		elif not "dulto" in name2:
-			AddDir(name2, url2, 101, img2, img2, isFolder=False, IsPlayable=True, info = info2)
-	Addon.setSetting("cEPG", "0")
+			AddDir(name2, url2, 101, img2, img2, isFolder=False, IsPlayable=True, info = "")
 def PlayTVRC(): # 101
-	url2 = re.sub('redecanais\.[^\/]+', "redecanais.cz", url.replace("https","http") )
+	#url2 = re.sub('redecanais\.[^\/]+', "redecanais.cz", url.replace("https","http") )
 	try:
-		link = common.OpenURL(url2)
+		link = common.OpenURL(url)
 		player = re.compile('<iframe name=\"Player\".+src=\"([^\"]+)\"').findall(link)
 		link2 = common.OpenURL(player[0])
 		m2 = re.compile('action="([^\"]+)').findall(link2)
