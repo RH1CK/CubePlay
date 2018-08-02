@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.07.28"
+Versao = "18.08.02"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -96,7 +96,7 @@ def MFilmes(): #-2
 	#AddDir("[COLOR white][B][Filmes Dublado/Legendado][/B][/COLOR]" , cPage, 220, "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", background="cPage")
 	AddDir("[B][COLOR cyan][Filmes Lançamentos MMFilmes.tv][/COLOR][/B]", "config" , 184,"https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", "https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", isFolder=True)
 	AddDir("[B][COLOR cyan][Filmes MMFilmes.tv][/COLOR][/B]", "config" , 180,"https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", "https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", isFolder=True)
-	AddDir("[COLOR maroon][B][Filmes GoFilmes.me][/B][/COLOR]" , "", 210, "https://walter.trakt.tv/images/movies/000/219/436/fanarts/thumb/0ff039faa5.jpg", "https://walter.trakt.tv/images/movies/000/219/436/fanarts/thumb/0ff039faa5.jpg")
+	#AddDir("[COLOR maroon][B][Filmes GoFilmes.me][/B][/COLOR]" , "", 210, "https://walter.trakt.tv/images/movies/000/219/436/fanarts/thumb/0ff039faa5.jpg", "https://walter.trakt.tv/images/movies/000/219/436/fanarts/thumb/0ff039faa5.jpg")
 	AddDir("[COLOR yellow][B][Filmes NetCine.us][/B][/COLOR]" , "", 71, "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg", "https://walter.trakt.tv/images/movies/000/181/312/fanarts/thumb/e30b344522.jpg")
 	AddDir("[COLOR blue][B][Filmes Lançamentos RedeCanais.com][/B][/COLOR]" , cPage, 221, "https://walter.trakt.tv/images/movies/000/222/216/fanarts/thumb/6f9bb1a733.jpg", "https://walter.trakt.tv/images/movies/000/222/216/fanarts/thumb/6f9bb1a733.jpg", background="cPage")
 	AddDir("[COLOR blue][B][Filmes Dublado RedeCanais.com][/B][/COLOR]" , cPage, 90, "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", "https://walter.trakt.tv/images/movies/000/222/254/fanarts/thumb/401d5f083e.jpg", background="cPage")
@@ -198,16 +198,10 @@ def PlayS(): #62
 		listaf=[]
 		listal=[]
 		for url2 in m:
-			link3 = common.OpenURL(url2).replace('\n','').replace('\r','')
-			m3 = re.compile("(campanha\d?).php?([^\"]+)").findall(link3)
+			link3 = common.OpenURL(url2)
+			m3 = re.compile("http[^\"]+").findall(link3)
 			for url3 in m3:
-				if url3[0] == "campanha":
-					cp = "desktop22"
-				elif url3[0] == "campanha2":
-					cp = "desktop20"
-				else:
-					cp = "desktopnovo"
-				link4 = common.OpenURL("http://www.micetop.us/"+cp+".php"+url3[1])
+				link4 = common.OpenURL(m3[0])
 				m4= re.compile("http.+?mp4[^\"]+").findall(link4) 
 				m4 = list(reversed(m4))
 				for url4 in m4:
@@ -260,14 +254,8 @@ def ListMoviesNC(): #78
 def PlayMNC(): #79
 	try:
 		link = common.OpenURL(url)
-		m = re.compile("(campanha\d?).php?([^\"]+)").findall(link)
-		if m[0][0] == "campanha":
-			cp = "desktop22"
-		elif m[0][0] == "campanha2":
-			cp = "desktop20"
-		else:
-			cp = "desktopnovo"
-		link2 = common.OpenURL("http://www.micetop.us/"+cp+".php"+m[0][1])
+		m = re.compile("http[^\"]+").findall(link)
+		link2 = common.OpenURL(m[0])
 		m2 = re.compile("http.+?mp4[^\"]+").findall(link2)
 		if m2:
 			m2 = list(reversed(m2))
@@ -581,18 +569,18 @@ def Busca(): # 160
 			i=0
 	except:
 		pass
-	l=0
-	i=0
-	try:
-		AddDir("[COLOR maroon][B][Gofilmes.me][/B][/COLOR]", "" , 0 ,"", isFolder=False)
-		for x in range(0, 3):
-			l+=1
-			link = common.OpenURL("http://gofilmes.me/search?s="+d+"&p="+str(l)).replace("</div><div","\r\n")
-			m = re.compile('href=\"([^\"]+)\" title\=\"([^\"]+).+b\" src\=\"([^\"]+).+').findall(link)
-			for url2,name2,img2 in m:
-				AddDir(name2, url2, 211, img2, img2, isFolder=False, IsPlayable=True)
-	except:
-		pass
+	#l=0
+	#i=0
+	#try:
+	#	AddDir("[COLOR maroon][B][Gofilmes.me][/B][/COLOR]", "" , 0 ,"", isFolder=False)
+	#	for x in range(0, 3):
+	#		l+=1
+	#		link = common.OpenURL("http://gofilmes.me/search?s="+d+"&p="+str(l)).replace("</div><div","\r\n")
+	#		m = re.compile('href=\"([^\"]+)\" title\=\"([^\"]+).+b\" src\=\"([^\"]+).+').findall(link)
+	#		for url2,name2,img2 in m:
+	#			AddDir(name2, url2, 211, img2, img2, isFolder=False, IsPlayable=True)
+	#except:
+	#	pass
 # ----------------- FIM BUSCA
 # ----------------- TV Cubeplay
 def TVCB(x): #102
