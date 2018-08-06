@@ -45,3 +45,4 @@
 18.07.24 - Antiga redecanais
 18.07.27 - Fix Netcine
 18.07.28 - Canais RC
+18.08.02 - Fix Netcine
