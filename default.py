@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.08.02"
+Versao = "18.08.10"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -202,6 +202,7 @@ def PlayS(): #62
 			m3 = re.compile("http[^\"]+").findall(link3)
 			for url3 in m3:
 				link4 = common.OpenURL(m3[0])
+				link4 = re.sub('window.location.+', '', link4 )
 				m4= re.compile("http.+?mp4[^\"]+").findall(link4) 
 				m4 = list(reversed(m4))
 				for url4 in m4:
