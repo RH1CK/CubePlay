@@ -46,3 +46,5 @@
 18.07.27 - Fix Netcine
 18.07.28 - Canais RC
 18.08.02 - Fix Netcine
+18.08.10 - Fix Netcine
+18.08.16 - Fix netcine e canais RC
