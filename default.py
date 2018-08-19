@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.08.16"
+Versao = "18.08.18"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -202,8 +202,8 @@ def PlayS(): #62
 			m3 = re.compile("http[^\"]+").findall(link3)
 			for url3 in m3:
 				link4 = common.OpenURL(m3[0])
-				m4=re.compile("http.+netcine[^\"]+").findall(link4) 
-				link5 = common.OpenURL(m4[0])
+				m4=re.compile("http.+netcine[^\"]+").findall(link4)		
+				link5 = common.OpenURL(m4[1])
 				link5 = re.sub('window.location.+', '', link5)
 				m5= re.compile("http.+?mp4[^\"]+").findall(link5)
 				m5 = list(reversed(m5))
@@ -262,10 +262,9 @@ def PlayMNC(): #79
 		m = re.compile("http.+netcine[^\"]+").findall(link)
 		link1 = common.OpenURL(m[0])
 		m1 = re.compile("http.+netcine[^\"]+").findall(link1)
-		link2 = common.OpenURL(m1[0])
+		link2 = common.OpenURL(m1[1])
 		link2 = re.sub('window.location.+', '', link2)
 		m2 = re.compile("http.+?mp4[^\"]+").findall(link2)
-		#ST(link2)
 		if m2:
 			m2 = list(reversed(m2))
 			lista =[]
